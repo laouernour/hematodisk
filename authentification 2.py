@@ -1,6 +1,16 @@
 from tkinter import *
 from tkinter import messagebox
 import customtkinter as ctk
+import pymysql
+
+def connection():
+    conn=pymysql.connect(
+        host='localhost',
+        user='root',
+        password='',
+        db='hematodisk_data_base'
+    )
+    return conn
 
 login=ctk.CTk()
 login.title('authenitification')
