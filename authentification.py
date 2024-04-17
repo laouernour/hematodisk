@@ -1,41 +1,41 @@
 import tkinter as tk
 import customtkinter as ct
 
-class GradientFrame(tk.Canvas):
-    '''A gradient frame that uses a canvas to draw the background'''
-    def __init__(self, parent, color1="#E26D6D", color2="#3C517C", alpha=1.0, **kwargs):
-        tk.Canvas.__init__(self, parent, **kwargs)
-        self._color1 = color1
-        self._color2 = color2
-        self._alpha = alpha
-        self.bind("<Configure>", self._draw_gradient)
+class personne():
+    def __init__(self, master):
 
-    def _draw_gradient(self, event=None):
-        '''Draw the gradient'''
-        self.delete("gradient")
-        width = self.winfo_width()
-        height = self.winfo_height()
-        limit = width
-        (r1,g1,b1) = self.winfo_rgb(self._color1)
-        (r2,g2,b2) = self.winfo_rgb(self._color2)
-        r_ratio = float(r2-r1) / limit
-        g_ratio = float(g2-g1) / limit
-        b_ratio = float(b2-b1) / limit
+        self.formulaire_frame = ct.CTkFrame(master, width=800, height=500,fg_color='#FFFFFF')
+        self.formulaire_frame.grid(row=0, column=0, padx=0, pady=0,sticky='')
 
-        for i in range(limit):
-            nr = int(r1 + (r_ratio * i))
-            ng = int(g1 + (g_ratio * i))
-            nb = int(b1 + (b_ratio * i))
-            color = "#%4.4x%4.4x%4.4x" % (nr,ng,nb)
-            self.create_line(i,0,i,height, tags=("gradient",), fill=color)
-        self.lower("gradient")
+        self.nom = ct.CTkLabel(self.formulaire_frame, text="Nom :", font=('Karla', 20))
+        self.nom.grid(row=0, column=0, padx=20, pady=20,sticky="w")
+        entry_nom = ct.CTkEntry(self.formulaire_frame, width=300, height=40, corner_radius=10)
+        entry_nom.grid(row=0, column=1, padx=20, pady=20,sticky="w")
 
-class login(tk.Tk):
+        self.prenom = ct.CTkLabel(self.formulaire_frame, text="Prénom :", font=('Karla', 20))
+        self.prenom.grid(row=1, column=0, padx=20, pady=20,sticky="w")
+        entry_prenom = ct.CTkEntry(self.formulaire_frame, width=300, height=40, corner_radius=10)
+        entry_prenom.grid(row=1, column=1, padx=20, pady=20,sticky="w")
+
+        self.date_naissance = ct.CTkLabel(self.formulaire_frame, text="Date de Naissance :", font=('Karla', 20))
+        self.date_naissance.grid(row=2, column=0, padx=20, pady=20,sticky="w")
+        entry_date_naissance = ct.CTkEntry(self.formulaire_frame, width=300, height=40, corner_radius=10)
+        entry_date_naissance.grid(row=2, column=1, padx=20, pady=20,sticky="w")
+
+        self.wilaya = ct.CTkLabel(self.formulaire_frame, text="Wilaya :", font=('Karla', 20))
+        self.wilaya.grid(row=3, column=0, padx=20, pady=20,sticky="w")
+        entry_wilaya = ct.CTkEntry(self.formulaire_frame, width=300, height=40, corner_radius=10)
+        entry_wilaya.grid(row=3, column=1, padx=20, pady=20,sticky="w")
+
+class Inscrire(ct.CTk):
     def __init__(self):
         super().__init__()
-        self.title("Authentification")
+        self.title("S'inscrire")
         w, h = self.winfo_screenwidth(), self.winfo_screenheight()
-        self.geometry("%dx%d" % (w, h))
+        self.geometry("%dx%d+0+0" % (w, h))
+
+        self.grid_rowconfigure(0, weight=1)  # configure grid system
+        self.grid_columnconfigure((0,1), weight=1)
 
         # Chargement de l'image de fond
         self.bg_image = tk.PhotoImage(file="background1.png")
@@ -44,35 +44,21 @@ class login(tk.Tk):
         self.bg_label = tk.Label(self, image=self.bg_image)
         self.bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 
-        # Création du frame pour les éléments de login
-        frame_width = 600
-        frame_height = 400
-        frame_x = (w - frame_width) / 2
-        frame_y = (h - frame_height) / 2
+        self.formulaire_frame = ct.CTkFrame(self, width=800, height=500, fg_color='#FFFFFF')
+        self.formulaire_frame.grid(row=0, column=0, padx=0, pady=0)
 
-        self.login_frame = GradientFrame(self, width=frame_width, height=frame_height, alpha=0.5)
-        self.login_frame.place(x=frame_x, y=frame_y)
+        personne(self.formulaire_frame)
 
-        self.matricule=ct.CTkLabel(self.login_frame,text="Matricule :" ,font=('
-        entry_matricule=ct.CTkEntry(self.login_frame,width=300,height=40,corner_radius=10)
-        entry_matricule.place(relx=0.5,rely=0.2,anchor=tk.CENTER)
+        self.matricule_ADM = ct.CTkLabel(self.formulaire_frame, text="Matricule :", font=('Karla', 20))
+        self.matricule_ADM.grid(row=4, column=0, padx=40, pady=30,sticky="w")
+        entry_matricule_ADM = ct.CTkEntry(self.formulaire_frame, width=300, height=40, corner_radius=10)
+        entry_matricule_ADM.grid(row=4, column=1, padx=40, pady=30,sticky="w")
 
-        self.MP=ct.CTkLabel(self.login_frame,text="Mot de passe :" ,font=('Karla',20))
-        self.MP.place(relx=0.2, rely=0.4, anchor=tk.CENTER)
-        entry_MP= ct.CTkEntry(self.login_frame, width=300, height=40, corner_radius=10)
-        entry_MP.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
-
-        self.MP_oublier=ct.CTkLabel(self.login_frame,text='Mot de passe oublié ?',font=('Karla',16),text_color='#FFFFFF')
-        self.MP_oublier.place(relx=0.8, rely=0.7, anchor=tk.CENTER)
-
-        self.button=ct.CTkButton(self.login_frame,text='Se Connecter',font=('Karla',25),fg_color="#263A5F")
-        self.button.place(relx=0.5, rely=0.9, anchor=tk.CENTER)
-
-        self.mainloop()
-
-
-
+        self.MP = ct.CTkLabel(self.formulaire_frame, text="Mot de passe :", font=('Karla', 20))
+        self.MP.grid(row=5, column=0, padx=40, pady=20,sticky="w")
+        entry_MP = ct.CTkEntry(self.formulaire_frame, width=300, height=40, corner_radius=10)
+        entry_MP.grid(row=5, column=1, padx=40, pady=30,sticky="w")
 
 # Création d'une instance de la classe de fenêtre personnalisée et démarrage de la boucle principale
-login()
-#login.mainloop()
+app = Inscrire()
+app.mainloop()
