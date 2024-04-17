@@ -38,14 +38,14 @@ class Inscrire(ct.CTk):
         self.grid_columnconfigure((0,1), weight=1)
 
         # Chargement de l'image de fond
-        self.bg_image = tk.PhotoImage(file="background1.png")
+        self.bg_image = tk.PhotoImage(file="background.png")
 
         # Création d'une étiquette pour l'image de fond et placement
         self.bg_label = tk.Label(self, image=self.bg_image)
         self.bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 
         self.formulaire_frame = ct.CTkFrame(self, width=800, height=500, fg_color='#FFFFFF')
-        self.formulaire_frame.grid(row=0, column=0, padx=0, pady=0)
+        self.formulaire_frame.place(x=1,y=1)
 
         personne(self.formulaire_frame)
 
