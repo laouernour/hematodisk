@@ -1,43 +1,94 @@
-import tkinter as tk
+from tkinter import *
 from tkinter import messagebox
+import customtkinter as ctk
+import pymysql
 
-def se_connecter():
-    matricule = entry_matricule.get()
-    mot_de_passe = entry_mot_de_passe.get()
-    # Ici, vous pouvez ajouter la logique pour vérifier les identifiants
-    messagebox.showinfo("Login", "Connexion réussie!")
+'''def connection():
+    conn=pymysql.connect(
+        host='localhost',
+        user='root',
+        password='',
+        db='hematodisk_data_base'
+    )
+    return conn'''
 
-# Création de la fenêtre principale
-app = tk.Tk()
-app.title('Bienvenue Sur Hematodesk')
+class login():
+    def __init__(self,root):
+        super().__init__()
+        self.root = root
+        self.root.title('Authentification')
+        self.root.geometry('800x500+300+200')
+        self.root.columnconfigure(0, weight=350)
+        self.root.resizable(False, False)
 
-# Configuration du fond avec des cellules sanguines (remplacer 'path_to_image' par le chemin de votre image)
-background_image = tk.PhotoImage(file='background1.png')
-background_label = tk.Label(app, image=background_image)
-background_label.place(relwidth=1, relheight=1)
+        imag = PhotoImage(file='background.png')
+        label = Label(self.root, image=imag)
+        label.grid()
 
-# Ajout du titre
-label_titre = tk.Label(app, text="Bienvenue Sur Hematodesk", fg="white", bg="black")
-label_titre.pack()
+        frame = ctk.CTkFrame(self.root, width=400, height=500, fg_color='#FFFFFF')
+        frame.place(x=400, y=0)
 
-# Ajout des champs de saisie
-label_matricule = tk.Label(app, text="Matricule :")
-label_matricule.pack()
-entry_matricule = tk.Entry(app)
-entry_matricule.pack()
+        original_image = PhotoImage(file='Hemato Desk logo.png')
+        # Redimensionner l'image
+        nouvelle_image = original_image.subsample(4, 4)  # Redimensionne à la moitié de la taille originale
+        label_image = Label(frame, image=nouvelle_image, bg="white")
+        label_image.place(x=410, y=20)
 
-label_mot_de_passe = tk.Label(app, text="Mot de passe :")
-label_mot_de_passe.pack()
-entry_mot_de_passe = tk.Entry(app, show="*")
-entry_mot_de_passe.pack()
+        label_image2 = Label(frame, image=nouvelle_image, bg="white")
+        label_image2.place(x=20, y=20)
 
-# Ajout du bouton de connexion
-bouton_connexion = tk.Button(app, text="Se Connecter", command=se_connecter)
-bouton_connexion.pack()
+        heading = Label(frame, text='Connecter Vous ', fg='#3088BD', bg='#FFFFFF', font=('Karla', 30, 'bold'))
+        heading.place(x=107, y=45)
 
-# Ajout du lien pour mot de passe oublié
-lien_mdp_oublie = tk.Label(app, text="Mot de passe oublié ?", fg="blue", cursor="hand2")
-lien_mdp_oublie.pack()
+        #####-----------------------------------
 
-# Lancement de l'application
+        def on_enter(e):
+            self.root.user.delete(0, 'end')
+
+        def on_leave(e):
+            self.root.name = self.root.user.get()
+            if self.root.name == '':
+                self.root.user.insert(0, 'Entrer votre matricule')
+
+        user_matricule = ctk.CTkLabel(frame, text="Matricule :", text_color='#263A5F', font=('Karla', 20, 'bold'))
+        user_matricule.place(x=80, y=120)
+        self.root.user = ctk.CTkEntry(frame, width=250, height=40, border_width=2, border_color='#263A5F',font=('Karla', 16))
+        self.root.user.place(x=80,y=150)
+        self.root.user.insert(0, 'Entrer votre matricule')
+        self.root.user.bind('<FocusIn>', on_enter)
+        self.root.user.bind('<FocusOut>', on_leave)
+
+        #####-------------------------------
+
+        def on_enter(e):
+            self.root.MP.delete(0, 'end')
+
+        def on_leave(e):
+            self.root.name = self.root.MP.get()
+            if self.root.name == '':
+                self.root.MP.insert(0, 'Entrer votre mot de passe')
+
+        motDP = ctk.CTkLabel(frame, text="Mot De Passe :", text_color='#263A5F', font=('Karla', 20, 'bold'))
+        motDP.place(x=80, y=200)
+        self.root.MP = ctk.CTkEntry(frame, width=250, height=40, border_width=2, border_color='#263A5F', font=('Karla', 16))
+        self.root.MP.place(x=80, y=230)
+        self.root.MP.insert(0, 'Entrer votre mot de passe')
+        self.root.MP.bind('<FocusIn>', on_enter)
+        self.root.MP.bind('<FocusOut>', on_leave)
+
+        ########################################
+        button = ctk.CTkButton(frame, text="Se Connecter", width=150, height=50, corner_radius=15,font=('Karla', 20, 'bold'), fg_color='#263A5F', cursor='hand2', text_color='#FFFFFF',command=None)
+        button.place(x=125, y=300)
+        nouveau_AM = ctk.CTkLabel(frame, text="Je n'ai pas de compte ", font=('Karla', 12), fg_color="transparent",
+                                  text_color='#263A5F')
+        nouveau_AM.place(x=100, y=370)
+        inscrire = Button(frame, text="S'inscrire", font=('Karla', 12, 'bold'), border=0, bg='white', cursor='hand2',
+                          fg='#DD2F2E', command=None)
+        inscrire.place(x=270, y=467)
+
+
+
+
+app = ctk.CTk()
+Login_page = login(app)
 app.mainloop()
