@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
 import customtkinter as ctk
+from PIL import Image, ImageTk
 import pymysql
 
 '''def connection():
@@ -21,25 +22,29 @@ class login():
         self.root.columnconfigure(0, weight=350)
         self.root.resizable(False, False)
 
-        imag = PhotoImage(file='background.png')
-        label = Label(self.root, image=imag)
-        label.grid()
+        # Charger les images avec Pillow
+        background_image = Image.open('background.png')
+        logo_image = Image.open('Hemato Desk logo.png')
+
+        # Convertir les images en format compatible avec Tkinter
+        self.background_img = ImageTk.PhotoImage(background_image)
+        self.logo_img = ImageTk.PhotoImage(logo_image.resize((logo_image.width // 4, logo_image.height // 4)))  # Redimensionner l'image
+
+        # Afficher l'image de fond à gauche
+        label_background = Label(self.root, image=self.background_img)
+        label_background.place(x=0, y=0)
 
         frame = ctk.CTkFrame(self.root, width=400, height=500, fg_color='#FFFFFF')
         frame.place(x=400, y=0)
 
-        original_image = PhotoImage(file='Hemato Desk logo.png')
-        # Redimensionner l'image
-        nouvelle_image = original_image.subsample(4, 4)  # Redimensionne à la moitié de la taille originale
-        label_image = Label(frame, image=nouvelle_image, bg="white")
-        label_image.place(x=410, y=20)
+        label_image = Label(frame, image=self.logo_img, bg="white")
+        label_image.place(x=460, y=20)
 
-        label_image2 = Label(frame, image=nouvelle_image, bg="white")
-        label_image2.place(x=20, y=20)
+        label_image2 = Label(frame, image=self.logo_img, bg="white")
+        label_image2.place(x=50, y=20)
 
         heading = Label(frame, text='Connecter Vous ', fg='#3088BD', bg='#FFFFFF', font=('Karla', 30, 'bold'))
-        heading.place(x=107, y=45)
-
+        heading.place(x=148, y=45)
         #####-----------------------------------
 
         def on_enter(e):
@@ -84,7 +89,7 @@ class login():
         nouveau_AM.place(x=100, y=370)
         inscrire = Button(frame, text="S'inscrire", font=('Karla', 12, 'bold'), border=0, bg='white', cursor='hand2',
                           fg='#DD2F2E', command=None)
-        inscrire.place(x=270, y=467)
+        inscrire.place(x=362, y=562)
 
 
 
