@@ -31,13 +31,13 @@ original_image = PhotoImage(file=image_path)
 # Redimensionner l'image
 nouvelle_image = original_image.subsample(4,4)  # Redimensionne à la moitié de la taille originale
 label_image = Label(frame, image=nouvelle_image, bg="white")
-label_image.place(x=410, y=20)
+label_image.place(x=460, y=20)
 
 label_image2 = Label(frame, image=nouvelle_image, bg="white")
-label_image2.place(x=20, y=20)
+label_image2.place(x=50, y=20)
 
 heading=Label(frame,text='Connecter Vous ',fg='#3088BD',bg='#FFFFFF',font=('Karla',30,'bold'))
-heading.place(x=107,y=45)
+heading.place(x=150,y=45)
 
 #####-----------------------------------
 
@@ -82,7 +82,7 @@ button.place(x=125,y=300)
 nouveau_AM= ctk.CTkLabel(frame, text="Je n'ai pas de compte ",font=('Karla',12), fg_color="transparent",text_color='#263A5F')
 nouveau_AM.place(x=100,y=370)
 inscrire=Button(frame, text="S'inscrire",font=('Karla',12,'bold'),border=0,bg='white',cursor='hand2',fg='#DD2F2E' ,command=None)
-inscrire.place(x=270,y=467)
+inscrire.place(x=362, y=562)
 
 
 
