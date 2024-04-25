@@ -1,5 +1,4 @@
 from tkinter import *
-from tkinter import messagebox
 import customtkinter as ctk
 from PIL import Image, ImageTk
 import pymysql
@@ -14,7 +13,7 @@ import pymysql
     return conn'''
 
 class login():
-    def __init__(self,root):
+    def __init__(self, root):
         super().__init__()
         self.root = root
         self.root.title('Authentification')
@@ -87,11 +86,31 @@ class login():
         nouveau_AM = ctk.CTkLabel(frame, text="Je n'ai pas de compte ", font=('Karla', 12), fg_color="transparent",
                                   text_color='#263A5F')
         nouveau_AM.place(x=100, y=370)
-        inscrire = Button(frame, text="S'inscrire", font=('Karla', 12, 'bold'), border=0, bg='white', cursor='hand2',
-                          fg='#DD2F2E', command=None)
+        inscrire = Button(frame, text="S'inscrire", font=('Karla', 12, 'bold'), border=0, bg='white', cursor='hand2',activebackground='white',fg='#DD2F2E', command=None)
         inscrire.place(x=362, y=562)
 
+        # Définir les méthodes show() et hide()
+        def hide():
+            self.eyebutton.configure(image=self.closeeyeresize, command=show)
+            self.root.MP.configure(show='*')
 
+        def show():
+            self.eyebutton.configure(image=self.openeyeresize, command=hide)
+            self.root.MP.configure(show='')
+
+        # Charger les images des yeux ouverts et fermés
+        self.openeye = Image.open('eye open.png')
+        self.closeeye = Image.open('close eye.png')
+
+        # Convertir les images en format compatible avec Tkinter et redimensionner
+        self.openeyeresize = ImageTk.PhotoImage(
+        self.openeye.resize((self.openeye.width // 7, self.openeye.height // 7)))
+        self.closeeyeresize = ImageTk.PhotoImage(
+        self.closeeye.resize((self.closeeye.width // 10, self.closeeye.height // 10)))
+
+        # Créer le bouton des yeux avec l'image des yeux ouverts et la commande show()
+        self.eyebutton = Button(frame, image=self.openeyeresize, bd=0,bg="#FFFFFF", command=hide)
+        self.eyebutton.place(x=440, y=360)
 
 
 app = ctk.CTk()

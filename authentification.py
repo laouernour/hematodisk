@@ -1,10 +1,11 @@
 import customtkinter as ct
 from tkinter import messagebox
+import pymysql
 
 class Personne():
     def __init__(self, master):
         self.master = master
-        self.formulaire_frame = ct.CTkFrame(master, width=900, height=500, fg_color='#FFFFFF', border_width=2, border_color='#263A5F')
+        self.formulaire_frame = ct.CTkFrame(master,  fg_color='#FFFFFF', border_width=2, border_color='#263A5F')
         self.formulaire_frame.grid()
 
         self.nom_label = ct.CTkLabel(self.formulaire_frame, text="Nom :", font=('Karla', 20))
@@ -40,25 +41,25 @@ class Inscrire(ct.CTk):
         self.geometry("%dx%d+0+0" % (w, h))
         self.configure(bg='#263A5F')
 
-        self.formulaire_frame1 = ct.CTkFrame(self, width=900, height=400, fg_color='#FFFFFF', border_width=2, border_color='#263A5F', corner_radius=10)
+        self.formulaire_frame1 = ct.CTkFrame(self, width=500, height=500, fg_color='#FFFFFF', border_width=2, border_color='#263A5F', corner_radius=10)
         self.formulaire_frame1.pack(expand=True)
 
         self.personne = Personne(self.formulaire_frame1)
 
         self.matricule_ADM_label = ct.CTkLabel(self.formulaire_frame1, text="Matricule :", font=('Karla', 20))
-        self.matricule_ADM_label.grid(row=5, column=0, padx=20, pady=30,sticky="w")
+        self.matricule_ADM_label.grid(row=5, column=0, padx=20, pady=20,sticky="w")
         self.matricule_ADM_entry = ct.CTkEntry(self.formulaire_frame1, width=300, height=40, corner_radius=10, font=('Karla', 16))
-        self.matricule_ADM_entry.grid(row=5, column=1, padx=20, pady=30, sticky="w")
+        self.matricule_ADM_entry.grid(row=5, column=1, padx=20, pady=20, sticky="w")
 
         self.MP_label = ct.CTkLabel(self.formulaire_frame1, text="Mot de passe :", font=('Karla', 20))
         self.MP_label.grid(row=6, column=0, padx=20, pady=20, sticky="w")
         self.MP_entry = ct.CTkEntry(self.formulaire_frame1, show="*", width=300, height=40, corner_radius=10, font=('Karla', 16))
-        self.MP_entry.grid(row=6, column=1, padx=40, pady=20, sticky="w")
+        self.MP_entry.grid(row=6, column=1, padx=20, pady=20, sticky="w")
 
         self.confirmation_MP_label = ct.CTkLabel(self.formulaire_frame1, text="Confirmation du mot de passe :", font=('Karla', 20))
         self.confirmation_MP_label.grid(row=7, column=0, padx=20, pady=20, sticky="w")
         self.confirmation_MP_entry = ct.CTkEntry(self.formulaire_frame1,show="*", width=300, height=40, corner_radius=10, font=('Karla', 16))
-        self.confirmation_MP_entry.grid(row=7, column=1, padx=40, pady=20, sticky="w")
+        self.confirmation_MP_entry.grid(row=7, column=1, padx=20, pady=20, sticky="w")
 
         self.enregistrer_ADM= ct.CTkButton(self.formulaire_frame1, text="Créer", command=self.creer, width=150, height=40, corner_radius=15, font=('Karla', 20, 'bold'), fg_color='#263A5F', cursor='hand2', text_color='#FFFFFF')
         self.enregistrer_ADM.grid(row=7, columnspan=2, pady=20)
@@ -71,6 +72,9 @@ class Inscrire(ct.CTk):
         else:
             try:
                 # Connecter à la base de données et traiter l'inscription ici
+                con=pymysql.connect(host='localhost',user='root',password='',db='hematodisk_data_base')
+                cur=con.cursor()
+                cur.execute("select * fe")
                 pass
             except Exception as es:
                 messagebox.showerror("Erreur", f"Erreur de connexion : {str(es)}", parent=self)
