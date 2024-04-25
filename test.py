@@ -80,6 +80,10 @@ class login():
         self.root.MP.bind('<FocusIn>', on_enter)
         self.root.MP.bind('<FocusOut>', on_leave)
 
+        # Bind the hide function to KeyRelease event of the password field
+        self.root.MP.bind('<KeyRelease>', lambda event: hide())
+
+
         ########################################
         button = ctk.CTkButton(frame, text="Se Connecter", width=150, height=50, corner_radius=15,font=('Karla', 20, 'bold'), fg_color='#263A5F', cursor='hand2', text_color='#FFFFFF',command=None)
         button.place(x=125, y=300)
@@ -93,7 +97,6 @@ class login():
         def hide():
             self.eyebutton.configure(image=self.closeeyeresize, command=show)
             self.root.MP.configure(show='*')
-
         def show():
             self.eyebutton.configure(image=self.openeyeresize, command=hide)
             self.root.MP.configure(show='')
@@ -103,15 +106,25 @@ class login():
         self.closeeye = Image.open('close eye.png')
 
         # Convertir les images en format compatible avec Tkinter et redimensionner
-        self.openeyeresize = ImageTk.PhotoImage(
-        self.openeye.resize((self.openeye.width // 7, self.openeye.height // 7)))
-        self.closeeyeresize = ImageTk.PhotoImage(
-        self.closeeye.resize((self.closeeye.width // 10, self.closeeye.height // 10)))
+        self.openeyeresize = ImageTk.PhotoImage(self.openeye.resize((self.openeye.width // 7, self.openeye.height // 7)))
+        self.closeeyeresize = ImageTk.PhotoImage(self.closeeye.resize((self.closeeye.width // 10, self.closeeye.height // 10)))
 
-        # Créer le bouton des yeux avec l'image des yeux ouverts et la commande show()
-        self.eyebutton = Button(frame, image=self.openeyeresize, bd=0,bg="#FFFFFF", command=hide)
+        # Créer le bouton des yeux avec l'image des yeux fermés
+        self.eyebutton = Button(frame, image=self.closeeyeresize, bd=0, bg="#FFFFFF", command=hide)
         self.eyebutton.place(x=440, y=360)
 
+        # Désactiver le bouton de l'œil
+        self.eyebutton.config(state=DISABLED)
+
+        # Suivre si le mot de passe a été entré
+        def on_key_release(e):
+            self.root.name = self.root.MP.get()
+            if self.root.name == '':
+                self.eyebutton.config(state=DISABLED)  # Désactiver le bouton si le mot de passe n'est pas entré
+            else:
+                self.eyebutton.config(state=NORMAL)  # Activer le bouton si le mot de passe est entré
+
+        self.root.MP.bind('<KeyRelease>', on_key_release)
 
 app = ctk.CTk()
 Login_page = login(app)
