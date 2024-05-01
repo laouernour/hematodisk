@@ -1,6 +1,10 @@
 import tkinter as tk
 import customtkinter as ct
 from tkinter import ttk
+from tkinter import *
+from tkinter import messagebox
+import customtkinter as ctk
+import pymysql
 
 
 class Personne():
@@ -66,6 +70,12 @@ class Inscrire_doctor(ct.CTk):
                                             height=40, corner_radius=15, font=('Karla', 18, 'bold'), fg_color='#263A5F',
                                             cursor='hand2', text_color='#FFFFFF')
         self.enregistrer_doctor.grid(row=7, column=0, columnspan=2, pady=10)
+        image_path = 'Hemato Desk logo.png'
+        self.original_image = PhotoImage(file=image_path)
+        nouvelle_image = self.original_image.subsample(2, 2)  # Redimensionne à la moitié de la taille originale
+        label_image = Label(self.formulaire_frame2, image=nouvelle_image, bg="white")
+        label_image.image = nouvelle_image  # Garde une référence à l'image
+        label_image.place(x=950, y=40)  # Ajustez la position selon vos besoins
 
 # Create an instance of the custom window class and start the main loop
 app = Inscrire_doctor()

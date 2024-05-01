@@ -1,6 +1,11 @@
 import customtkinter as ct
 from tkinter import messagebox
 import pymysql
+from tkinter import *
+from tkinter import messagebox
+import customtkinter as ctk
+import pymysql
+
 
 class Personne():
     def __init__(self, master):
@@ -32,6 +37,7 @@ class Personne():
         self.phone_nmbr_label.grid(row=4, column=0, padx=20, pady=20, sticky="w")
         self.phone_nmbr_entry = ct.CTkEntry(self.formulaire_frame, width=250, height=35, corner_radius=10, font=('Karla', 14))
         self.phone_nmbr_entry.grid(row=4, column=1, padx=20, pady=20, sticky="w")
+        # Chargement de l'image
 
 class Inscrire(ct.CTk):
     def __init__(self):
@@ -63,6 +69,12 @@ class Inscrire(ct.CTk):
 
         self.enregistrer_ADM= ct.CTkButton(self.formulaire_frame1, text="Créer", command=self.creer, width=200, height=30, corner_radius=15, font=('Karla', 18, 'bold'), fg_color='#263A5F', cursor='hand2', text_color='#FFFFFF')
         self.enregistrer_ADM.grid(row=8, column=0, columnspan=2, pady=10)
+        image_path = 'Hemato Desk logo.png'
+        self.original_image = PhotoImage(file=image_path)
+        nouvelle_image = self.original_image.subsample(2, 2)  # Redimensionne à la moitié de la taille originale
+        label_image = Label(self.formulaire_frame1, image=nouvelle_image, bg="white")
+        label_image.image = nouvelle_image  # Garde une référence à l'image
+        label_image.place(x=950, y=40) # Ajustez la position selon vos besoins
 
     def creer(self):
         if self.personne.nom_entry.get() == "" or self.personne.prenom_entry.get() == "" or self.personne.date_naissance_entry.get() == "" or self.personne.wilaya_entry.get() == "" or self.personne.phone_nmbr_entry.get() == "" or self.matricule_ADM_entry.get() == "" or self.MP_entry.get() == "" or self.confirmation_MP_entry.get() == "":
