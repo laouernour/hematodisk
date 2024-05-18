@@ -1,10 +1,7 @@
 import customtkinter as ct
-from tkinter import messagebox
 import pymysql
 from tkinter import *
 from tkinter import messagebox
-import customtkinter as ctk
-import pymysql
 
 class Inscrire(ct.CTk):
     def __init__(self):
@@ -20,7 +17,7 @@ class Inscrire(ct.CTk):
 
         # Frame for the title label
         self.label_frame = ct.CTkFrame(self.formulaire_frame, fg_color='#FFFFFF')
-        self.label_frame.pack( pady=10)
+        self.label_frame.pack(pady=10)
 
         self.label = ct.CTkLabel(self.label_frame, text="S'inscrire Administrateur :", font=('Karla', 26,'bold'))
         self.label.pack(expand=True, pady=20)
@@ -89,7 +86,7 @@ class Inscrire(ct.CTk):
         self.enregistrer_ADM = ct.CTkButton(self.inscription_frame, text="Créer", command=self.creer, width=250,
                                             height=40, corner_radius=15, font=('Karla', 18, 'bold'), fg_color='#263A5F',
                                             cursor='hand2', text_color='#FFFFFF')
-        self.enregistrer_ADM.grid(row=8, column=1, columnspan=2, pady=20)
+        self.enregistrer_ADM.grid(row=4, column=1, columnspan=2, pady=20)
 
         image_path = 'Hemato Desk logo.png'
         self.original_image = PhotoImage(file=image_path)
