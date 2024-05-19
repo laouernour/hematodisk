@@ -1,5 +1,5 @@
 import customtkinter as ct
-from tkinter import *
+from tkinter import PhotoImage, Label
 
 class Accueil(ct.CTk):
     def __init__(self):
@@ -9,34 +9,31 @@ class Accueil(ct.CTk):
         self.geometry("%dx%d+0+0" % (w, h))
         self.configure(bg='#263A5F')
 
-        # Configure grid for the main window
-        self.grid_columnconfigure(1, weight=1)
-        self.grid_rowconfigure(1, weight=1)
-
         # Top frame
-        self.top_frame = ct.CTkFrame(self, fg_color='#18BDE1', height=200)
-        self.top_frame.grid(row=0, column=0, columnspan=2, sticky="nsew", padx=0, pady=0)
+        self.top_frame = ct.CTkFrame(self, fg_color='#18BDE1', width=w, height=150)
+        self.top_frame.place(x=0, y=0)
 
         image_path = 'Hemato Desk logo.png'
         self.original_image = PhotoImage(file=image_path)
         nouvelle_image = self.original_image.subsample(2, 2)  # Resize to half the original size
-        label_image = Label(self.top_frame, image=nouvelle_image, bg="#18BDE1")
-        label_image.image = nouvelle_image  # Keep a reference to the image
-        label_image.grid(row=0, column=0, padx=10, pady=10, sticky="w")
+        label_imageL = Label(self.top_frame, image=nouvelle_image, bg="#18BDE1")
+        label_imageL.image = nouvelle_image  # Keep a reference to the image
+        label_imageL.place(x=20, y=10)
+        label_imageR = Label(self.top_frame, image=nouvelle_image, bg="#18BDE1")
+        label_imageR.image = nouvelle_image  # Keep a reference to the image
+        label_imageR.place(x=1700, y=10)
 
-        label_text = Label(self.top_frame, text="Hemato disk", font=('Karla', 26, 'bold'), bg="#18BDE1")
-        label_text.grid(row=0, column=1, padx=10, pady=10, sticky="ew")
+        label_text = Label(self.top_frame, text="Hemato disk", font=('Karla', 48, 'bold'), bg="#18BDE1")
+        label_text.place(x=750, y=60)
 
         # Left frame
-        self.left_frame = ct.CTkFrame(self, fg_color='#18BDE1', width=250)
-        self.left_frame.grid(row=1, column=0, sticky="nsew", padx=0, pady=0)
+        self.left_frame = ct.CTkFrame(self, fg_color='#18BDE1', width=250, height=h-150)
+        self.left_frame.place(x=0, y=149)
 
         # Center frame
-        self.center_frame = ct.CTkFrame(self, fg_color='#ffffff', border_width=2, border_color='#263A5F')
-        self.center_frame.grid(row=1, column=1, sticky="nsew", padx=0, pady=0)
+        self.center_frame = ct.CTkScrollableFrame(self, fg_color='#ffffff', border_width=2, border_color='#263A5F', width=w-280, height=h-150)
+        self.center_frame.place(x=250, y=149)
 
-
-
-
-app = Accueil()
-app.mainloop()
+if __name__ == "__main__":
+    app = Accueil()
+    app.mainloop()
