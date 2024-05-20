@@ -17,7 +17,7 @@ class login():
         super().__init__()
         self.root = root
         self.root.title('Authentification')
-        self.root.geometry('800x500+300+200')
+        self.root.geometry('800x500+300+100')
         self.root.columnconfigure(0, weight=350)
         self.root.resizable(False, False)
 
