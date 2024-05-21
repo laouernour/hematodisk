@@ -71,9 +71,7 @@ class Accueil(ct.CTk):
                                  height=40,
                                  corner_radius=15, font=('Karla', 16, 'bold'), fg_color="transparent",
                                  cursor='hand2', text_color='#FFFFFF')
-        self.parametres.place(x=25, y=400)
-
-
+        self.parametres.place(x=25, y=450)
 
         # Center frame
         self.center_frame = ct.CTkScrollableFrame(self, fg_color='#ffffff', border_width=2, border_color='#263A5F', width=w-279, height=h-160, corner_radius=0)
