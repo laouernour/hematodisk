@@ -11,35 +11,69 @@ class Accueil(ct.CTk):
         self.configure(bg='#78BDCC')
 
         # Top frame
-        self.top_frame = ct.CTkFrame(self, fg_color='#78BDCC', width=w, height=160, corner_radius=0)
+        self.top_frame = ct.CTkFrame(self, fg_color='#28A0C6', width=w, height=160, corner_radius=0)
         self.top_frame.place(x=0, y=0)
+        label_text = Label(self.top_frame, text="Service Hématologie", font=('Karla', 48, 'bold'), bg="#28A0C6")
+        label_text.place(x=750, y=60)
         self.ajouter_patient = ct.CTkButton(self.top_frame, text="+ Ajouter Patient", command=None, width=150, height=40,
-                                            corner_radius=15, font=('Karla', 16, 'bold'), fg_color='#263A5F',
+                                            corner_radius=15, font=('Karla', 16, 'bold'), fg_color='#EF3535',
                                             cursor='hand2', text_color='#FFFFFF')
-        self.ajouter_patient.place(x=1350, y=108)
+        self.ajouter_patient.place(x=1100, y=108)
 
         self.ajouter_RV = ct.CTkButton(self.top_frame, text="+ Ajouter Rendez-vous", command=None, width=150,
                                             height=40,
-                                            corner_radius=15, font=('Karla', 16, 'bold'), fg_color='#263A5F',
+                                            corner_radius=15, font=('Karla', 16, 'bold'), fg_color='#2FC16A',
                                             cursor='hand2', text_color='#FFFFFF')
-        self.ajouter_RV.place(x=1140, y=108)
+        self.ajouter_RV.place(x=890, y=108)
 
         image_path = 'Hemato Desk logo.png'
         self.original_image = PhotoImage(file=image_path)
-        nouvelle_image = self.original_image.subsample(3, 3)  # Resize to half the original size
-        label_imageL = Label(self.top_frame, image=nouvelle_image, bg="#78BDCC")
+        nouvelle_image = self.original_image.subsample(2, 2)  # Resize to half the original size
+        label_imageL = Label(self.top_frame, image=nouvelle_image, bg="#28A0C6")
         label_imageL.image = nouvelle_image  # Keep a reference to the image
-        label_imageL.place(x=20, y=6)
-        label_imageR = Label(self.top_frame, image=nouvelle_image, bg="#78BDCC")
+        label_imageL.place(x=80, y=50)
+        '''label_imageR = Label(self.top_frame, image=nouvelle_image, bg="#28A0C6")
         label_imageR.image = nouvelle_image  # Keep a reference to the image
-        label_imageR.place(x=1760, y=6)
+        label_imageR.place(x=1760, y=6)'''
 
-        label_text = Label(self.top_frame, text="Service Hématologie", font=('Karla', 48, 'bold'), bg="#78BDCC")
-        label_text.place(x=750, y=60)
+
 
         # Left frame
-        self.left_frame = ct.CTkFrame(self, fg_color='#78BDCC', width=250, height=h-50, corner_radius=0)
+        self.left_frame = ct.CTkFrame(self, fg_color='#28A0C6', width=250, height=h-50, corner_radius=0)
         self.left_frame.place(x=0, y=149)
+
+        self.Liste_patient = ct.CTkButton(self.left_frame, text=" Liste des Patient", command=None, width=150,
+                                       height=40,
+                                       corner_radius=15, font=('Karla', 16, 'bold'), fg_color="transparent",
+                                       cursor='hand2', text_color='#FFFFFF')
+        self.Liste_patient.place(x=25, y=50)
+        self.Liste_RDV = ct.CTkButton(self.left_frame, text=" Liste des Rendez-vous ", command=None, width=150,
+                                          height=40,
+                                          corner_radius=15, font=('Karla', 16, 'bold'), fg_color="transparent",
+                                          cursor='hand2', text_color='#FFFFFF')
+        self.Liste_RDV.place(x=25, y=120)
+        self.reporter_RDV = ct.CTkButton(self.left_frame, text=" reporter Rendez-vous ", command=None, width=150,
+                                      height=40,
+                                      corner_radius=15, font=('Karla', 16, 'bold'), fg_color="transparent",
+                                      cursor='hand2', text_color='#FFFFFF')
+        self.reporter_RDV.place(x=25, y=190)
+        self.consultation = ct.CTkButton(self.left_frame, text=" Consultation ", command=None, width=150,
+                                         height=40,
+                                         corner_radius=15, font=('Karla', 16, 'bold'), fg_color="transparent",
+                                         cursor='hand2', text_color='#FFFFFF')
+        self.consultation.place(x=25, y=260)
+        self.stat = ct.CTkButton(self.left_frame, text=" Statistique ", command=None, width=150,
+                                         height=40,
+                                         corner_radius=15, font=('Karla', 16, 'bold'), fg_color="transparent",
+                                         cursor='hand2', text_color='#FFFFFF')
+        self.stat.place(x=25, y=330)
+        self.parametres = ct.CTkButton(self.left_frame, text=" Paramètres", command=None, width=150,
+                                 height=40,
+                                 corner_radius=15, font=('Karla', 16, 'bold'), fg_color="transparent",
+                                 cursor='hand2', text_color='#FFFFFF')
+        self.parametres.place(x=25, y=400)
+
+
 
         # Center frame
         self.center_frame = ct.CTkScrollableFrame(self, fg_color='#ffffff', border_width=2, border_color='#263A5F', width=w-279, height=h-160, corner_radius=0)
