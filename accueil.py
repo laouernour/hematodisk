@@ -13,20 +13,26 @@ class Accueil(ct.CTk):
         # Top frame
         self.top_frame = ct.CTkFrame(self, fg_color='#78BDCC', width=w, height=160, corner_radius=0)
         self.top_frame.place(x=0, y=0)
-        self.ajouter_patient = ct.CTkButton(self.top_frame, text="Ajouter Patient", command=None, width=150, height=40,
+        self.ajouter_patient = ct.CTkButton(self.top_frame, text="+ Ajouter Patient", command=None, width=150, height=40,
                                             corner_radius=15, font=('Karla', 16, 'bold'), fg_color='#263A5F',
                                             cursor='hand2', text_color='#FFFFFF')
-        self.ajouter_patient.place(x=1000, y=100)
+        self.ajouter_patient.place(x=1350, y=108)
+
+        self.ajouter_RV = ct.CTkButton(self.top_frame, text="+ Ajouter Rendez-vous", command=None, width=150,
+                                            height=40,
+                                            corner_radius=15, font=('Karla', 16, 'bold'), fg_color='#263A5F',
+                                            cursor='hand2', text_color='#FFFFFF')
+        self.ajouter_RV.place(x=1140, y=108)
 
         image_path = 'Hemato Desk logo.png'
         self.original_image = PhotoImage(file=image_path)
         nouvelle_image = self.original_image.subsample(3, 3)  # Resize to half the original size
         label_imageL = Label(self.top_frame, image=nouvelle_image, bg="#78BDCC")
         label_imageL.image = nouvelle_image  # Keep a reference to the image
-        label_imageL.place(x=20, y=10)
+        label_imageL.place(x=20, y=6)
         label_imageR = Label(self.top_frame, image=nouvelle_image, bg="#78BDCC")
         label_imageR.image = nouvelle_image  # Keep a reference to the image
-        label_imageR.place(x=1700, y=10)
+        label_imageR.place(x=1760, y=6)
 
         label_text = Label(self.top_frame, text="Service Hématologie", font=('Karla', 48, 'bold'), bg="#78BDCC")
         label_text.place(x=750, y=60)
