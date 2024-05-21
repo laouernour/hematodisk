@@ -2,6 +2,7 @@ import customtkinter as ct
 import pymysql
 from tkinter import *
 from tkinter import messagebox
+from PIL import Image, ImageTk  # Import PIL for image handling
 
 class Inscrire(ct.CTk):
     def __init__(self):
@@ -67,12 +68,20 @@ class Inscrire(ct.CTk):
                                                font=('Karla', 14))
         self.matricule_ADM_entry.grid(row=2, column=3, padx=20, pady=20, sticky="w")
 
+        # Load eye images
+        self.open_eye_image = Image.open('eye open.png').resize((25, 25))
+        self.close_eye_image = Image.open('close eye.png').resize((25, 25))
+        self.open_eye = ImageTk.PhotoImage(self.open_eye_image)
+        self.close_eye = ImageTk.PhotoImage(self.close_eye_image)
+
         # Mot de Passe
         self.MP_ADM_label = ct.CTkLabel(self.inscription_frame, text="Mot de passe :", font=('Karla', 18))
         self.MP_ADM_label.grid(row=3, column=0, padx=20, pady=20, sticky="w")
         self.MP_ADM_entry = ct.CTkEntry(self.inscription_frame, show="*", width=250, height=35, corner_radius=10,
                                     font=('Karla', 14))
         self.MP_ADM_entry.grid(row=3, column=1, padx=20, pady=20, sticky="w")
+        self.show_pass_button = Button(self.inscription_frame, image=self.close_eye, command=self.toggle_password,bd=0, bg='#FFFFFF', state=DISABLED)
+        self.show_pass_button.grid(row=3, column=1, padx=5)
 
         # Confirmation Mot de Passe
         self.confirmation_MP_ADM_label = ct.CTkLabel(self.inscription_frame, text="Confirmation du mot de passe :",
@@ -81,6 +90,12 @@ class Inscrire(ct.CTk):
         self.confirmation_MP_ADM_entry = ct.CTkEntry(self.inscription_frame, show="*", width=250, height=35,
                                                  corner_radius=10, font=('Karla', 16))
         self.confirmation_MP_ADM_entry.grid(row=3, column=3, padx=20, pady=20, sticky="w")
+        self.show_confirm_pass_button = Button(self.inscription_frame, image=self.close_eye, command=self.toggle_confirm_password,bd=0, bg='#FFFFFF', state=DISABLED)
+        self.show_confirm_pass_button.grid(row=3, column=3, padx=5)
+
+        # Bind key release event to password and confirmation password entries
+        self.MP_ADM_entry.bind('<KeyRelease>', self.on_key_release)
+        self.confirmation_MP_ADM_entry.bind('<KeyRelease>', self.on_key_release)
 
         # Button to Create Account
         self.enregistrer_ADM = ct.CTkButton(self.inscription_frame, text="Créer", command=self.creer, width=250,
@@ -94,6 +109,33 @@ class Inscrire(ct.CTk):
         label_image = Label(self.label_frame, image=nouvelle_image, bg="white")
         label_image.image = nouvelle_image  # Garde une référence à l'image
         label_image.pack()  # Ajustez la position selon vos besoins
+
+    def toggle_password(self):
+        if self.MP_ADM_entry.cget('show') == '*':
+            self.MP_ADM_entry.configure(show='')
+            self.show_pass_button.configure(image=self.open_eye)
+        else:
+            self.MP_ADM_entry.configure(show='*')
+            self.show_pass_button.configure(image=self.close_eye)
+
+    def toggle_confirm_password(self):
+        if self.confirmation_MP_ADM_entry.cget('show') == '*':
+            self.confirmation_MP_ADM_entry.configure(show='')
+            self.show_confirm_pass_button.configure(image=self.open_eye)
+        else:
+            self.confirmation_MP_ADM_entry.configure(show='*')
+            self.show_confirm_pass_button.configure(image=self.close_eye)
+
+    def on_key_release(self, event):
+        if self.MP_ADM_entry.get() == '':
+            self.show_pass_button.config(state=DISABLED)
+        else:
+            self.show_pass_button.config(state=NORMAL)
+
+        if self.confirmation_MP_ADM_entry.get() == '':
+            self.show_confirm_pass_button.config(state=DISABLED)
+        else:
+            self.show_confirm_pass_button.config(state=NORMAL)
 
     def creer(self):
         if self.nomADM_entry.get() == "" or self.prenomADM_entry.get() == "" or self.date_naissanceADM_entry.get() == "" or self.wilayaADM_entry.get() == "" or self.phone_nmbrADM_entry.get() == "" or self.matricule_ADM_entry.get() == "" or self.MP_ADM_entry.get() == "" or self.confirmation_MP_ADM_entry.get() == "":
@@ -113,12 +155,12 @@ class Inscrire(ct.CTk):
                         self.nomADM_entry.get(),
                         self.prenomADM_entry.get(),
                         self.date_naissanceADM_entry.get(),
-                        self.wilayaADM_entry.get(),
                         self.phone_nmbrADM_entry.get(),
+                        self.wilayaADM_entry.get()
                     ))
-                messagebox.showinfo("Suuccess", f"Administrateur enregistrer", parent=self)
+                messagebox.showinfo("Success", f"Administrateur enregistré", parent=self)
                 mydb.commit()
-                mydb.close
+                mydb.close()
             except Exception as es:
                 messagebox.showerror("Erreur", f"Erreur de connexion : {str(es)}", parent=self)
 
