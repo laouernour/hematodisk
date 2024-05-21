@@ -96,11 +96,21 @@ class Inscrire(ct.CTk):
         else:
             # Placeholder for database connection and operation
             try:
-                con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
-                cur = con.cursor()
-                cur.execute("SELECT * FROM some_table")  # Replace "some_table" with actual table name
-                con.commit()
-                con.close()
+                mydb = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+                mycursor = mydb.cursor()
+                mycursor.execute("insert into medecin (matricule_medecin,nom,prenom,date_de_naissance,wilaya,telephone,grade)values(%s,%s,%s,%s,%s,%s,%s)",
+                                 (
+                                 self.matricule_doctor_entry.get(),
+                                 self.nom_entry.get(),
+                                 self.prenom_entry.get(),
+                                 self.date_naissance_entry.get(),
+                                 self.wilaya_entry.get(),
+                                 self.phone_nmbr_entry.get(),
+                                 self.grad_entry.get(),
+                ))
+                messagebox.showinfo("Suuccess",f"Médecin enregistrer", parent=self )
+                mydb.commit()
+                mydb.close
             except Exception as es:
                 messagebox.showerror("Erreur", f"Erreur de connexion : {str(es)}", parent=self)
 

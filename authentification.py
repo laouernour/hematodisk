@@ -27,38 +27,38 @@ class Inscrire(ct.CTk):
         self.inscription_frame.pack(pady=10)
 
         # Nom and Prénom in the same row
-        self.nom_label = ct.CTkLabel(self.inscription_frame, text="Nom :", font=('Karla', 18))
-        self.nom_label.grid(row=0, column=0, padx=20, pady=20, sticky="w")
-        self.nom_entry = ct.CTkEntry(self.inscription_frame, width=250, height=35, corner_radius=10, font=('Karla', 14))
-        self.nom_entry.grid(row=0, column=1, padx=20, pady=20, sticky="w")
+        self.nomADM_label = ct.CTkLabel(self.inscription_frame, text="Nom :", font=('Karla', 18))
+        self.nomADM_label.grid(row=0, column=0, padx=20, pady=20, sticky="w")
+        self.nomADM_entry = ct.CTkEntry(self.inscription_frame, width=250, height=35, corner_radius=10, font=('Karla', 14))
+        self.nomADM_entry.grid(row=0, column=1, padx=20, pady=20, sticky="w")
 
-        self.prenom_label = ct.CTkLabel(self.inscription_frame, text="Prénom :", font=('Karla', 18))
-        self.prenom_label.grid(row=0, column=2, padx=20, pady=20, sticky="w")
-        self.prenom_entry = ct.CTkEntry(self.inscription_frame, width=250, height=35, corner_radius=10,
+        self.prenomADM_label = ct.CTkLabel(self.inscription_frame, text="Prénom :", font=('Karla', 18))
+        self.prenomADM_label.grid(row=0, column=2, padx=20, pady=20, sticky="w")
+        self.prenomADM_entry = ct.CTkEntry(self.inscription_frame, width=250, height=35, corner_radius=10,
                                         font=('Karla', 14))
-        self.prenom_entry.grid(row=0, column=3, padx=20, pady=20, sticky="w")
+        self.prenomADM_entry.grid(row=0, column=3, padx=20, pady=20, sticky="w")
 
         # Other fields using pack
         # Date de Naissance
-        self.date_naissance_label = ct.CTkLabel(self.inscription_frame, text="Date de Naissance :", font=('Karla', 18))
-        self.date_naissance_label.grid(row=1, column=0, padx=20, pady=20, sticky="w")
-        self.date_naissance_entry = ct.CTkEntry(self.inscription_frame, width=250, height=35, corner_radius=10,
+        self.date_naissanceADM_label = ct.CTkLabel(self.inscription_frame, text="Date de Naissance :", font=('Karla', 18))
+        self.date_naissanceADM_label.grid(row=1, column=0, padx=20, pady=20, sticky="w")
+        self.date_naissanceADM_entry = ct.CTkEntry(self.inscription_frame, width=250, height=35, corner_radius=10,
                                                 font=('Karla', 14))
-        self.date_naissance_entry.grid(row=1, column=1, padx=20, pady=20, sticky="w")
+        self.date_naissanceADM_entry.grid(row=1, column=1, padx=20, pady=20, sticky="w")
 
         # Wilaya
-        self.wilaya_label = ct.CTkLabel(self.inscription_frame, text="Wilaya :", font=('Karla', 18))
-        self.wilaya_label.grid(row=1, column=2, padx=20, pady=20, sticky="w")
-        self.wilaya_entry = ct.CTkEntry(self.inscription_frame, width=250, height=35, corner_radius=10,
+        self.wilayaADM_label = ct.CTkLabel(self.inscription_frame, text="Wilaya :", font=('Karla', 18))
+        self.wilayaADM_label.grid(row=1, column=2, padx=20, pady=20, sticky="w")
+        self.wilayaADM_entry = ct.CTkEntry(self.inscription_frame, width=250, height=35, corner_radius=10,
                                         font=('Karla', 14))
-        self.wilaya_entry.grid(row=1, column=3, padx=20, pady=20, sticky="w")
+        self.wilayaADM_entry.grid(row=1, column=3, padx=20, pady=20, sticky="w")
 
         # Téléphone
-        self.phone_nmbr_label = ct.CTkLabel(self.inscription_frame, text="Téléphone:", font=('Karla', 18))
-        self.phone_nmbr_label.grid(row=2, column=0, padx=20, pady=20, sticky="w")
-        self.phone_nmbr_entry = ct.CTkEntry(self.inscription_frame, width=250, height=35, corner_radius=10,
+        self.phone_nmbrADM_label = ct.CTkLabel(self.inscription_frame, text="Téléphone:", font=('Karla', 18))
+        self.phone_nmbrADM_label.grid(row=2, column=0, padx=20, pady=20, sticky="w")
+        self.phone_nmbrADM_entry = ct.CTkEntry(self.inscription_frame, width=250, height=35, corner_radius=10,
                                             font=('Karla', 14))
-        self.phone_nmbr_entry.grid(row=2, column=1, padx=20, pady=20, sticky="w")
+        self.phone_nmbrADM_entry.grid(row=2, column=1, padx=20, pady=20, sticky="w")
 
         # Matricule
         self.matricule_ADM_label = ct.CTkLabel(self.inscription_frame, text="Matricule :", font=('Karla', 18))
@@ -68,19 +68,19 @@ class Inscrire(ct.CTk):
         self.matricule_ADM_entry.grid(row=2, column=3, padx=20, pady=20, sticky="w")
 
         # Mot de Passe
-        self.MP_label = ct.CTkLabel(self.inscription_frame, text="Mot de passe :", font=('Karla', 18))
-        self.MP_label.grid(row=3, column=0, padx=20, pady=20, sticky="w")
-        self.MP_entry = ct.CTkEntry(self.inscription_frame, show="*", width=250, height=35, corner_radius=10,
+        self.MP_ADM_label = ct.CTkLabel(self.inscription_frame, text="Mot de passe :", font=('Karla', 18))
+        self.MP_ADM_label.grid(row=3, column=0, padx=20, pady=20, sticky="w")
+        self.MP_ADM_entry = ct.CTkEntry(self.inscription_frame, show="*", width=250, height=35, corner_radius=10,
                                     font=('Karla', 14))
-        self.MP_entry.grid(row=3, column=1, padx=20, pady=20, sticky="w")
+        self.MP_ADM_entry.grid(row=3, column=1, padx=20, pady=20, sticky="w")
 
         # Confirmation Mot de Passe
-        self.confirmation_MP_label = ct.CTkLabel(self.inscription_frame, text="Confirmation du mot de passe :",
+        self.confirmation_MP_ADM_label = ct.CTkLabel(self.inscription_frame, text="Confirmation du mot de passe :",
                                                  font=('Karla', 18))
-        self.confirmation_MP_label.grid(row=3, column=2, padx=20, pady=20, sticky="w")
-        self.confirmation_MP_entry = ct.CTkEntry(self.inscription_frame, show="*", width=250, height=35,
+        self.confirmation_MP_ADM_label.grid(row=3, column=2, padx=20, pady=20, sticky="w")
+        self.confirmation_MP_ADM_entry = ct.CTkEntry(self.inscription_frame, show="*", width=250, height=35,
                                                  corner_radius=10, font=('Karla', 16))
-        self.confirmation_MP_entry.grid(row=3, column=3, padx=20, pady=20, sticky="w")
+        self.confirmation_MP_ADM_entry.grid(row=3, column=3, padx=20, pady=20, sticky="w")
 
         # Button to Create Account
         self.enregistrer_ADM = ct.CTkButton(self.inscription_frame, text="Créer", command=self.creer, width=250,
@@ -96,18 +96,29 @@ class Inscrire(ct.CTk):
         label_image.pack()  # Ajustez la position selon vos besoins
 
     def creer(self):
-        if self.nom_entry.get() == "" or self.prenom_entry.get() == "" or self.date_naissance_entry.get() == "" or self.wilaya_entry.get() == "" or self.phone_nmbr_entry.get() == "" or self.matricule_ADM_entry.get() == "" or self.MP_entry.get() == "" or self.confirmation_MP_entry.get() == "":
+        if self.nomADM_entry.get() == "" or self.prenomADM_entry.get() == "" or self.date_naissanceADM_entry.get() == "" or self.wilayaADM_entry.get() == "" or self.phone_nmbrADM_entry.get() == "" or self.matricule_ADM_entry.get() == "" or self.MP_ADM_entry.get() == "" or self.confirmation_MP_ADM_entry.get() == "":
             messagebox.showerror("Erreur", "Inscription incomplète", parent=self)
-        elif self.MP_entry.get() != self.confirmation_MP_entry.get():
+        elif self.MP_ADM_entry.get() != self.confirmation_MP_ADM_entry.get():
             messagebox.showerror("Erreur", "Les mots de passe ne sont pas conformes", parent=self)
         else:
             try:
-                # Connecter à la base de données et traiter l'inscription ici
-                con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
-                cur = con.cursor()
-                cur.execute("SELECT * FROM some_table")  # You should replace "some_table" with your actual table name
-                con.commit()
-                con.close()
+                mydb = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+                mycursor = mydb.cursor()
+                mycursor.execute(
+                    "insert into administrateur (matricule_administrateur,mot_de_passe,confirmer_mot_passe,nom,prenom,date_de_naissance,telephone,wilaya)values(%s,%s,%s,%s,%s,%s,%s,%s)",
+                    (
+                        self.matricule_ADM_entry.get(),
+                        self.MP_ADM_entry.get(),
+                        self.confirmation_MP_ADM_entry.get(),
+                        self.nomADM_entry.get(),
+                        self.prenomADM_entry.get(),
+                        self.date_naissanceADM_entry.get(),
+                        self.wilayaADM_entry.get(),
+                        self.phone_nmbrADM_entry.get(),
+                    ))
+                messagebox.showinfo("Suuccess", f"Administrateur enregistrer", parent=self)
+                mydb.commit()
+                mydb.close
             except Exception as es:
                 messagebox.showerror("Erreur", f"Erreur de connexion : {str(es)}", parent=self)
 
