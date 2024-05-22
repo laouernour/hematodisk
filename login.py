@@ -120,7 +120,7 @@ class login(ct.CTk):
                 if row == None:
                     messagebox.showerror("Erreur", f"Information Invalidée ", parent=self)
                 else:
-                    messagebox.showerror("Success", f"Bienvenu ", parent=self)
+                    messagebox.showinfo("Success", f"Bienvenu ", parent=self)
                     mydb.close()
             except Exception as es:
                 messagebox.showerror("Erreur", f"Erreur de connexion : {str(es)}", parent=self)
