@@ -81,7 +81,7 @@ class Inscrire(ct.CTk):
                                     font=('Karla', 14))
         self.MP_ADM_entry.grid(row=3, column=1, padx=20, pady=20, sticky="w")
         self.show_pass_button = Button(self.inscription_frame, image=self.close_eye, command=self.toggle_password,bd=0, bg='#FFFFFF', state=DISABLED)
-        self.show_pass_button.grid(row=3, column=1, padx=5)
+        self.show_pass_button.place(x=665,y=380)
 
         # Confirmation Mot de Passe
         self.confirmation_MP_ADM_label = ct.CTkLabel(self.inscription_frame, text="Confirmation du mot de passe :",
@@ -91,7 +91,7 @@ class Inscrire(ct.CTk):
                                                  corner_radius=10, font=('Karla', 16))
         self.confirmation_MP_ADM_entry.grid(row=3, column=3, padx=20, pady=20, sticky="w")
         self.show_confirm_pass_button = Button(self.inscription_frame, image=self.close_eye, command=self.toggle_confirm_password,bd=0, bg='#FFFFFF', state=DISABLED)
-        self.show_confirm_pass_button.grid(row=3, column=3, padx=5)
+        self.show_confirm_pass_button.place(x=1540,y=380)
 
         # Bind key release event to password and confirmation password entries
         self.MP_ADM_entry.bind('<KeyRelease>', self.on_key_release)
