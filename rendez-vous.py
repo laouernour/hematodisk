@@ -132,7 +132,7 @@ class Ajouter_RDV(ct.CTk):
             try:
                 con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
                 cur = con.cursor()
-                # Inserte the data into your database (adjust the table name and columns as needed)
+                # Insert the data into your database (adjust the table name and columns as needed)
                 cur.execute(
                     "INSERT INTO rendez-vous (date_création_du_rendez-vous, date_du_rendez-vous,matricule_patient, geste_medical,matricule_medecin) VALUES (%s, %s, %s,%s, %s)",
                     (self.date_de_creation_entry.get(), self.date_rdv_entry.get(),self.patient_entry.get(), self.geste_medical_combobox.get(),self.medecin_entry.get()
