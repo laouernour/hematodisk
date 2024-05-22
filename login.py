@@ -105,7 +105,7 @@ class login(ct.CTk):
                                   text_color='#263A5F')
         nouveau_AM.place(x=100, y=370)
         inscrire = Button(frame, text="S'inscrire", font=('Karla', 12, 'bold'), border=0, bg='white', cursor='hand2',
-                          activebackground='white', fg='#DD2F2E', command=None)
+                          activebackground='white', fg='#DD2F2E', command=self.fenetre_authentification)
         inscrire.place(x=362, y=562)
 
     def connecter(self):
@@ -124,6 +124,9 @@ class login(ct.CTk):
                     mydb.close()
             except Exception as es:
                 messagebox.showerror("Erreur", f"Erreur de connexion : {str(es)}", parent=self)
+    def fenetre_authentification(self):
+        self.destroy()
+        import authentification
 
 
 Login_page = login()
