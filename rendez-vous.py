@@ -88,7 +88,7 @@ class Ajouter_RDV(ct.CTk):
         label_image.pack()  # Ajustez la position selon vos besoins
 
     def open_calendar(self):
-        # Créer une nouvelle fenêtre pour le calendrier
+        # Crée une nouvelle fenêtre pour le calendrier
         self.calendar_window = Toplevel(self)
         self.calendar_window.title("Sélectionner une date")
 
