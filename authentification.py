@@ -160,9 +160,20 @@ class Inscrire(ct.CTk):
                     ))
                 messagebox.showinfo("Success", f"Administrateur enregistré", parent=self)
                 mydb.commit()
+                self.vider()
                 mydb.close()
             except Exception as es:
                 messagebox.showerror("Erreur", f"Erreur de connexion : {str(es)}", parent=self)
+    #vider les cellules d'entrée
+    def vider(self):
+        self.matricule_ADM_entry.delete(0,END),
+        self.MP_ADM_entry.delete(0,END),
+        self.confirmation_MP_ADM_entry.delete(0,END),
+        self.nomADM_entry.delete(0,END),
+        self.prenomADM_entry.delete(0,END),
+        self.date_naissanceADM_entry.delete(0,END),
+        self.phone_nmbrADM_entry.delete(0,END),
+        self.wilayaADM_entry.delete(0,END)
 
 
 # Création d'une instance de la classe Inscrire et démarrage de la boucle principale
