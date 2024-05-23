@@ -1,7 +1,9 @@
 import customtkinter as ct
 from tkinter import PhotoImage, Label, ttk
 import tkinter as tk
-
+from tkinter import *
+from tkinter import messagebox
+import pymysql
 class Accueil(ct.CTk):
     def __init__(self):
         super().__init__()
@@ -9,16 +11,18 @@ class Accueil(ct.CTk):
         w, h = self.winfo_screenwidth(), self.winfo_screenheight()
         self.geometry("%dx%d+0+0" % (w, h))
         self.configure(bg='#78BDCC')
-
         # Top frame
         self.top_frame = ct.CTkFrame(self, fg_color='#28A0C6', width=w, height=160, corner_radius=0)
         self.top_frame.place(x=0, y=0)
         label_text = Label(self.top_frame, text="Service Hématologie", font=('Karla', 48, 'bold'), bg="#28A0C6")
         label_text.place(x=750, y=60)
-        self.ajouter_patient = ct.CTkButton(self.top_frame, text="+ Ajouter Patient", command=None, width=150, height=40,
+        #button ajouter patient
+        self.ajouter_patient = ct.CTkButton(self.top_frame, text="+ Ajouter Patient", command=None,
+                                            width=150, height=40,
                                             corner_radius=15, font=('Karla', 16, 'bold'), fg_color='#EF3535',
                                             cursor='hand2', text_color='#FFFFFF')
         self.ajouter_patient.place(x=1100, y=108)
+
 
         self.ajouter_RV = ct.CTkButton(self.top_frame, text="+ Ajouter Rendez-vous", command=None, width=150,
                                        height=40,
@@ -63,20 +67,18 @@ class Accueil(ct.CTk):
             button.place(x=25, y=50 + 70 * idx)
 
         # Center frame
-        self.center_frame = ct.CTkScrollableFrame(self, fg_color='#ffffff', border_width=2, border_color='#263A5F', width=w - 279, height=h - 160, corner_radius=0)
+        self.center_frame = ct.CTkScrollableFrame(self, fg_color='#ffffff', border_width=2, border_color='#263A5F', width=w - 275, height=h - 160, corner_radius=0)
         self.center_frame.place(x=250, y=150)
+        # Définissez la méthode ouvrir_inscription_patient en dehors de __init__
 
     def create_patients_treeview(self):
         # Style for Treeview
         style = ttk.Style()
-        style.configure("Custom.Treeview", background="#ffffff", foreground="black", fieldbackground="#ffffff",font=('Karla', 16))
+        style.configure("Custom.Treeview", background="#ffffff", foreground="black", fieldbackground="#ffffff",font=('Karla', 16), rowheight=50)
         style.map("Custom.Treeview", background=[('selected', '#78BDCC')], foreground=[('selected', 'black')])
 
         # Configure the font for the column headings
-        style.configure("Custom.Treeview.Heading", font=('Karla', 20, 'bold'))
-
-        # Configure the height of the rows (including headings)
-        style.configure("Custom.Treeview", rowheight=50)  # Change 30 to your desired height
+        style.configure("Custom.Treeview.Heading", font=('Karla', 26, 'bold'))
 
         # Treeview Table
         columns = ('Matricule', 'Nom', 'Prénom', 'Age', 'Groupage', 'Modifier', 'Voir')
@@ -100,10 +102,10 @@ class Accueil(ct.CTk):
         style.map("Custom.Treeview", background=[('selected', '#78BDCC')], foreground=[('selected', 'black')])
 
         # Configure the font for the column headings
-        style.configure("Custom.Treeview.Heading", font=('Karla',20, 'bold'))
+        style.configure("Custom.Treeview.Heading", font=('Karla',26, 'bold'))
 
         # Treeview Table
-        columns = ('Date', 'Heure', 'Patient', 'Médecin', 'Modifier', 'Voir')
+        columns = ('Date', 'Patient','Groupage', 'Geste', 'Modifier', 'Voir')
         self.treeview_appointments = ttk.Treeview(self.center_frame, columns=columns, show='headings',
                                                   style="Custom.Treeview")
         self.treeview_appointments.pack(expand=True, fill='both')
@@ -169,6 +171,6 @@ class Accueil(ct.CTk):
         print("Show settings")
 
 
-if __name__ == "__main__":
-    app = Accueil()
-    app.mainloop()
+
+app = Accueil()
+app.mainloop()

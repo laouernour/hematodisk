@@ -121,6 +121,8 @@ class login(ct.CTk):
                     messagebox.showerror("Erreur", f"Information Invalidée ", parent=self)
                 else:
                     messagebox.showinfo("Success", f"Bienvenu ", parent=self)
+                    self.destroy()
+                    import accueil
                     mydb.close()
             except Exception as es:
                 messagebox.showerror("Erreur", f"Erreur de connexion : {str(es)}", parent=self)
