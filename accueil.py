@@ -4,9 +4,14 @@ import tkinter as tk
 from tkinter import *
 from tkinter import messagebox
 import pymysql
-class Inscrire_patient(ct.CTk):
-    def __init__(self):
-        super().__init__()
+from tkcalendar import Calendar
+from datetime import datetime
+from PIL import Image, ImageTk
+
+
+class Inscrire_patient(ct.CTkToplevel):
+    def __init__(self, parent):  # Add parent as an argument
+        super().__init__(parent)
         self.title("S'inscrire")
         self.geometry('850x500+300+100')
         self.configure(bg='#263A5F')
@@ -26,37 +31,37 @@ class Inscrire_patient(ct.CTk):
         self.inscription_frame = ct.CTkFrame(self.formulaire_frame, fg_color='#FFFFFF')
         self.inscription_frame.pack(pady=10)
 
-        # Nom and Prénom in the same row
-        self.nom_label = ct.CTkLabel(self.inscription_frame, text="Nom :", font=('Karla', 16))
-        self.nom_label.grid(row=0, column=0, padx=20, pady=20, sticky="w")
-        self.nom_entry = ct.CTkEntry(self.inscription_frame, width=200, height=30, corner_radius=10, font=('Karla', 14))
-        self.nom_entry.grid(row=0, column=1, padx=20, pady=20, sticky="w")
+        # Nom and Prénom in the same row du patient
+        self.nomP_label = ct.CTkLabel(self.inscription_frame, text="Nom :", font=('Karla', 16))
+        self.nomP_label.grid(row=0, column=0, padx=20, pady=20, sticky="w")
+        self.nomP_entry = ct.CTkEntry(self.inscription_frame, width=200, height=30, corner_radius=10, font=('Karla', 14))
+        self.nomP_entry.grid(row=0, column=1, padx=20, pady=20, sticky="w")
 
-        self.prenom_label = ct.CTkLabel(self.inscription_frame, text="Prénom :", font=('Karla', 16))
-        self.prenom_label.grid(row=0, column=2, padx=20, pady=20, sticky="w")
-        self.prenom_entry = ct.CTkEntry(self.inscription_frame,  width=200, height=30, corner_radius=10, font=('Karla', 14))
-        self.prenom_entry.grid(row=0, column=3, padx=20, pady=20, sticky="w")
+        self.prenomP_label = ct.CTkLabel(self.inscription_frame, text="Prénom :", font=('Karla', 16))
+        self.prenomP_label.grid(row=0, column=2, padx=20, pady=20, sticky="w")
+        self.prenomP_entry = ct.CTkEntry(self.inscription_frame,  width=200, height=30, corner_radius=10, font=('Karla', 14))
+        self.prenomP_entry.grid(row=0, column=3, padx=20, pady=20, sticky="w")
 
         # Date de Naissance
-        self.date_naissance_label = ct.CTkLabel(self.inscription_frame, text="Date de Naissance :", font=('Karla', 16))
-        self.date_naissance_label.grid(row=1, column=0, padx=20, pady=20, sticky="w")
-        self.date_naissance_entry = ct.CTkEntry(self.inscription_frame, width=200, height=30, corner_radius=10, font=('Karla', 14))
-        self.date_naissance_entry.grid(row=1, column=1, padx=20, pady=20, sticky="w")
+        self.date_naissanceP_label = ct.CTkLabel(self.inscription_frame, text="Date de Naissance :", font=('Karla', 16))
+        self.date_naissanceP_label.grid(row=1, column=0, padx=20, pady=20, sticky="w")
+        self.date_naissanceP_entry = ct.CTkEntry(self.inscription_frame, width=200, height=30, corner_radius=10, font=('Karla', 14))
+        self.date_naissanceP_entry.grid(row=1, column=1, padx=20, pady=20, sticky="w")
 
         # Wilaya
-        self.wilaya_label = ct.CTkLabel(self.inscription_frame, text="Wilaya :", font=('Karla', 16))
-        self.wilaya_label.grid(row=1, column=2, padx=20, pady=20, sticky="w")
-        self.wilaya_entry = ct.CTkEntry(self.inscription_frame,  width=200, height=30, corner_radius=10, font=('Karla', 14))
-        self.wilaya_entry.grid(row=1, column=3, padx=20, pady=20, sticky="w")
+        self.wilayaP_label = ct.CTkLabel(self.inscription_frame, text="Wilaya :", font=('Karla', 16))
+        self.wilayaP_label.grid(row=1, column=2, padx=20, pady=20, sticky="w")
+        self.wilayaP_entry = ct.CTkEntry(self.inscription_frame,  width=200, height=30, corner_radius=10, font=('Karla', 14))
+        self.wilayaP_entry.grid(row=1, column=3, padx=20, pady=20, sticky="w")
 
         # Téléphone
-        self.phone_nmbr_label = ct.CTkLabel(self.inscription_frame, text="Téléphone:", font=('Karla', 16))
-        self.phone_nmbr_label.grid(row=2, column=0, padx=20, pady=20, sticky="w")
-        self.phone_nmbr_entry = ct.CTkEntry(self.inscription_frame, width=200, height=30, corner_radius=10, font=('Karla', 14))
-        self.phone_nmbr_entry.grid(row=2, column=1, padx=20, pady=20, sticky="w")
+        self.phone_nmbrP_label = ct.CTkLabel(self.inscription_frame, text="Téléphone:", font=('Karla', 16))
+        self.phone_nmbrP_label.grid(row=2, column=0, padx=20, pady=20, sticky="w")
+        self.phone_nmbrP_entry = ct.CTkEntry(self.inscription_frame, width=200, height=30, corner_radius=10, font=('Karla', 14))
+        self.phone_nmbrP_entry.grid(row=2, column=1, padx=20, pady=20, sticky="w")
 
-        '''# Matricule
-        self.matricule_Patient_label = ct.CTkLabel(self.inscription_frame, text="Matricule Patient:", font=('Karla', 16))
+       # Matricule
+        '''self.matricule_Patient_label = ct.CTkLabel(self.inscription_frame, text="Matricule Patient:", font=('Karla', 16))
         self.matricule_Patient_label.grid(row=2, column=2, padx=20, pady=20, sticky="w")
         self.matricule_Patient_entry = ct.CTkEntry(self.inscription_frame,  width=200, height=30, corner_radius=10, font=('Karla', 14))
         self.matricule_Patient_entry.grid(row=2, column=3, padx=20, pady=20, sticky="w")'''
@@ -101,19 +106,167 @@ class Inscrire_patient(ct.CTk):
         label_image.pack()
 
     def creer(self):
-        if (self.nom_entry.get() == "" or self.prenom_entry.get() == "" or self.date_naissance_entry.get() == ""
-                or self.wilaya_entry.get() == "" or self.phone_nmbr_entry.get() == ""
-                or self.matricule_Patient_entry.get() == "" or self.groupage_entry.get() == ""):
+        if (self.nomP_entry.get() == "" or self.prenomP_entry.get() == "" or self.date_naissanceP_entry.get() == ""
+                or self.wilayaP_entry.get() == "" or self.phone_nmbrP_entry.get() == ""
+                or self.groupage_entry.get() == ""):
+            messagebox.showerror("Erreur", "Inscription incomplète", parent=self)
+        else:
+            try:
+                con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+                cur = con.cursor()
+
+                # Récupération du matricule_administrateur à partir de la table administrateur
+                cur.execute("SELECT matricule_administrateur FROM administrateur")
+                matricule_administrateur = cur.fetchone()[0]
+
+                # Insertion des données dans la table patient avec vérification de l'existence du matricule_administrateur
+                cur.execute("""
+                    INSERT INTO patient (nom, prenom, date_naissance, sexe, wilaya, telephone, groupage, antecedents, matricule_administrateur) 
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                """,
+                            (
+                                self.nomP_entry.get(), self.prenomP_entry.get(),
+                                self.date_naissanceP_entry.get(), self.sexe_Patient_entry.get(),
+                                self.wilayaP_entry.get(), self.phone_nmbrP_entry.get(),
+                                self.groupage_entry.get(), self.antecedents_entry.get(),
+                                matricule_administrateur
+                            ))
+
+                con.commit()
+                con.close()
+                messagebox.showinfo("Succès", "Inscription réussie", parent=self)
+            except Exception as e:
+                messagebox.showerror("Erreur", f"Erreur lors de l'inscription : {str(e)}", parent=self)
+                print(str(e))
+
+class Ajouter_RDV(ct.CTkToplevel):
+    def __init__(self, parent):  # Add parent as an argument
+        super().__init__(parent)
+        self.title("Ajouter RDV")
+        self.geometry('850x500+300+100')
+        self.configure(bg='#263A5F')
+
+        self.formulaire_frame = ct.CTkFrame(self, fg_color='#FFFFFF', width=800, height=490, border_width=2,
+                                            border_color='#263A5F', corner_radius=0)
+        self.formulaire_frame.pack(expand=True, fill='both')
+
+        # Frame for the title label
+        self.label_frame = ct.CTkFrame(self.formulaire_frame, fg_color='#FFFFFF')
+        self.label_frame.pack(pady=2)
+
+        self.title_label = ct.CTkLabel(self.label_frame, text="Ajouter RDV", font=('Karla', 18, 'bold'),
+                                       text_color='#263A5F')
+        self.title_label.pack(expand=True, pady=10)
+
+        # Frame for inscription form using grid
+        self.inscription_frame = ct.CTkFrame(self.formulaire_frame, fg_color='#FFFFFF')
+        self.inscription_frame.pack(pady=10)
+
+        # Date de creation
+        self.date_de_creation_label = ct.CTkLabel(self.inscription_frame, text="Date de création :", font=('Karla', 16),
+                                                  text_color='#263A5F')
+        self.date_de_creation_label.grid(row=0, column=0, padx=20, pady=20, sticky="w")
+
+        self.calender_image = Image.open('calendar-removebg-preview.png').resize((45, 45))
+        self.calender_icon = ImageTk.PhotoImage(self.calender_image)
+
+        today_date = datetime.now().strftime('%d/%m/%Y')
+        self.date_de_creation_entry = ct.CTkEntry(self.inscription_frame, width=200, height=35, corner_radius=10,
+                                                  font=('Karla', 14))
+        self.date_de_creation_entry.insert(0, today_date)
+        self.date_de_creation_entry.configure(state='readonly')
+        self.date_de_creation_entry.grid(row=0, column=1, padx=20, pady=20, sticky="w")
+
+        # Date du rendez-vous
+        self.date_rdv_label = ct.CTkLabel(self.inscription_frame, text="Date du rendez-vous :", font=('Karla', 16),
+                                          text_color='#263A5F')
+        self.date_rdv_label.grid(row=0, column=2, padx=20, pady=20, sticky="w")
+
+        self.date_rdv_entry = ct.CTkEntry(self.inscription_frame, width=200, height=35, corner_radius=10,
+                                          font=('Karla', 14))
+        self.date_rdv_entry.grid(row=0, column=3, padx=20, pady=20, sticky="w")
+
+        # Ajouter l'icône de calendrier
+        self.show_calendar_button = Button(self.inscription_frame, image=self.calender_icon, width=25, height=30,
+                                           command=self.open_calendar, bd=0, bg='#FFFFFF', activebackground='#FFFFFF',
+                                           highlightthickness=0)
+        self.show_calendar_button.place(x=1200, y=40)
+
+        # Patient
+        self.patient_label = ct.CTkLabel(self.inscription_frame, text="Patient :", font=('Karla', 16),
+                                         text_color='#263A5F')
+        self.patient_label.grid(row=1, column=0, padx=20, pady=20, sticky="w")
+
+        self.patient_entry = ct.CTkEntry(self.inscription_frame, width=200, height=35, corner_radius=10,
+                                         font=('Karla', 14))
+        self.patient_entry.grid(row=1, column=1, padx=20, pady=20, sticky="w")
+
+        # Medecin
+        self.medecin_label = ct.CTkLabel(self.inscription_frame, text="Médecin :", font=('Karla', 16),
+                                         text_color='#263A5F')
+        self.medecin_label.grid(row=1, column=2, padx=20, pady=20, sticky="w")
+
+        self.medecin_entry = ct.CTkEntry(self.inscription_frame, width=200, height=35, corner_radius=10,
+                                         font=('Karla', 14))
+        self.medecin_entry.grid(row=1, column=3, padx=20, pady=20, sticky="w")
+
+        # Geste medical
+        self.geste_medical_label = ct.CTkLabel(self.inscription_frame, text="Geste médical :", font=('Karla', 16),
+                                               text_color='#263A5F')
+        self.geste_medical_label.grid(row=2, column=0, padx=20, pady=20, sticky="w")
+
+        gestes = ["Transfusion", "Chimiothérapie", "Frotis", "Contrôle", "BOM", "CUP", "Facteur", "Moelle"]
+        self.geste_medical_combobox = ct.CTkComboBox(self.inscription_frame, values=gestes, width=200, height=35,
+                                                     corner_radius=10, font=('Karla', 14), dropdown_fg_color='#FFFFFF')
+        self.geste_medical_combobox.grid(row=2, column=1, padx=20, pady=20, sticky="w")
+
+        # Button to Create Account
+        self.creer_button = ct.CTkButton(self.inscription_frame, text="Créer", command=self.creer, width=250, height=40,
+                                         corner_radius=15, font=('Karla', 16, 'bold'), fg_color='#263A5F',
+                                         cursor='hand2', text_color='#FFFFFF')
+        self.creer_button.grid(row=7, column=1, columnspan=2, pady=30)
+
+        # Image
+        image_path = 'Hemato Desk logo.png'
+        self.original_image = Image.open(image_path).resize((150, 150))
+        self.nouvelle_image = ImageTk.PhotoImage(self.original_image)
+
+        self.logo_label = Label(self.label_frame, image=self.nouvelle_image, bg="white")
+        self.logo_label.image = self.nouvelle_image  # Garde une référence à l'image
+        self.logo_label.pack()
+
+    def open_calendar(self):
+        # Crée un frame flottant pour le calendrier
+        self.calendar_frame = Frame(self.formulaire_frame, bg='#FFFFFF', bd=2, relief='raised')
+        self.calendar_frame.place(x=1000, y=330)  # Ajustez les coordonnées selon vos besoins
+
+        self.cal = Calendar(self.calendar_frame, selectmode="day",  locale="fr_FR",date_pattern="dd/mm/yyyy")
+        self.cal.pack(padx=10, pady=10)
+
+        self.select_button = Button(self.calendar_frame, text="Sélectionner", command=self.select_date, bg='#263A5F',
+                                    fg='#FFFFFF')
+        self.select_button.pack(pady=10)
+
+    def select_date(self):
+        # Récupérer la date sélectionnée et l'afficher dans l'entrée
+        selected_date = self.cal.get_date()
+        self.date_rdv_entry.delete(0, END)
+        self.date_rdv_entry.insert(0, selected_date)
+        self.calendar_frame.destroy()
+
+    def creer(self):
+        if (self.date_rdv_entry.get() == "" or self.date_de_creation_entry.get() == "" or self.patient_entry.get() == ""
+                or self.medecin_entry.get() == "" or self.geste_medical_combobox.get() == ""):
             messagebox.showerror("Erreur", "Inscription incomplète", parent=self)
         else:
             try:
                 con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
                 cur = con.cursor()
                 # Insert the data into your database (adjust the table name and columns as needed)
-                cur.execute("INSERT INTO patient (matricule_patient,nom, prenom, date_naissance, wilaya, telephone, groupage, antecedents) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
-                            (self.nom_entry.get(), self.prenom_entry.get(), self.date_naissance_entry.get(),
-                             self.wilaya_entry.get(), self.phone_nmbr_entry.get(), self.matricule_Patient_entry.get(),
-                             self.groupage_entry.get(), self.antecedents_entry.get()))
+                cur.execute(
+                    "INSERT INTO rendez-vous (date_création_du_rendez-vous, date_du_rendez-vous,matricule_patient, geste_medical,matricule_medecin) VALUES (%s, %s, %s,%s, %s)",
+                    (self.date_de_creation_entry.get(), self.date_rdv_entry.get(),self.patient_entry.get(), self.geste_medical_combobox.get(),self.medecin_entry.get()
+                     ))
                 con.commit()
                 con.close()
                 messagebox.showinfo("Succès", "Inscription réussie", parent=self)
@@ -134,13 +287,13 @@ class Accueil(ct.CTk):
         label_text.place(x=750, y=60)
 
         #button ajouter patient
-        self.ajouter_patient = ct.CTkButton(self.top_frame, text="+ Ajouter Patient", command=self.fenetre_patient,
+        self.ajouter_patient = ct.CTkButton(self.top_frame, text="+ Ajouter Patient", command=self.open_toplevelP,
                                             width=150, height=40,
                                             corner_radius=15, font=('Karla', 16, 'bold'), fg_color='#EF3535',
                                             cursor='hand2', text_color='#FFFFFF')
         self.ajouter_patient.place(x=1100, y=120)
 
-        self.ajouter_RV = ct.CTkButton(self.top_frame, text="+ Ajouter Rendez-vous", command=None, width=150,
+        self.ajouter_RV = ct.CTkButton(self.top_frame, text="+ Ajouter Rendez-vous", command=self.open_toplevelRDV, width=150,
                                        height=40,
                                        corner_radius=15, font=('Karla', 16, 'bold'), fg_color='#2FC16A',
                                        cursor='hand2', text_color='#FFFFFF')
@@ -186,6 +339,9 @@ class Accueil(ct.CTk):
         # Center frame
         self.center_frame = ct.CTkScrollableFrame(self, fg_color='#ffffff', border_width=2, border_color='#263A5F', width=w - 275, height=h - 290, corner_radius=0, orientation="vertical")
         self.center_frame.place(x=250, y=200)
+
+        self.toplevelP_window = None
+        self.toplevelRDV_window = None
 
     def create_patients_treeview(self):
         # Style for Treeview
@@ -339,8 +495,19 @@ class Accueil(ct.CTk):
 
     def show_settings(self):
         print("Show settings")
-    def fenetre_patient(self):
-        import patient
+    def open_toplevelP(self):
+        if self.toplevelP_window is None or not self.toplevel_window.winfo_exists():
+            self.toplevelP_window = Inscrire_patient(self)  # create window if its None or destroyed
+            self.toplevelP_window.grab_set()  # Make the new window modal
+        else:
+            self.toplevelP_window.focus()  # if window exists focus it
+
+    def open_toplevelRDV(self):
+        if self.toplevelRDV_window is None or not self.toplevelRDV_window.winfo_exists():
+            self.toplevelRDV_window = Ajouter_RDV(self)  # create window if its None or destroyed
+            self.toplevelRDV_window.grab_set()  # Make the new window modal
+        else:
+            self.toplevelRDV_window.focus()  # if window exists focus it
 
 
 app = Accueil()
