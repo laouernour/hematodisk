@@ -3,6 +3,11 @@ from tkinter import *
 from tkinter import messagebox
 import pymysql
 
+import customtkinter as ct
+from tkinter import *
+from tkinter import messagebox
+import pymysql
+
 class Inscrire_patient(ct.CTk):
     def __init__(self):
         super().__init__()
@@ -25,37 +30,37 @@ class Inscrire_patient(ct.CTk):
         self.inscription_frame = ct.CTkFrame(self.formulaire_frame, fg_color='#FFFFFF')
         self.inscription_frame.pack(pady=10)
 
-        # Nom and Prénom in the same row
-        self.nom_label = ct.CTkLabel(self.inscription_frame, text="Nom :", font=('Karla', 16))
-        self.nom_label.grid(row=0, column=0, padx=20, pady=20, sticky="w")
-        self.nom_entry = ct.CTkEntry(self.inscription_frame, width=200, height=30, corner_radius=10, font=('Karla', 14))
-        self.nom_entry.grid(row=0, column=1, padx=20, pady=20, sticky="w")
+        # Nom and Prénom in the same row du patient
+        self.nomP_label = ct.CTkLabel(self.inscription_frame, text="Nom :", font=('Karla', 16))
+        self.nomP_label.grid(row=0, column=0, padx=20, pady=20, sticky="w")
+        self.nomP_entry = ct.CTkEntry(self.inscription_frame, width=200, height=30, corner_radius=10, font=('Karla', 14))
+        self.nomP_entry.grid(row=0, column=1, padx=20, pady=20, sticky="w")
 
-        self.prenom_label = ct.CTkLabel(self.inscription_frame, text="Prénom :", font=('Karla', 16))
-        self.prenom_label.grid(row=0, column=2, padx=20, pady=20, sticky="w")
-        self.prenom_entry = ct.CTkEntry(self.inscription_frame,  width=200, height=30, corner_radius=10, font=('Karla', 14))
-        self.prenom_entry.grid(row=0, column=3, padx=20, pady=20, sticky="w")
+        self.prenomP_label = ct.CTkLabel(self.inscription_frame, text="Prénom :", font=('Karla', 16))
+        self.prenomP_label.grid(row=0, column=2, padx=20, pady=20, sticky="w")
+        self.prenomP_entry = ct.CTkEntry(self.inscription_frame,  width=200, height=30, corner_radius=10, font=('Karla', 14))
+        self.prenomP_entry.grid(row=0, column=3, padx=20, pady=20, sticky="w")
 
         # Date de Naissance
-        self.date_naissance_label = ct.CTkLabel(self.inscription_frame, text="Date de Naissance :", font=('Karla', 16))
-        self.date_naissance_label.grid(row=1, column=0, padx=20, pady=20, sticky="w")
-        self.date_naissance_entry = ct.CTkEntry(self.inscription_frame, width=200, height=30, corner_radius=10, font=('Karla', 14))
-        self.date_naissance_entry.grid(row=1, column=1, padx=20, pady=20, sticky="w")
+        self.date_naissanceP_label = ct.CTkLabel(self.inscription_frame, text="Date de Naissance :", font=('Karla', 16))
+        self.date_naissanceP_label.grid(row=1, column=0, padx=20, pady=20, sticky="w")
+        self.date_naissanceP_entry = ct.CTkEntry(self.inscription_frame, width=200, height=30, corner_radius=10, font=('Karla', 14))
+        self.date_naissanceP_entry.grid(row=1, column=1, padx=20, pady=20, sticky="w")
 
         # Wilaya
-        self.wilaya_label = ct.CTkLabel(self.inscription_frame, text="Wilaya :", font=('Karla', 16))
-        self.wilaya_label.grid(row=1, column=2, padx=20, pady=20, sticky="w")
-        self.wilaya_entry = ct.CTkEntry(self.inscription_frame,  width=200, height=30, corner_radius=10, font=('Karla', 14))
-        self.wilaya_entry.grid(row=1, column=3, padx=20, pady=20, sticky="w")
+        self.wilayaP_label = ct.CTkLabel(self.inscription_frame, text="Wilaya :", font=('Karla', 16))
+        self.wilayaP_label.grid(row=1, column=2, padx=20, pady=20, sticky="w")
+        self.wilayaP_entry = ct.CTkEntry(self.inscription_frame,  width=200, height=30, corner_radius=10, font=('Karla', 14))
+        self.wilayaP_entry.grid(row=1, column=3, padx=20, pady=20, sticky="w")
 
         # Téléphone
-        self.phone_nmbr_label = ct.CTkLabel(self.inscription_frame, text="Téléphone:", font=('Karla', 16))
-        self.phone_nmbr_label.grid(row=2, column=0, padx=20, pady=20, sticky="w")
-        self.phone_nmbr_entry = ct.CTkEntry(self.inscription_frame, width=200, height=30, corner_radius=10, font=('Karla', 14))
-        self.phone_nmbr_entry.grid(row=2, column=1, padx=20, pady=20, sticky="w")
+        self.phone_nmbrP_label = ct.CTkLabel(self.inscription_frame, text="Téléphone:", font=('Karla', 16))
+        self.phone_nmbrP_label.grid(row=2, column=0, padx=20, pady=20, sticky="w")
+        self.phone_nmbrP_entry = ct.CTkEntry(self.inscription_frame, width=200, height=30, corner_radius=10, font=('Karla', 14))
+        self.phone_nmbrP_entry.grid(row=2, column=1, padx=20, pady=20, sticky="w")
 
-        '''# Matricule
-        self.matricule_Patient_label = ct.CTkLabel(self.inscription_frame, text="Matricule Patient:", font=('Karla', 16))
+       # Matricule
+        '''self.matricule_Patient_label = ct.CTkLabel(self.inscription_frame, text="Matricule Patient:", font=('Karla', 16))
         self.matricule_Patient_label.grid(row=2, column=2, padx=20, pady=20, sticky="w")
         self.matricule_Patient_entry = ct.CTkEntry(self.inscription_frame,  width=200, height=30, corner_radius=10, font=('Karla', 14))
         self.matricule_Patient_entry.grid(row=2, column=3, padx=20, pady=20, sticky="w")'''
@@ -100,24 +105,48 @@ class Inscrire_patient(ct.CTk):
         label_image.pack()
 
     def creer(self):
-        if (self.nom_entry.get() == "" or self.prenom_entry.get() == "" or self.date_naissance_entry.get() == ""
-                or self.wilaya_entry.get() == "" or self.phone_nmbr_entry.get() == ""
-                or self.matricule_Patient_entry.get() == "" or self.groupage_entry.get() == ""):
+        if (self.nomP_entry.get() == "" or self.prenomP_entry.get() == "" or self.date_naissanceP_entry.get() == ""
+                or self.wilayaP_entry.get() == "" or self.phone_nmbrP_entry.get() == ""
+                or self.groupage_entry.get() == ""):
             messagebox.showerror("Erreur", "Inscription incomplète", parent=self)
         else:
             try:
+                # Établir une connexion à la base de données
                 con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
                 cur = con.cursor()
-                # Insert the data into your database (adjust the table name and columns as needed)
-                cur.execute("INSERT INTO patient (matricule_patient,nom, prenom, date_naissance, wilaya, telephone, groupage, antecedents) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
-                            (self.nom_entry.get(), self.prenom_entry.get(), self.date_naissance_entry.get(),
-                             self.wilaya_entry.get(), self.phone_nmbr_entry.get(), self.matricule_Patient_entry.get(),
-                             self.groupage_entry.get(), self.antecedents_entry.get()))
+
+                # Récupération du matricule_administrateur à partir de la table administrateur
+                cur.execute("SELECT matricule_administrateur FROM administrateur")
+                matricule_administrateur = cur.fetchone()[0]
+
+                # Insertion des données dans la table patient avec vérification de l'existence du matricule_administrateur
+                cur.execute("""
+                    INSERT INTO patient (nom, prenom, date_de_naissance, sexe, wilaya, telephone, groupage, antecedents,FKmatricule_administrateur) 
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                """,
+                            (
+                                self.nomP_entry.get(), self.prenomP_entry.get(),
+                                self.date_naissanceP_entry.get(), self.sexe_Patient_entry.get(),
+                                self.wilayaP_entry.get(), self.phone_nmbrP_entry.get(),
+                                self.groupage_entry.get(), self.antecedents_entry.get(),
+                                matricule_administrateur
+                            ))
+
+                # Committez les changements
                 con.commit()
-                con.close()
                 messagebox.showinfo("Succès", "Inscription réussie", parent=self)
-            except Exception as es:
-                messagebox.showerror("Erreur", f"Erreur de connexion : {str(es)}", parent=self)
+            except Exception as e:
+                messagebox.showerror("Erreur", f"Erreur lors de l'inscription : {str(e)}", parent=self)
+                print(str(e))
+            finally:
+                # Fermez la connexion
+                if con:
+                    con.close()
+
+
+# Create an instance of the Inscrire_patient class and start the main loop
+app = Inscrire_patient()
+app.mainloop()
 
 # Create an instance of the Inscrire_patient class and start the main loop
 app = Inscrire_patient()
