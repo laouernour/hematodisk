@@ -54,11 +54,20 @@ class Inscrire_patient(ct.CTk):
         self.phone_nmbr_entry = ct.CTkEntry(self.inscription_frame, width=200, height=30, corner_radius=10, font=('Karla', 14))
         self.phone_nmbr_entry.grid(row=2, column=1, padx=20, pady=20, sticky="w")
 
-        # Matricule
+        '''# Matricule
         self.matricule_Patient_label = ct.CTkLabel(self.inscription_frame, text="Matricule Patient:", font=('Karla', 16))
         self.matricule_Patient_label.grid(row=2, column=2, padx=20, pady=20, sticky="w")
         self.matricule_Patient_entry = ct.CTkEntry(self.inscription_frame,  width=200, height=30, corner_radius=10, font=('Karla', 14))
-        self.matricule_Patient_entry.grid(row=2, column=3, padx=20, pady=20, sticky="w")
+        self.matricule_Patient_entry.grid(row=2, column=3, padx=20, pady=20, sticky="w")'''
+
+        # Matricule
+        self.sexe_Patient_label = ct.CTkLabel(self.inscription_frame, text="Sexe :",
+                                                   font=('Karla', 16))
+        self.sexe_Patient_label.grid(row=2, column=2, padx=20, pady=20, sticky="w")
+        sexe=['Homme','Femme']
+        self.sexe_Patient_entry = ct.CTkComboBox(self.inscription_frame, width=200, height=30, corner_radius=10,values=sexe, dropdown_fg_color='#FFFFFF',
+                                                   font=('Karla', 14))
+        self.sexe_Patient_entry.grid(row=2, column=3, padx=20, pady=20, sticky="w")
 
         # Groupage
         self.groupage_label = ct.CTkLabel(self.inscription_frame, text="Groupage: ", font=('Karla', 16))
@@ -79,13 +88,17 @@ class Inscrire_patient(ct.CTk):
                                                 cursor='hand2', text_color='#FFFFFF')
         self.enregistrer_patient.grid(row=4, column=1, columnspan=2, pady=8)
 
-        # Image
-        image_path = 'Hemato Desk logo.png'
+        # Load the image
+
+        image_path = 'Hemato Desk logo.png'  # Ensure this path is correct
         self.original_image = PhotoImage(file=image_path)
-        nouvelle_image = self.original_image.subsample(3, 3)  # Redimensionne à la moitié de la taille originale
+        nouvelle_image = self.original_image.subsample(3, 3)  # Resize to one-third of the original size
+
+        # Create the Label with the image
         label_image = Label(self.label_frame, image=nouvelle_image, bg="white")
-        label_image.image = nouvelle_image  # Garde une référence à l'image
-        label_image.pack()  # Ajustez la position selon vos besoins
+        label_image.image = nouvelle_image  # Keep a reference to the image to prevent garbage collection
+        label_image.pack()
+
     def creer(self):
         if (self.nom_entry.get() == "" or self.prenom_entry.get() == "" or self.date_naissance_entry.get() == ""
                 or self.wilaya_entry.get() == "" or self.phone_nmbr_entry.get() == ""
@@ -96,7 +109,7 @@ class Inscrire_patient(ct.CTk):
                 con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
                 cur = con.cursor()
                 # Insert the data into your database (adjust the table name and columns as needed)
-                cur.execute("INSERT INTO patients (nom, prenom, date_naissance, wilaya, telephone, matricule_patient, groupage, antecedents) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+                cur.execute("INSERT INTO patient (matricule_patient,nom, prenom, date_naissance, wilaya, telephone, groupage, antecedents) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
                             (self.nom_entry.get(), self.prenom_entry.get(), self.date_naissance_entry.get(),
                              self.wilaya_entry.get(), self.phone_nmbr_entry.get(), self.matricule_Patient_entry.get(),
                              self.groupage_entry.get(), self.antecedents_entry.get()))
