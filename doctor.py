@@ -67,7 +67,7 @@ class Inscrire(ct.CTk):
         self.matricule_doctor_entry.grid(row=2, column=3, padx=20, pady=20, sticky="w")
 
         # Grad
-        self.grad_label = ct.CTkLabel(self.inscription_frame, text="Grad:", font=('Karla', 18))
+        self.grad_label = ct.CTkLabel(self.inscription_frame, text="Grade:", font=('Karla', 18))
         self.grad_label.grid(row=3, column=0, padx=20, pady=20, sticky="w")
         grad = ["Généraliste", "Résident", "Assistant", "Maître Assistant", "Professeur"]
         self.grad_entry = ct.CTkComboBox(self.inscription_frame, values=grad, dropdown_font=('Karla', 14), width=250,

@@ -1,6 +1,5 @@
 import customtkinter as ct
-from tkinter import PhotoImage, Label, ttk
-import tkinter as tk
+from tkinter import  ttk
 from tkinter import *
 from tkinter import messagebox
 import pymysql

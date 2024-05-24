@@ -1,12 +1,10 @@
 from tkinter import messagebox
-
 import customtkinter as ct
 from tkinter import *
-
-import pymysql
 from tkcalendar import Calendar
 from datetime import datetime
 from PIL import Image, ImageTk
+import pymysql
 
 
 class Ajouter_RDV(ct.CTk):
@@ -132,17 +130,34 @@ class Ajouter_RDV(ct.CTk):
             try:
                 con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
                 cur = con.cursor()
+                # Récupération du matricule_patient à partir de la table patient
+                cur.execute("SELECT matricule_patient FROM patient WHERE nom = %s", (self.patient_entry.get(),))
+                matricule_patient = cur.fetchone()
+                if matricule_patient is None:
+                    messagebox.showerror("Erreur", "Patient non trouvé", parent=self)
+                    return
+                matricule_patient = matricule_patient[0]
+
+                # Récupération du matricule_medecin à partir de la table medecin
+                cur.execute("SELECT matricule_medecin FROM medecin WHERE nom = %s", (self.medecin_entry.get(),))
+                matricule_medecin = cur.fetchone()
+                if matricule_medecin is None:
+                    messagebox.showerror("Erreur", "Médecin non trouvé", parent=self)
+                    return
+                matricule_medecin = matricule_medecin[0]
+
                 # Insert the data into your database (adjust the table name and columns as needed)
                 cur.execute(
-                    "INSERT INTO rendez-vous (date_création_du_rendez-vous, date_du_rendez-vous,matricule_patient, geste_medical,matricule_medecin) VALUES (%s, %s, %s,%s, %s)",
-                    (self.date_de_creation_entry.get(), self.date_rdv_entry.get(),self.patient_entry.get(), self.geste_medical_combobox.get(),self.medecin_entry.get()
-                     ))
+                    """INSERT INTO rendez_vous (date_creation_du_rendez_vous, date_du_rendez_vous, patient, matricule_patient, geste_medical, medecin, matricule_medecin, validation) 
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""",
+                    (self.date_de_creation_entry.get(), self.date_rdv_entry.get(), self.patient_entry.get(),
+                     matricule_patient, self.geste_medical_combobox.get(), self.medecin_entry.get(), matricule_medecin, 'Non validé')
+                )
                 con.commit()
                 con.close()
                 messagebox.showinfo("Succès", "Inscription réussie", parent=self)
             except Exception as es:
                 messagebox.showerror("Erreur", f"Erreur de connexion : {str(es)}", parent=self)
-
 
 # Create an instance of the Ajouter_RDV class and start the main loop
 app = Ajouter_RDV()

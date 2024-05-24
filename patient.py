@@ -1,7 +1,3 @@
-import customtkinter as ct
-from tkinter import *
-from tkinter import messagebox
-import pymysql
 
 import customtkinter as ct
 from tkinter import *
@@ -11,7 +7,7 @@ import pymysql
 class Inscrire_patient(ct.CTk):
     def __init__(self):
         super().__init__()
-        self.title("S'inscrire")
+        self.title("S'inscrire patient")
         self.geometry('850x500+300+100')
         self.configure(bg='#263A5F')
 
@@ -148,6 +144,4 @@ class Inscrire_patient(ct.CTk):
 app = Inscrire_patient()
 app.mainloop()
 
-# Create an instance of the Inscrire_patient class and start the main loop
-app = Inscrire_patient()
-app.mainloop()
+
