@@ -111,6 +111,7 @@ class Inscrire_patient(ct.CTkToplevel):
             messagebox.showerror("Erreur", "Inscription incomplète", parent=self)
         else:
             try:
+                # Établir une connexion à la base de données
                 con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
                 cur = con.cursor()
 
@@ -120,9 +121,9 @@ class Inscrire_patient(ct.CTkToplevel):
 
                 # Insertion des données dans la table patient avec vérification de l'existence du matricule_administrateur
                 cur.execute("""
-                    INSERT INTO patient (nom, prenom, date_naissance, sexe, wilaya, telephone, groupage, antecedents, matricule_administrateur) 
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-                """,
+                       INSERT INTO patient (nom, prenom, date_de_naissance, sexe, wilaya, telephone, groupage, antecedents,FKmatricule_administrateur) 
+                       VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                   """,
                             (
                                 self.nomP_entry.get(), self.prenomP_entry.get(),
                                 self.date_naissanceP_entry.get(), self.sexe_Patient_entry.get(),
@@ -131,13 +132,16 @@ class Inscrire_patient(ct.CTkToplevel):
                                 matricule_administrateur
                             ))
 
+                # Committez les changements
                 con.commit()
-                con.close()
                 messagebox.showinfo("Succès", "Inscription réussie", parent=self)
             except Exception as e:
                 messagebox.showerror("Erreur", f"Erreur lors de l'inscription : {str(e)}", parent=self)
                 print(str(e))
-
+            finally:
+                # Fermez la connexion
+                if con:
+                    con.close()
 class Ajouter_RDV(ct.CTkToplevel):
     def __init__(self, parent):  # Add parent as an argument
         super().__init__(parent)
@@ -261,11 +265,30 @@ class Ajouter_RDV(ct.CTkToplevel):
             try:
                 con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
                 cur = con.cursor()
+                # Récupération du matricule_patient à partir de la table patient
+                cur.execute("SELECT matricule_patient FROM patient WHERE nom = %s", (self.patient_entry.get(),))
+                matricule_patient = cur.fetchone()
+                if matricule_patient is None:
+                    messagebox.showerror("Erreur", "Patient non trouvé", parent=self)
+                    return
+                matricule_patient = matricule_patient[0]
+
+                # Récupération du matricule_medecin à partir de la table medecin
+                cur.execute("SELECT matricule_medecin FROM medecin WHERE nom = %s", (self.medecin_entry.get(),))
+                matricule_medecin = cur.fetchone()
+                if matricule_medecin is None:
+                    messagebox.showerror("Erreur", "Médecin non trouvé", parent=self)
+                    return
+                matricule_medecin = matricule_medecin[0]
+
                 # Insert the data into your database (adjust the table name and columns as needed)
                 cur.execute(
-                    "INSERT INTO rendez-vous (date_création_du_rendez-vous, date_du_rendez-vous,matricule_patient, geste_medical,matricule_medecin) VALUES (%s, %s, %s,%s, %s)",
-                    (self.date_de_creation_entry.get(), self.date_rdv_entry.get(),self.patient_entry.get(), self.geste_medical_combobox.get(),self.medecin_entry.get()
-                     ))
+                    """INSERT INTO rendez_vous (date_creation_du_rendez_vous, date_du_rendez_vous, patient, matricule_patient, geste_medical, medecin, matricule_medecin, validation) 
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""",
+                    (self.date_de_creation_entry.get(), self.date_rdv_entry.get(), self.patient_entry.get(),
+                     matricule_patient, self.geste_medical_combobox.get(), self.medecin_entry.get(), matricule_medecin,
+                     'Non validé')
+                )
                 con.commit()
                 con.close()
                 messagebox.showinfo("Succès", "Inscription réussie", parent=self)
@@ -342,6 +365,9 @@ class Accueil(ct.CTk):
         self.toplevelP_window = None
         self.toplevelRDV_window = None
 
+
+
+
     def create_patients_treeview(self):
         # Style for Treeview
         style = ttk.Style()
@@ -349,21 +375,17 @@ class Accueil(ct.CTk):
         style.map("Custom.Treeview", background=[('selected', '#263A5F')])
 
         # Configure the font for the column headings
-        style.configure("Custom.Treeview.Heading", font=('Karla', 26, 'bold'), foreground="#1C1278")
-
-        # Treeview Table
-        columns = ('Matricule', 'Nom', 'Prénom', 'Age', 'Groupage', 'Modifier', 'Voir')
+        style.configure("Custom.Treeview.Heading", font=('Karla', 24, 'bold'), foreground="#1C1278")
+        # Tableau Treeview
+        columns = ('Matricule', 'Nom', 'Prénom', 'Date de naissance', 'Téléphone', 'Groupage', 'Modifier', 'Voir')
         self.treeview_patients = ttk.Treeview(self.center_frame, columns=columns, show='headings', style="Custom.Treeview")
         self.treeview_patients.pack(expand=True, fill='both')
 
-        # Define headings
+        # Définition des en-têtes
         for col in columns:
             self.treeview_patients.heading(col, text=col, anchor='center')
-            self.treeview_patients.column(col, anchor='center', width=150 if col not in ['Modifier', 'Voir'] else 60)  # Changer la largeur au besoin
-
-        # Add some sample data
-        self.add_patient(self.treeview_patients, '12345', 'Doe', 'John', '30', 'A+')
-        self.add_patient(self.treeview_patients, '67890', 'Smith', 'Anna', '25', 'B+')
+            if col not in ['Modifier', 'Voir']:
+                self.treeview_patients.column(col, anchor='center', width=150)
 
     def create_appointments_treeview(self):
         # Style for Treeview
@@ -374,19 +396,17 @@ class Accueil(ct.CTk):
         # Configure the font for the column headings
         style.configure("Custom.Treeview.Heading", font=('Karla', 26, 'bold'))
 
-        # Treeview Table
-        columns = ('Date', 'Heure', 'Patient', 'Médecin', 'Modifier', 'Voir')
-        self.treeview_appointments = ttk.Treeview(self.center_frame, columns=columns, show='headings', style="Custom.Treeview")
+        columns = ('Matricule','Date', 'Patient', 'geste_medical','Validation' ,'Modifier', 'Voir')
+        self.treeview_appointments = ttk.Treeview(self.center_frame, columns=columns, show='headings',
+                                              style="Custom.Treeview")
         self.treeview_appointments.pack(expand=True, fill='both')
 
-        # Define headings
+        # Définition des en-têtes
         for col in columns:
             self.treeview_appointments.heading(col, text=col, anchor='center')
-            self.treeview_appointments.column(col, anchor='center', width=150 if col not in ['Modifier', 'Voir'] else 60)
+            if col not in ['Modifier', 'Voir']:
+                self.treeview_appointments.column(col, anchor='center', width=150 if col not in ['Modifier', 'Voir'] else 60)
 
-        # Add some sample data
-        self.add_appointment(self.treeview_appointments, '2024-05-22', '10:00', 'John Doe', 'Dr. Smith')
-        self.add_appointment(self.treeview_appointments, '2024-05-23', '14:00', 'Anna Smith', 'Dr. Johnson')
 
     def create_doctor_treeview(self):
         # Style for Treeview
@@ -398,14 +418,18 @@ class Accueil(ct.CTk):
         style.configure("Custom.Treeview.Heading", font=('Karla', 26, 'bold'))
 
         # Treeview Table
-        columns = ('Matricule', 'Nom', 'Grade', 'Téléphone', 'Modifier', 'Voir')
-        self.treeview_doctors = ttk.Treeview(self.center_frame, columns=columns, show='headings', style="Custom.Treeview")
+        columns = ('Matricule', 'Nom','Prénom', 'Grade', 'Téléphone', 'Modifier', 'Voir')
+        self.treeview_doctors = ttk.Treeview(self.center_frame, columns=columns, show='headings',
+                                                  style="Custom.Treeview")
         self.treeview_doctors.pack(expand=True, fill='both')
 
-        # Define headings
+        # Définition des en-têtes
         for col in columns:
             self.treeview_doctors.heading(col, text=col, anchor='center')
-            self.treeview_doctors.column(col, anchor='center', width=150 if col not in ['Modifier', 'Voir'] else 60)
+            if col not in ['Modifier', 'Voir']:
+                self.treeview_doctors.column(col, anchor='center',
+                                                  width=150 if col not in ['Modifier', 'Voir'] else 60)
+
 
     def create_consultations_treeview(self):
         # Style for Treeview
@@ -430,11 +454,7 @@ class Accueil(ct.CTk):
         self.add_consultation(self.treeview_consultations, '2024-05-22', '10:00', 'John Doe', 'Dr. Smith', 'Regular checkup')
         self.add_consultation(self.treeview_consultations, '2024-05-23', '14:00', 'Anna Smith', 'Dr. Johnson', 'Follow-up')
 
-    def add_patient(self, treeview, matricule, nom, prenom, age, groupage):
-        treeview.insert('', 'end', values=(matricule, nom, prenom, age, groupage, 'Modifier', 'Voir'))
 
-    def add_doctor(self, treeview, matricule, nom, grade, telephone):
-        treeview.insert('', 'end', values=(matricule, nom, grade, telephone, 'Modifier', 'Voir'))
 
     def add_appointment(self, treeview, date, heure, patient, medecin):
         treeview.insert('', 'end', values=(date, heure, patient, medecin, 'Modifier', 'Voir'))
@@ -454,13 +474,39 @@ class Accueil(ct.CTk):
         values = treeview.item(item, 'values')
         print(f'Viewing item: {values}')
 
+    def add_patient(self, treeview, row):
+        # Insérer une ligne dans le Treeview avec les données du patient
+        treeview.insert('', 'end', values=row)
+
+    def add_doctor(self, treeview, row):
+        treeview.insert('', 'end', values=row)
+
+    def add_appointment(self, treeview, row):
+        treeview.insert('', 'end', values=row)
+
+
+
     def show_patients_tab(self):
         # Clear the center frame
         for widget in self.center_frame.winfo_children():
             widget.destroy()
 
-        # Create and display the treeview for patients
+        # Create and display the treeview for appointments
         self.create_patients_treeview()
+        # Effacer le Treeview
+        for item in self.treeview_patients.get_children():
+            self.treeview_patients.delete(item)
+
+        # Connexion à la base de données
+        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+        cur = con.cursor()
+
+        # Récupération des données des patients depuis la table
+        cur.execute("SELECT matricule_patient, nom, prenom, date_de_naissance, telephone, groupage FROM patient")
+        rows = cur.fetchall()
+        for row in rows:
+            # Appeler add_patient avec les valeurs appropriées
+            self.add_patient(self.treeview_patients,row)  # Sélectionnez les six premières valeurs de la ligne
 
     def show_appointments_tab(self):
         # Clear the center frame
@@ -469,6 +515,20 @@ class Accueil(ct.CTk):
 
         # Create and display the treeview for appointments
         self.create_appointments_treeview()
+        # Effacer le Treeview
+        for item in self.treeview_appointments.get_children():
+            self.treeview_appointments.delete(item)
+
+        # Connexion à la base de données
+        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+        cur = con.cursor()
+
+        # Récupération des données des patients depuis la table
+        cur.execute("SELECT id_rendez_vous , patient,date_du_rendez_vous, geste_medical,validation FROM rendez_vous")
+        rows = cur.fetchall()
+        for row in rows:
+            # Appeler add_patient avec les valeurs appropriées
+            self.add_appointment(self.treeview_appointments, row)  # Sélectionnez les six premières valeurs de la ligne
 
     def show_doctors_tab(self):
         # Clear the center frame
@@ -477,6 +537,16 @@ class Accueil(ct.CTk):
 
         # Create and display the treeview for doctors
         self.create_doctor_treeview()
+        # Connexion à la base de données
+        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+        cur = con.cursor()
+
+        # Récupération des données des patients depuis la table
+        cur.execute("SELECT matricule_medecin  , nom,prenom,grade,grade FROM medecin")
+        rows = cur.fetchall()
+        for row in rows:
+            # Appeler add_patient avec les valeurs appropriées
+            self.add_doctor(self.treeview_doctors, row)  # Sélectionnez les six premières valeurs de la ligne
 
     def report_appointments(self):
         print("Report appointments")
@@ -495,7 +565,7 @@ class Accueil(ct.CTk):
     def show_settings(self):
         print("Show settings")
     def open_toplevelP(self):
-        if self.toplevelP_window is None or not self.toplevel_window.winfo_exists():
+        if self.toplevelP_window is None or not self.toplevelP_window.winfo_exists():
             self.toplevelP_window = Inscrire_patient(self)  # create window if its None or destroyed
             self.toplevelP_window.grab_set()  # Make the new window modal
         else:
@@ -511,3 +581,4 @@ class Accueil(ct.CTk):
 
 app = Accueil()
 app.mainloop()
+
