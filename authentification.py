@@ -3,8 +3,9 @@ import pymysql
 from tkinter import *
 from tkinter import messagebox
 from PIL import Image, ImageTk  # Import PIL for image handling
+from accueil import transform_date
 
-class Inscrire(ct.CTk):
+class Inscrire_ADM(ct.CTk):
     def __init__(self):
         super().__init__()
         self.title("S'inscrire")
@@ -154,7 +155,7 @@ class Inscrire(ct.CTk):
                         self.confirmation_MP_ADM_entry.get(),
                         self.nomADM_entry.get(),
                         self.prenomADM_entry.get(),
-                        self.date_naissanceADM_entry.get(),
+                        transform_date(self.date_naissanceADM_entry.get()),
                         self.phone_nmbrADM_entry.get(),
                         self.wilayaADM_entry.get()
                     ))
@@ -177,5 +178,5 @@ class Inscrire(ct.CTk):
 
 
 # Création d'une instance de la classe Inscrire et démarrage de la boucle principale
-app = Inscrire()
+app = Inscrire_ADM()
 app.mainloop()
