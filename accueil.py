@@ -726,11 +726,90 @@ class Accueil(ct.CTk):
         # Create and display the treeview for consultations
         self.create_consultations_treeview()
 
-    def show_statistics(self):
-        print("Show statistics")
+    def create_administrateur_treeview(self):
+        # Style for Treeview
+        style = ttk.Style()
+        style.configure("Custom.Treeview", background="#ffffff", foreground="black", fieldbackground="#ffffff",
+                        font=('Karla', 16), rowheight=60)
+        style.map("Custom.Treeview", background=[('selected', '#263A5F')])
+
+        # Configure the font for the column headings
+        style.configure("Custom.Treeview.Heading", font=('Karla', 24, 'bold'), foreground="#1C1278")
+
+        # Tableau Treeview
+        columns = ("Matricule", "Mot de passe", "Nom", "Prénom", "Date de naissance", "Téléphone", "Supprimer")
+        self.treeview_administrateurs = ttk.Treeview(self.center_frame, columns=columns, show="headings",
+                                                     style="Custom.Treeview")
+        self.treeview_administrateurs.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+        # Définition des en-têtes
+        for col in columns:
+            self.treeview_administrateurs.heading(col, text=col, anchor='center')
+            if col not in ['Supprimer']:
+                self.treeview_administrateurs.column(col, anchor='center', width=150)
+
+        # Add a delete button to each row
+        def add_delete_button(treeview, row):
+            matricule_administrateur = row[0]
+
+            # Create the delete button
+            delete_button = ttk.Button(self.center_frame, text="Supprimer", style="Custom.TButton",
+                                       command=lambda
+                                           matricule_administrateur: self.delete_administrateur(
+                                           matricule_administrateur))
+
+            # Add the button to the row
+            treeview.insert("", "end", values=row + (delete_button,), tags=("delete_button",))
+
+        # Populate the Treeview with data
+        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+        cur = con.cursor()
+        cur.execute(
+            "SELECT matricule_administrateur, mot_de_passe, nom, prenom, date_de_naissance, telephone FROM administrateur")
+        rows = cur.fetchall()
+        cur.close()
+        con.close()
+
+        for row in rows:
+            add_delete_button(self.treeview_administrateurs, row)
+
+        # Configure the delete button tag
+        self.treeview_administrateurs.tag_configure("delete_button",  font=('Karla', 16, 'bold'))
 
     def show_settings(self):
-        print("Show settings")
+        # Clear the center frame
+        for widget in self.center_frame.winfo_children():
+            widget.destroy()
+
+        # Create and display the treeview for administrateurs
+        self.create_administrateur_treeview()
+
+        # Connexion à la base de données
+        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+        cur = con.cursor()
+
+        # Récupération des données des administrateurs depuis la table
+        cur.execute(
+            "SELECT matricule_administrateur, mot_de_passe, nom, prenom, date_de_naissance, telephone FROM administrateur")
+        rows = cur.fetchall()
+        cur.close()
+        con.close()
+
+        for row in rows:
+            # Appeler add_administrateur avec les valeurs appropriées
+            self.add_administrateur(self.treeview_administrateurs,
+                                    row)  # Sélectionnez les six premières valeurs de la ligne
+
+    def add_administrateur(self, treeview, row):
+        matricule_administrateur = row[0]
+        mot_de_passe = row[1]
+        nom = row[2]
+        prenom = row[3]
+        date_de_naissance = row[4]
+        telephone = row[5]
+    def show_statistics(self):
+        print("Show statistiques")
+
     def open_toplevelP(self):
         if self.toplevelP_window is None or not self.toplevelP_window.winfo_exists():
             self.toplevelP_window = Inscrire_patient(self)  # create window if its None or destroyed
