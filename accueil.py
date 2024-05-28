@@ -609,29 +609,6 @@ class Accueil(ct.CTk):
                                                   width=150 if col not in ['Modifier', 'Voir'] else 60)
 
 
-    def create_consultations_treeview(self):
-        # Style for Treeview
-        style = ttk.Style()
-        style.configure("Custom.Treeview", background="#ffffff", foreground="black", fieldbackground="#ffffff", font=('Karla', 16))
-        style.map("Custom.Treeview", background=[('selected', '#263A5F')])
-
-        # Configure the font for the column headings
-        style.configure("Custom.Treeview.Heading", font=('Karla', 26, 'bold'))
-
-        # Treeview Table
-        columns = ('Date', 'Heure', 'Patient', 'Médecin', 'Notes', 'Modifier', 'Voir')
-        self.treeview_consultations = ttk.Treeview(self.center_frame, columns=columns, show='headings', style="Custom.Treeview")
-        self.treeview_consultations.pack(expand=True, fill='both')
-
-        # Define headings
-        for col in columns:
-            self.treeview_consultations.heading(col, text=col, anchor='center')
-            self.treeview_consultations.column(col, anchor='center', width=150 if col not in ['Modifier', 'Voir'] else 60)
-
-        # Add some sample data
-        self.add_consultation(self.treeview_consultations, '2024-05-22', '10:00', 'John Doe', 'Dr. Smith', 'Regular checkup')
-        self.add_consultation(self.treeview_consultations, '2024-05-23', '14:00', 'Anna Smith', 'Dr. Johnson', 'Follow-up')
-
 
 
     def add_appointment(self, treeview, date, heure, patient, medecin):
@@ -1106,14 +1083,60 @@ class Accueil(ct.CTk):
     def report_appointments(self):
         self.open_toplevelDocteur()
 
+    def filter_appointments(self, date):
+        filtered_appointments = []
+        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+        cur = con.cursor()
+        cur.execute(
+            "SELECT patient, date_du_rendez_vous, geste_medical FROM rendez_vous WHERE date_du_rendez_vous = %s",
+            (date,))
+        rows = cur.fetchall()
+        for row in rows:
+            patient_name = row[0].split(' ')[0]
+            medical_gesture_name = row[2]
+            filtered_appointments.append({
+                'date': row[1],
+                'patient': patient_name,
+                'medical_gesture': medical_gesture_name,
+            })
+        con.close()
+        return filtered_appointments
+
     def show_consultations(self):
         # Clear the center frame
         for widget in self.center_frame.winfo_children():
             widget.destroy()
 
-        # Create and display the treeview for consultations
-        self.create_consultations_treeview()
+        # Get the current date
+        today = datetime.now().strftime('%Y-%m-%d')
 
+        # Filter the appointments for the current date
+        appointments = self.filter_appointments(today)
+
+        # Create and display the treeview for consultations
+        style = ttk.Style()
+        style.configure("Custom.Treeview", background="#ffffff", foreground="black", fieldbackground="#ffffff",
+                        font=('Karla', 16), rowheight=60)
+        style.map("Custom.Treeview", background=[('selected', '#263A5F')])
+
+        # Configure the font for the column headings
+        style.configure("Custom.Treeview.Heading", font=('Karla', 24, 'bold'), foreground="#1C1278")
+
+        columns = ("Date", "Patient", "Geste médical")
+        self.treeview_consultations = ttk.Treeview(self.center_frame, columns=columns, show="headings",
+                                                   style="Custom.Treeview")
+        self.treeview_consultations.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+        # Définition des en-têtes
+        for col in columns:
+            self.treeview_consultations.heading(col, text=col, anchor='center')
+            self.treeview_consultations.column(col, anchor='center', width=150)
+
+        # Add the appointments to the treeview
+        for appointment in appointments:
+            self.treeview_consultations.insert('', 'end', values=(
+                appointment['date'], appointment['patient'], appointment['medical_gesture']
+            ))
     def create_administrateur_treeview(self):
         # Style for Treeview
         style = ttk.Style()
