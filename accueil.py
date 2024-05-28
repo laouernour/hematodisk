@@ -8,6 +8,15 @@ from tkcalendar import Calendar
 from datetime import datetime
 from PIL import Image, ImageTk
 
+def transform_date(date_str):
+    # Convertit la date du format 'dd-mm-yyyy' au format 'yyyy-mm-dd'
+    try:
+        date_obj = datetime.strptime(date_str, '%d/%m/%Y')
+        return date_obj.strftime('%Y/%m/%d')
+    except ValueError as e:
+        messagebox.showerror("Erreur de date", f"Format de date incorrect: {date_str}. Utilisez le format 'jj-mm-aaaa'.\nErreur: {e}")
+        return None
+
 class Inscrire(ct.CTkToplevel):
     def __init__(self, parent):  # Add parent as an argument
         super().__init__(parent)
@@ -108,7 +117,7 @@ class Inscrire(ct.CTkToplevel):
                                  self.matricule_doctor_entry.get(),
                                  self.nom_entry.get(),
                                  self.prenom_entry.get(),
-                                 self.date_naissance_entry.get(),
+                                 transform_date(self.date_naissance_entry.get()),
                                  self.wilaya_entry.get(),
                                  self.phone_nmbr_entry.get(),
                                  self.grad_entry.get(),
@@ -248,7 +257,7 @@ class Inscrire_patient(ct.CTkToplevel):
                    """,
                             (
                                 self.nomP_entry.get(), self.prenomP_entry.get(),
-                                self.date_naissanceP_entry.get(), self.sexe_Patient_entry.get(),
+                                transform_date(self.date_naissanceP_entry.get()), self.sexe_Patient_entry.get(),
                                 self.wilayaP_entry.get(), self.phone_nmbrP_entry.get(),
                                 self.groupage_entry.get(), self.antecedents_entry.get(),
                                 matricule_administrateur
@@ -417,7 +426,7 @@ class Ajouter_RDV(ct.CTkToplevel):
                 cur.execute(
                     """INSERT INTO rendez_vous (date_creation_du_rendez_vous, date_du_rendez_vous, patient, matricule_patient, geste_medical, medecin, matricule_medecin, validation) 
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""",
-                    (self.date_de_creation_entry.get(), self.date_rdv_entry.get(), self.patient_entry.get(),
+                    (transform_date(self.date_de_creation_entry.get()), transform_date(self.date_rdv_entry.get()), self.patient_entry.get(),
                      matricule_patient, self.geste_medical_combobox.get(), self.medecin_entry.get(), matricule_medecin,
                      'Non validé')
                 )
@@ -883,7 +892,7 @@ class Accueil(ct.CTk):
 
                     # Récupérer les autres valeurs des champs de saisie
                     matricule_patient = self.matricule_patient_entry.get()
-                    date_creation = self.date_de_creation_entry.get()
+                    date_creation = transform_date(self.date_de_creation_entry.get())
                     geste_medical = self.geste_medical_combobox.get()
                     diagnostique = self.diagnostique_entry.get("1.0", tk.END)  # Récupérer tout le texte
 
@@ -1059,20 +1068,23 @@ class Accueil(ct.CTk):
         if self.date_rdv_entry.get() == "":
             messagebox.showerror("Erreur", "Veuillez entrer la date de report")
         else:
-            try:
-                con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
-                cur = con.cursor()
+            new_date = transform_date(self.date_rdv_entry.get())
+            creation_date = transform_date(self.date_de_creation_entry.get())
+            if new_date and creation_date:  # Vérifie si les dates sont valides
+                try:
+                    con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+                    cur = con.cursor()
 
-                # Update the rendez_vous table with the new date
-                cur.execute(
-                    "UPDATE rendez_vous SET date_du_rendez_vous = %s, date_creation_du_rendez_vous = %s WHERE id_rendez_vous = %s",
-                    (self.date_rdv_entry.get(), self.date_de_creation_entry.get(), matricule_RDV))
-                con.commit()
-                con.close()
-                messagebox.showinfo("Succès", "RDV reporté avec succès")
-            except Exception as es:
-                messagebox.showerror("Erreur", f"Erreur de connexion : {str(es)}")
-                print({str(es)})
+                    # Update the rendez_vous table with the new date
+                    cur.execute(
+                        "UPDATE rendez_vous SET date_du_rendez_vous = %s, date_creation_du_rendez_vous = %s WHERE id_rendez_vous = %s",
+                        (new_date, creation_date, matricule_RDV))
+                    con.commit()
+                    con.close()
+                    messagebox.showinfo("Succès", "RDV reporté avec succès")
+                except Exception as es:
+                    messagebox.showerror("Erreur", f"Erreur de connexion : {str(es)}")
+                    print("{str(es)}")
     def show_doctors_tab(self):
         # Clear the center fram
         for widget in self.center_frame.winfo_children():
