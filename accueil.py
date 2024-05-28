@@ -1014,7 +1014,7 @@ class Accueil(ct.CTk):
         self.show_calendar_button = Button(self.RDV_frame, image=self.calender_icon, width=25, height=30,
                                            command=self.open_calendar_report, bd=0, bg='#FFFFFF', activebackground='#FFFFFF',
                                            highlightthickness=0)
-        self.show_calendar_button.place(x=680, y=200)
+        self.show_calendar_button.place(x=690, y=195)
 
         # Button to report RDV
         self.report_button = ct.CTkButton(self.RDV_frame, text="Reporter RDV",
