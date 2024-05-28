@@ -3,6 +3,7 @@ from tkinter import  ttk
 from tkinter import *
 from tkinter import messagebox
 import pymysql
+import tkinter as tk
 from tkcalendar import Calendar
 from datetime import datetime
 from PIL import Image, ImageTk
@@ -529,6 +530,9 @@ class Accueil(ct.CTk):
         # Ajouter les patients trouvés dans le Treeview
         for patient in patients:
             self.add_patient(self.treeview_patients, patient)
+
+        # Vider la zone de recherche
+        self.rech_txt.delete(0, tk.END)  # <--- Add this line
 
         con.close()
     def create_patients_treeview(self):
