@@ -469,7 +469,7 @@ class Accueil(ct.CTk):
         self.rech_txt = ct.CTkEntry(self.top_frame, width=300, height=35, corner_radius=10,
                                     font=('Karla', 14))
         self.rech_txt.place(x=250, y=130)
-        self.rech_txt_butt = ct.CTkButton(self.top_frame, text="Recherche", command=None, width=110,
+        self.rech_txt_butt = ct.CTkButton(self.top_frame, text="Recherche", command=self.rechercher_patient, width=110,
                                           height=30,
                                           corner_radius=15, font=('Karla', 14, 'bold'), fg_color='#2FC16A',
                                           cursor='hand2', text_color='#FFFFFF')
@@ -503,9 +503,34 @@ class Accueil(ct.CTk):
         self.toplevelP_window = None
         self.toplevelRDV_window = None
 
+    def rechercher_patient(self):
+        nom_prenom = self.rech_txt.get().split()  # Récupérer le nom et prénom du patient saisi dans la barre de recherche
 
+        # Connexion à la base de données
+        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+        cur = con.cursor()
 
+        # Rechercher le patient dans la table patient
+        if len(nom_prenom) == 1:
+            # Rechercher par nom ou prénom
+            cur.execute("SELECT * FROM patient WHERE nom LIKE %s OR prenom LIKE %s",
+                        (f"%{nom_prenom[0]}%", f"%{nom_prenom[0]}%"))
+        else:
+            # Rechercher par nom et prénom
+            nom, prenom = nom_prenom
+            cur.execute("SELECT * FROM patient WHERE nom LIKE %s AND prenom LIKE %s", (f"%{nom}%", f"%{prenom}%"))
 
+        patients = cur.fetchall()
+
+        # Effacer le Treeview
+        for item in self.treeview_patients.get_children():
+            self.treeview_patients.delete(item)
+
+        # Ajouter les patients trouvés dans le Treeview
+        for patient in patients:
+            self.add_patient(self.treeview_patients, patient)
+
+        con.close()
     def create_patients_treeview(self):
         # Style for Treeview
         style = ttk.Style()
