@@ -1074,7 +1074,7 @@ class Accueil(ct.CTk):
                 messagebox.showerror("Erreur", f"Erreur de connexion : {str(es)}")
                 print({str(es)})
     def show_doctors_tab(self):
-        # Clear the center frame
+        # Clear the center fram
         for widget in self.center_frame.winfo_children():
             widget.destroy()
 
