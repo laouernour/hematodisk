@@ -557,23 +557,25 @@ class Accueil(ct.CTk):
     def create_appointments_treeview(self):
         # Style for Treeview
         style = ttk.Style()
-        style.configure("Custom.Treeview", background="#ffffff", foreground="black", fieldbackground="#ffffff", font=('Karla', 16))
+        style.configure("Custom.Treeview", background="#ffffff", foreground="black", fieldbackground="#ffffff",
+                        rowheight=60,
+                        font=('Karla', 16))
         style.map("Custom.Treeview", background=[('selected', '#263A5F')])
 
         # Configure the font for the column headings
         style.configure("Custom.Treeview.Heading", font=('Karla', 26, 'bold'))
 
-        columns = ('Matricule','Date', 'Patient', 'geste_medical','Validation' ,'Modifier', 'Voir')
+        columns = ('N°RDV', 'Patient', 'Date','geste_medical')
         self.treeview_appointments = ttk.Treeview(self.center_frame, columns=columns, show='headings',
-                                              style="Custom.Treeview")
+                                                  style="Custom.Treeview")
         self.treeview_appointments.pack(expand=True, fill='both')
 
         # Définition des en-têtes
         for col in columns:
             self.treeview_appointments.heading(col, text=col, anchor='center')
-            if col not in ['Modifier', 'Voir']:
-                self.treeview_appointments.column(col, anchor='center', width=150 if col not in ['Modifier', 'Voir'] else 60)
+            self.treeview_appointments.column(col, anchor='center', width=150)
 
+        self.treeview_appointments.bind("<Button-1>", self.on_click_RDV)
 
     def create_doctor_treeview(self):
         # Style for Treeview
@@ -933,6 +935,144 @@ class Accueil(ct.CTk):
             # Appeler add_patient avec les valeurs appropriées
             self.add_appointment(self.treeview_appointments, row)  # Sélectionnez les six premières valeurs de la ligne
 
+        self.treeview_appointments.bind("<Button-1>", self.on_click_RDV)
+    def on_click_RDV(self, event):
+        item = self.treeview_appointments.focus()  # Obtient l'élément actuellement sélectionné dans Treeview
+        values = self.treeview_appointments.item(item, 'values')  # Obtient les valeurs des colonnes de l'élément
+        if values:
+            # Obtenez la valeur de matricule_RDV (remplacez l'index 0 par l'index correct)
+            self.id_rendez_vous = values[0]
+            # Ouvre une nouvelle fenêtre avec les valeurs de l'élément
+            self.new_window = ct.CTkToplevel(self)
+            self.new_window.grab_set()
+            self.new_window.title("Détails du Rendez-vous")
+            self.new_window.geometry("650x400+400+200")
+
+            self.menu_frame = ct.CTkFrame(self.new_window, width=760, height=50, border_width=0, corner_radius=0,
+                                          fg_color='#B8F9FF')
+            self.menu_frame.pack()
+
+            showRDV_butt = ct.CTkButton(self.menu_frame, text="Voir détails du Rendez-vous",
+                                        command=lambda: self.afficher_détails_RDV(self.info_frame, values),
+                                        width=50, height=30, corner_radius=15, font=('Karla', 14, 'bold'),
+                                        fg_color='#FF0000', cursor='hand2', text_color='#FFFFFF')
+            showRDV_butt.place(x=35, y=10)
+
+            reporterRDV_butt = ct.CTkButton(self.menu_frame, text="Reporter Rendez-vous",
+                                            command=lambda: self.reporter_RDV(self.info_frame, values),
+                                            width=50, height=30, corner_radius=15, font=('Karla', 14, 'bold'),
+                                            fg_color='#FF0000', cursor='hand2', text_color='#FFFFFF')
+            reporterRDV_butt.place(x=400, y=10)
+
+            self.info_frame = ct.CTkFrame(self.new_window, width=697, height=400, border_color='#FF0000',
+                                          border_width=2,
+                                          fg_color='transparent')
+            self.info_frame.pack(fill='both', expand=True)
+            # Appeler afficher_détails_RDV pour afficher les informations par défaut
+            self.afficher_détails_RDV(self.info_frame, values)
+
+    def afficher_détails_RDV(self, info_frame, values):
+        # Clear the existing content of the info_frame
+        for widget in info_frame.winfo_children():
+            widget.destroy()
+
+        # Create a frame to display the appointment details
+        details_frame = ct.CTkFrame(info_frame, fg_color='#ffffff')
+        details_frame.pack(fill='both', expand=True)
+
+        # Define labels and corresponding values for appointment details
+        labels = ['N°RDV','Date de Création du  Rendez-vous', 'Patient', 'Geste médical']
+        for i, (label_text, value) in enumerate(zip(labels, values)):
+            label = ct.CTkLabel(details_frame, text=label_text, font=('Karla', 16))
+            label.grid(row=i, column=0, sticky='w', padx=10, pady=5)
+            value_label = ct.CTkLabel(details_frame, text=value, font=('Karla', 16))
+            value_label.grid(row=i, column=1, sticky='w', padx=10, pady=5)
+
+    def reporter_RDV(self, window, values):
+        for widget in self.info_frame.winfo_children():
+            widget.destroy()
+
+        # Create a frame to display the appointment details
+        self.RDV_frame = ct.CTkFrame(window, fg_color='#ffffff')
+        self.RDV_frame.pack(fill='both', expand=True)
+
+        self.report_label = ct.CTkLabel(self.RDV_frame, text="Raporter Rendez-vous :", font=('Karla', 16,'bold'),
+                                                  text_color='#263A5F')
+        self.report_label.grid(row=0, column=1, sticky="w")
+
+        # Date de creation
+        self.date_de_creation_label = ct.CTkLabel(self.RDV_frame, text="Date de création :", font=('Karla', 16),
+                                                  text_color='#263A5F')
+        self.date_de_creation_label.grid(row=1, column=0, padx=20, pady=20, sticky="w")
+
+        self.calender_image = Image.open('calendar-removebg-preview.png').resize((45, 45))
+        self.calender_icon = ImageTk.PhotoImage(self.calender_image)
+
+        today_date = datetime.now().strftime('%d/%m/%Y')
+        self.date_de_creation_entry = ct.CTkEntry(self.RDV_frame, width=200, height=35, corner_radius=10,
+                                                  font=('Karla', 14))
+        self.date_de_creation_entry.insert(0, today_date)
+        self.date_de_creation_entry.configure(state='readonly')
+        self.date_de_creation_entry.grid(row=1, column=1, padx=20, pady=20, sticky="w")
+
+        # Date du rendez-vous
+        self.date_rdv_label = ct.CTkLabel(self.RDV_frame, text="Nouvelle date de rendez-vous :", font=('Karla', 16),
+                                          text_color='#263A5F')
+        self.date_rdv_label.grid(row=2, column=0, padx=20, pady=20, sticky="w")
+
+        self.date_rdv_entry = ct.CTkEntry(self.RDV_frame, width=200, height=35, corner_radius=10,
+                                          font=('Karla', 14))
+        self.date_rdv_entry.grid(row=2, column=1, padx=20, pady=20, sticky="w")
+
+        # Ajouter l'icône de calendrier
+        self.show_calendar_button = Button(self.RDV_frame, image=self.calender_icon, width=25, height=30,
+                                           command=self.open_calendar_report, bd=0, bg='#FFFFFF', activebackground='#FFFFFF',
+                                           highlightthickness=0)
+        self.show_calendar_button.place(x=680, y=200)
+
+        # Button to report RDV
+        self.report_button = ct.CTkButton(self.RDV_frame, text="Reporter RDV",
+                                          command=lambda: self.report_RDV_to_database(self.id_rendez_vous),
+                                          width=250, height=40, corner_radius=15, font=('Karla', 16, 'bold'),
+                                          fg_color='#263A5F', cursor='hand2', text_color='#FFFFFF')
+        self.report_button.grid(row=3, column=1, pady=30)
+
+    def open_calendar_report(self):
+        # Crée un frame flottant pour le calendrier
+        self.calendar_frame = Frame(self.RDV_frame, bg='#FFFFFF', bd=2, relief='raised')
+        self.calendar_frame.place(x=460, y=230)  # Ajustez les coordonnées selon vos besoins
+
+        self.cal = Calendar(self.calendar_frame, selectmode="day", locale="fr_FR", date_pattern="dd/mm/yyyy")
+        self.cal.pack(padx=10, pady=10)
+
+        self.select_button = Button(self.calendar_frame, text="Sélectionner", command=self.select_date, bg='#263A5F',
+                                    fg='#FFFFFF')
+        self.select_button.pack(pady=10)
+    def select_date(self):
+        # Récupérer la date sélectionnée et l'afficher dans l'entrée
+        selected_date = self.cal.get_date()
+        self.date_rdv_entry.delete(0, tk.END)
+        self.date_rdv_entry.insert(0, selected_date)
+        self.calendar_frame.destroy()
+
+    def report_RDV_to_database(self, matricule_RDV):
+        if self.date_rdv_entry.get() == "":
+            messagebox.showerror("Erreur", "Veuillez entrer la date de report")
+        else:
+            try:
+                con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+                cur = con.cursor()
+
+                # Update the rendez_vous table with the new date
+                cur.execute(
+                    "UPDATE rendez_vous SET date_du_rendez_vous = %s, date_creation_du_rendez_vous = %s WHERE id_rendez_vous = %s",
+                    (self.date_rdv_entry.get(), self.date_de_creation_entry.get(), matricule_RDV))
+                con.commit()
+                con.close()
+                messagebox.showinfo("Succès", "RDV reporté avec succès")
+            except Exception as es:
+                messagebox.showerror("Erreur", f"Erreur de connexion : {str(es)}")
+                print({str(es)})
     def show_doctors_tab(self):
         # Clear the center frame
         for widget in self.center_frame.winfo_children():
