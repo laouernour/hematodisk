@@ -337,23 +337,20 @@ class Ajouter_RDV(ct.CTkToplevel):
         self.show_calendar_button.place(x=1200, y=40)
 
         # Patient
-        self.patient_label = ct.CTkLabel(self.inscription_frame, text="Patient :", font=('Karla', 16),
+        self.nom_patient_label = ct.CTkLabel(self.inscription_frame, text="Nom Patient :", font=('Karla', 16),
                                          text_color='#263A5F')
-        self.patient_label.grid(row=1, column=0, padx=20, pady=20, sticky="w")
+        self.nom_patient_label.grid(row=1, column=0, padx=20, pady=20, sticky="w")
 
-        self.patient_entry = ct.CTkEntry(self.inscription_frame, width=200, height=35, corner_radius=10,
+        self.nom_patient_entry = ct.CTkEntry(self.inscription_frame, width=200, height=35, corner_radius=10,
                                          font=('Karla', 14))
-        self.patient_entry.grid(row=1, column=1, padx=20, pady=20, sticky="w")
-
-        # Medecin
-        self.medecin_label = ct.CTkLabel(self.inscription_frame, text="Médecin :", font=('Karla', 16),
+        self.nom_patient_entry.grid(row=1, column=1, padx=20, pady=20, sticky="w")
+        self.prenom_patient_label = ct.CTkLabel(self.inscription_frame, text="Prénom Patient :", font=('Karla', 16),
                                          text_color='#263A5F')
-        self.medecin_label.grid(row=1, column=2, padx=20, pady=20, sticky="w")
+        self.prenom_patient_label.grid(row=1, column=2, padx=20, pady=20, sticky="w")
 
-        self.medecin_entry = ct.CTkEntry(self.inscription_frame, width=200, height=35, corner_radius=10,
+        self.prenom_patient_entry = ct.CTkEntry(self.inscription_frame, width=200, height=35, corner_radius=10,
                                          font=('Karla', 14))
-        self.medecin_entry.grid(row=1, column=3, padx=20, pady=20, sticky="w")
-
+        self.prenom_patient_entry.grid(row=1, column=3, padx=20, pady=20, sticky="w")
         # Geste medical
         self.geste_medical_label = ct.CTkLabel(self.inscription_frame, text="Geste médical :", font=('Karla', 16),
                                                text_color='#263A5F')
@@ -363,6 +360,14 @@ class Ajouter_RDV(ct.CTkToplevel):
         self.geste_medical_combobox = ct.CTkComboBox(self.inscription_frame, values=gestes, width=200, height=35,
                                                      corner_radius=10, font=('Karla', 14), dropdown_fg_color='#FFFFFF')
         self.geste_medical_combobox.grid(row=2, column=1, padx=20, pady=20, sticky="w")
+        # Medecin
+        self.medecin_label = ct.CTkLabel(self.inscription_frame, text="Médecin :", font=('Karla', 16),
+                                         text_color='#263A5F')
+        self.medecin_label.grid(row=2, column=2, padx=20, pady=20, sticky="w")
+
+        self.medecin_entry = ct.CTkEntry(self.inscription_frame, width=200, height=35, corner_radius=10,
+                                         font=('Karla', 14))
+        self.medecin_entry.grid(row=2, column=3, padx=20, pady=20, sticky="w")
 
         # Button to Create Account
         self.creer_button = ct.CTkButton(self.inscription_frame, text="Créer", command=self.creer, width=250, height=40,
@@ -399,20 +404,18 @@ class Ajouter_RDV(ct.CTkToplevel):
         self.calendar_frame.destroy()
 
     def creer(self):
-        if (self.date_rdv_entry.get() == "" or self.date_de_creation_entry.get() == "" or self.patient_entry.get() == ""
-                or self.medecin_entry.get() == "" or self.geste_medical_combobox.get() == ""):
+        # Récupérer le nom complet du patient en combinant le nom et le prénom
+        nom_complet = f"{self.nom_patient_entry.get()} {self.prenom_patient_entry.get()}"
+
+        if (
+                self.date_rdv_entry.get() == "" or self.date_de_creation_entry.get() == "" or nom_complet == "" or
+                self.medecin_entry.get() == "" or self.geste_medical_combobox.get() == ""
+        ):
             messagebox.showerror("Erreur", "Inscription incomplète", parent=self)
         else:
             try:
                 con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
                 cur = con.cursor()
-                # Récupération du matricule_patient à partir de la table patient
-                cur.execute("SELECT matricule_patient FROM patient WHERE nom = %s", (self.patient_entry.get(),))
-                matricule_patient = cur.fetchone()
-                if matricule_patient is None:
-                    messagebox.showerror("Erreur", "Patient non trouvé", parent=self)
-                    return
-                matricule_patient = matricule_patient[0]
 
                 # Récupération du matricule_medecin à partir de la table medecin
                 cur.execute("SELECT matricule_medecin FROM medecin WHERE nom = %s", (self.medecin_entry.get(),))
@@ -422,12 +425,12 @@ class Ajouter_RDV(ct.CTkToplevel):
                     return
                 matricule_medecin = matricule_medecin[0]
 
-                # Insert the data into your database (adjust the table name and columns as needed)
+                # Insertion des données dans la table des rendez-vous avec le nom complet du patient
                 cur.execute(
-                    """INSERT INTO rendez_vous (date_creation_du_rendez_vous, date_du_rendez_vous, patient, matricule_patient, geste_medical, medecin, matricule_medecin, validation) 
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""",
-                    (transform_date(self.date_de_creation_entry.get()), transform_date(self.date_rdv_entry.get()), self.patient_entry.get(),
-                     matricule_patient, self.geste_medical_combobox.get(), self.medecin_entry.get(), matricule_medecin,
+                    """INSERT INTO rendez_vous (date_creation_du_rendez_vous, date_du_rendez_vous, patient, geste_medical, medecin, matricule_medecin, validation) 
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)""",
+                    (transform_date(self.date_de_creation_entry.get()), transform_date(self.date_rdv_entry.get()),
+                     nom_complet, self.geste_medical_combobox.get(), self.medecin_entry.get(), matricule_medecin,
                      'Non validé')
                 )
                 con.commit()
@@ -439,7 +442,8 @@ class Ajouter_RDV(ct.CTkToplevel):
 
     def vider(self):
         self.date_rdv_entry.delete(0, END),
-        self.patient_entry.delete(0, END),
+        self.nom_patient_entry.delete(0, END),
+        self.prenom_patient_entry.delete(0, END),
         self.medecin_entry.delete(0, END),
 
 class Accueil(ct.CTk):
