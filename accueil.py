@@ -722,35 +722,27 @@ class Accueil(ct.CTk):
             con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
             cur = con.cursor()
 
-            # Requête SQL pour obtenir les consultations du patient
             # Requête SQL pour obtenir les consultations du patient avec les noms des médecins
-            # Date d'aujourd'hui
-            today_date = datetime.now().date()
-
-            # Requête SQL pour obtenir les consultations du patient qui ont eu lieu avant aujourd'hui
             cur.execute(
                 """
-                SELECT date_de_consultation, geste_medical, diagnostique, medecin
-                FROM historique_consultations
-                WHERE matricule_patient = %s AND date_de_consultation <= %s
+                SELECT hc.date_de_consultation, hc.geste_medical, hc.diagnostique, m.nom AS medecin
+                FROM historique_consultations hc
+                JOIN medecin m ON hc.matricule_medecin = m.matricule_medecin
+                WHERE hc.matricule_patient = %s AND hc.date_de_consultation <= %s
                 """,
-                (matricule_patient, today_date)
+                (matricule_patient, datetime.now().date())
             )
             rows = cur.fetchall()
-            # Débogage
-            print("Résultats de la requête SQL :")
-            for row in rows:
-                print(row)
 
             # Afficher les consultations dans un nouveau cadre
             for widget in self.info_frame.winfo_children():
                 widget.destroy()
 
-            consultations_frame = ct.CTkScrollableFrame(self.info_frame, fg_color='#ffffff',corner_radius=0)
+            consultations_frame = ct.CTkScrollableFrame(self.info_frame, fg_color='#ffffff', corner_radius=0)
             consultations_frame.pack(fill='both', expand=True)
 
             # Ajouter des libellés pour les colonnes
-            headers = ['Date de Consultation', 'Geste Médical', 'Diagnostique','Médecin traitant']
+            headers = ['Date de Consultation', 'Geste Médical', 'Diagnostique', 'Médecin traitant']
             for i, header in enumerate(headers):
                 header_label = ct.CTkLabel(consultations_frame, text=header, font=('Karla', 16, 'bold'))
                 header_label.grid(row=0, column=i, padx=10, pady=5)
@@ -779,8 +771,9 @@ class Accueil(ct.CTk):
         Consultation_frame.pack(fill='both', expand=True)
 
         # Date de création
-        self.titre_label = ct.CTkLabel(Consultation_frame, text="Ajouter une consultation :", font=('Karla',18,'bold'),
-                                             text_color='#263A5F')
+        self.titre_label = ct.CTkLabel(Consultation_frame, text="Ajouter une consultation :",
+                                       font=('Karla', 18, 'bold'),
+                                       text_color='#263A5F')
         self.titre_label.grid(row=0,column=1,padx=10,pady=10,sticky="w")
         # Date de création
         self.date_de_creation_label = ct.CTkLabel(Consultation_frame, text="Date de création :", font=('Karla', 16),
