@@ -610,17 +610,6 @@ class Accueil(ct.CTk):
     def add_consultation(self, treeview, date, heure, patient, medecin, notes):
         treeview.insert('', 'end', values=(date, heure, patient, medecin, notes, 'Modifier', 'Voir'))
 
-    def add_buttons(self, treeview, item):
-        # Implementing button-like behavior in Treeview is complex. A common alternative is to add a double-click event or a context menu.
-        pass
-
-    def modify_item(self, treeview, item):
-        values = treeview.item(item, 'values')
-        print(f'Modifying item: {values}')
-
-    def view_item(self, treeview, item):
-        values = treeview.item(item, 'values')
-        print(f'Viewing item: {values}')
 
     def add_patient(self, treeview, row):
         # Insérer une ligne dans le Treeview avec les données du patient
@@ -1123,6 +1112,7 @@ class Accueil(ct.CTk):
             self.treeview_consultations.insert('', 'end', values=(
                 appointment['date'], appointment['patient'], appointment['medical_gesture']
             ))
+
     def create_administrateur_treeview(self):
         # Style for Treeview
         style = ttk.Style()
@@ -1134,7 +1124,7 @@ class Accueil(ct.CTk):
         style.configure("Custom.Treeview.Heading", font=('Karla', 24, 'bold'), foreground="#1C1278")
 
         # Tableau Treeview
-        columns = ("Matricule", "Mot de passe", "Nom", "Prénom", "Date de naissance", "Téléphone", "Supprimer")
+        columns = ("Matricule", "Nom", "Prénom", "Date de naissance", "Téléphone")
         self.treeview_administrateurs = ttk.Treeview(self.center_frame, columns=columns, show="headings",
                                                      style="Custom.Treeview")
         self.treeview_administrateurs.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
@@ -1142,43 +1132,23 @@ class Accueil(ct.CTk):
         # Définition des en-têtes
         for col in columns:
             self.treeview_administrateurs.heading(col, text=col, anchor='center')
-            if col not in ['Supprimer']:
-                self.treeview_administrateurs.column(col, anchor='center', width=150)
+            self.treeview_administrateurs.column(col, anchor='center', width=150)
 
-        # Add a delete button to each row
-        def add_delete_button(treeview, row):
-            matricule_administrateur = row[0]
+        # Bind the Treeview select event to the on_row_select method
+        self.treeview_administrateurs.bind('<<TreeviewSelect>>', self.on_row_select)
 
-            # Create the delete button
-            delete_button = ttk.Button(self.center_frame, text="Supprimer", style="Custom.TButton",
-                                       command=lambda
-                                           matricule_administrateur: self.delete_administrateur(
-                                           matricule_administrateur))
+        def add_administrateur(self, treeview, row):
+            treeview.insert('', 'end', values=row)
 
-            # Add the button to the row
-            treeview.insert("", "end", values=row + (delete_button,), tags=("delete_button",))
-
-        # Populate the Treeview with data
-        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
-        cur = con.cursor()
-        cur.execute(
-            "SELECT matricule_administrateur, mot_de_passe, nom, prenom, date_de_naissance, telephone FROM administrateur")
-        rows = cur.fetchall()
-        cur.close()
-        con.close()
-
-        for row in rows:
-            add_delete_button(self.treeview_administrateurs, row)
-
-        # Configure the delete button tag
-        self.treeview_administrateurs.tag_configure("delete_button",  font=('Karla', 16, 'bold'))
+    def add_administrateur(self, treeview, row):
+        treeview.insert('', 'end', values=row)
 
     def show_settings(self):
         # Clear the center frame
         for widget in self.center_frame.winfo_children():
             widget.destroy()
 
-        # Create and display the treeview for administrateurs
+        # Create and display the Treeview for administrateurs
         self.create_administrateur_treeview()
 
         # Connexion à la base de données
@@ -1186,24 +1156,67 @@ class Accueil(ct.CTk):
         cur = con.cursor()
 
         # Récupération des données des administrateurs depuis la table
-        cur.execute(
-            "SELECT matricule_administrateur, mot_de_passe, nom, prenom, date_de_naissance, telephone FROM administrateur")
+        cur.execute("SELECT matricule_administrateur, nom, prenom, date_de_naissance, telephone FROM administrateur")
         rows = cur.fetchall()
         cur.close()
         con.close()
 
         for row in rows:
             # Appeler add_administrateur avec les valeurs appropriées
-            self.add_administrateur(self.treeview_administrateurs,
-                                    row)  # Sélectionnez les six premières valeurs de la ligne
+            self.add_administrateur(self.treeview_administrateurs, row)
 
-    def add_administrateur(self, treeview, row):
-        matricule_administrateur = row[0]
-        mot_de_passe = row[1]
-        nom = row[2]
-        prenom = row[3]
-        date_de_naissance = row[4]
-        telephone = row[5]
+    def on_row_select(self, event):
+        # Get selected row
+        selected_item = self.treeview_administrateurs.selection()[0]
+        values = self.treeview_administrateurs.item(selected_item, "values")
+
+        # Open new window with detailed information
+        self.new_window = ct.CTkToplevel(self)
+        self.new_window.grab_set()
+        self.new_window.title("Détails de l'administrateur")
+        self.new_window.geometry("400x300+300+300")
+        self.frameADV = ct.CTkFrame(self.new_window, fg_color='#ffffff', corner_radius=0, border_width=2,
+                                    border_color='#263A5F')
+        self.frameADV.pack(expand=True, fill='both')
+
+        labels = ["Matricule", "Nom", "Prénom", "Date de naissance", "Téléphone"]
+        for idx, label in enumerate(labels):
+            ct.CTkLabel(self.frameADV, text=f"{label}:", font=('Karla', 16, 'bold')).grid(row=idx, column=0, padx=10,
+                                                                                          pady=10, sticky='e')
+            ct.CTkLabel(self.frameADV, text=values[idx], font=('Karla', 16)).grid(row=idx, column=1, padx=10, pady=10,
+                                                                                  sticky='w')
+
+            # Add the delete button
+            self.delete_adm_button = ct.CTkButton(self.frameADV, text="Supprimer l'administrateur",
+                                                  command=lambda: self.delete_administrateur(values[0], selected_item),
+                                                  width=250,
+                                                  height=40, corner_radius=15, font=('Karla', 16, 'bold'),
+                                                  fg_color='#263A5F',
+                                                  cursor='hand2', text_color='#FFFFFF')
+            self.delete_adm_button.place(x=80, y=245)
+
+    def delete_administrateur(self, matricule, item):
+        # Confirmation dialog
+        if messagebox.askyesno("Confirmation", "Voulez-vous vraiment supprimer cet administrateur ?"):
+            try:
+                # Connexion à la base de données
+                con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+                cur = con.cursor()
+
+                # Suppression de l'administrateur dans la base de données
+                cur.execute("DELETE FROM administrateur WHERE matricule_administrateur = %s", (matricule,))
+                con.commit()
+                cur.close()
+                con.close()
+
+                # Suppression de l'administrateur dans le Treeview
+                self.treeview_administrateurs.delete(item)
+
+                messagebox.showinfo("Succès", "Administrateur supprimé avec succès.")
+                self.new_window.destroy()
+
+            except Exception as e:
+                messagebox.showerror("Erreur", f"Une erreur est survenue : {str(e)}")
     def show_statistics(self):
         print("Show statistiques")
 
