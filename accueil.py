@@ -33,7 +33,7 @@ class Inscrire(ct.CTkToplevel):
         self.label_frame = ct.CTkFrame(self.formulaire_frame, fg_color='#FFFFFF')
         self.label_frame.pack(pady=10)
 
-        self.label = ct.CTkLabel(self.label_frame, text="Inscrire Doctor :", font=('Karla', 26,'bold'))
+        self.label = ct.CTkLabel(self.label_frame, text="Inscrire Docteur :", font=('Karla', 26,'bold'))
         self.label.pack(expand=True, pady=20)
 
         # Frame for inscription form using grid
@@ -553,15 +553,14 @@ class Accueil(ct.CTk):
         # Configure the font for the column headings
         style.configure("Custom.Treeview.Heading", font=('Karla', 24, 'bold'), foreground="#1C1278")
         # Tableau Treeview
-        columns = ('Matricule', 'Nom', 'Prénom', 'Date de naissance', 'Téléphone', 'Groupage', 'Modifier', 'Voir')
+        columns = ('Matricule', 'Nom', 'Prénom', 'Date de naissance', 'Téléphone', 'Groupage')
         self.treeview_patients = ttk.Treeview(self.center_frame, columns=columns, show='headings', style="Custom.Treeview")
         self.treeview_patients.pack(expand=True, fill='both')
 
         # Définition des en-têtes
         for col in columns:
             self.treeview_patients.heading(col, text=col, anchor='center')
-            if col not in ['Modifier', 'Voir']:
-                self.treeview_patients.column(col, anchor='center', width=150)
+            self.treeview_patients.column(col, anchor='center', width=150)
 
     def create_appointments_treeview(self):
         # Style for Treeview
@@ -589,14 +588,14 @@ class Accueil(ct.CTk):
     def create_doctor_treeview(self):
         # Style for Treeview
         style = ttk.Style()
-        style.configure("Custom.Treeview", background="#ffffff", foreground="black", fieldbackground="#ffffff", font=('Karla', 16))
+        style.configure("Custom.Treeview", background="#ffffff", foreground="black", fieldbackground="#ffffff", font=('Karla', 16), rowheight=60)
         style.map("Custom.Treeview", background=[('selected', '#263A5F')])
 
         # Configure the font for the column headings
         style.configure("Custom.Treeview.Heading", font=('Karla', 26, 'bold'))
 
         # Treeview Table
-        columns = ('Matricule', 'Nom','Prénom', 'Grade', 'Téléphone', 'Modifier', 'Voir')
+        columns = ('Matricule', 'Nom','Prénom', 'Grade', 'Téléphone')
         self.treeview_doctors = ttk.Treeview(self.center_frame, columns=columns, show='headings',
                                                   style="Custom.Treeview")
         self.treeview_doctors.pack(expand=True, fill='both')
@@ -604,13 +603,7 @@ class Accueil(ct.CTk):
         # Définition des en-têtes
         for col in columns:
             self.treeview_doctors.heading(col, text=col, anchor='center')
-            if col not in ['Modifier', 'Voir']:
-                self.treeview_doctors.column(col, anchor='center',
-                                                  width=150 if col not in ['Modifier', 'Voir'] else 60)
-
-
-
-
+            self.treeview_doctors.column(col, anchor='center',width=150 )
     def add_appointment(self, treeview, date, heure, patient, medecin):
         treeview.insert('', 'end', values=(date, heure, patient, medecin, 'Modifier', 'Voir'))
 
