@@ -721,14 +721,94 @@ class Accueil(ct.CTk):
         # Crée un cadre pour afficher les informations du patient
         details_frame = ct.CTkFrame(self.info_frame, fg_color='#ffffff')
         details_frame.pack(fill='both', expand=True)
+        #Modifier dossier patient
+        self.modifier_butt=ct.CTkButton(details_frame, text="Modifier ", command=lambda: self.modifier_patient(values), width=250,
+                                                height=40, corner_radius=15, font=('Karla', 16, 'bold'),
+                                                fg_color='#263A5F',
+                                                cursor='hand2', text_color='#FFFFFF')
+        self.modifier_butt.grid(row=8, column=2, columnspan=2, pady=8)
 
         # Ajoute des libellés pour afficher les détails du patient
-        labels = ['Matricule:', 'Nom:', 'Prénom:', 'Date de naissance:', 'Téléphone:', 'Groupage:']
+        labels = ['Matricule:', 'Nom:', 'Prénom:', 'Date de naissance:', 'Téléphone:', 'Groupage:','Antécédent:']
         for i, (label_text, value) in enumerate(zip(labels, values)):
             label = ct.CTkLabel(details_frame, text=label_text, font=('Karla', 16))
             label.grid(row=i, column=0, sticky='w', padx=10, pady=5)
             value_label = ct.CTkLabel(details_frame, text=value, font=('Karla', 16))
             value_label.grid(row=i, column=1, sticky='w', padx=10, pady=5)
+
+    def modifier_patient(self, values):
+        try:
+            # Établir une connexion à la base de données
+            con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+            cur = con.cursor()
+
+            # Récupérer les antécédents et le numéro de téléphone actuels du patient
+            cur.execute("""
+                SELECT antecedents, telephone
+                FROM patient
+                WHERE nom = %s AND prenom = %s
+            """, (values[1], values[2]))  # Utilise les valeurs passées comme arguments
+
+            patient_info = cur.fetchone()
+
+            # Si des informations sont disponibles, afficher la fenêtre de modification
+            if patient_info:
+                for widget in self.info_frame.winfo_children():
+                    widget.destroy()
+                # Crée un cadre pour afficher les informations du patient
+                modification_frame = ct.CTkFrame(self.info_frame, fg_color='#ffffff')
+                modification_frame.pack(fill='both', expand=True)
+
+                # Création des widgets pour la nouvelle fenêtre
+                self.antecedents_label = ct.CTkLabel(modification_frame, text="Antécédents:", font=('Karla', 14))
+                self.antecedents_label.pack(pady=10)
+                self.antecedents_entry = ct.CTkTextbox(modification_frame, font=('Karla', 14))
+                self.antecedents_entry.insert("1.0", patient_info[0])  # Afficher les antécédents actuels
+                self.antecedents_entry.pack(pady=5)
+
+                self.telephone_label = ct.CTkLabel(modification_frame, text="Numéro de téléphone:", font=('Karla', 14))
+                self.telephone_label.pack(pady=10)
+                self.telephone_entry = ct.CTkEntry(modification_frame, font=('Karla', 14))
+                self.telephone_entry.insert(0, patient_info[1])  # Afficher le numéro de téléphone actuel
+                self.telephone_entry.pack(pady=5)
+
+                # Ajouter une lambda pour passer les valeurs du nom et du prénom à la fonction enregistrer
+                self.enregistrer_button = ct.CTkButton(modification_frame, text="Enregistrer",
+                                                       command=lambda: self.enregistrer(values[1], values[2]),
+                                                       font=('Karla', 14))
+                self.enregistrer_button.pack(pady=10)
+
+        except Exception as e:
+            # Afficher une erreur en cas de problème
+            messagebox.showerror("Erreur", f"Erreur lors de la récupération des informations du patient : {str(e)}",
+                                 parent=self)
+            print(str(e))
+        finally:
+            # Fermer la connexion à la base de données
+            if con:
+                con.close()
+
+    def enregistrer(self, nom, prenom):
+        try:
+            # Établir une connexion à la base de données
+            con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+            # Mise à jour des antécédents et du numéro de téléphone du patient dans la base de données
+            cur = con.cursor()
+            cur.execute("""
+                UPDATE patient 
+                SET antecedents = %s, telephone = %s
+                WHERE nom = %s AND prenom = %s
+            """, (
+                self.antecedents_entry.get("1.0", END),
+                self.telephone_entry.get(),
+                nom,
+                prenom
+            ))
+            con.commit()
+            messagebox.showinfo("Succès", "Les modifications ont été enregistrées avec succès", parent=self)
+        except Exception as e:
+            messagebox.showerror("Erreur", f"Erreur lors de l'enregistrement des modifications : {str(e)}", parent=self)
+            print(str(e))
 
     def afficher_suivi_patient(self, matricule_patient):
         try:
