@@ -254,7 +254,7 @@ class Inscrire_patient(ct.CTkToplevel):
                                 self.nomP_entry.get(), self.prenomP_entry.get(),
                                 transform_date(self.date_naissanceP_entry.get()), self.sexe_Patient_entry.get(),
                                 self.wilayaP_entry.get(), self.phone_nmbrP_entry.get(),
-                                self.groupage_entry.get(), self.antecedents_entry.get(),
+                                self.groupage_entry.get(), self.antecedents_entry.get("1.0", END),
                                 matricule_administrateur
                             ))
 
@@ -277,7 +277,7 @@ class Inscrire_patient(ct.CTkToplevel):
         self.date_naissanceP_entry.delete(0, END),
         self.wilayaP_entry.delete(0, END),
         self.phone_nmbrP_entry.delete(0, END),
-        self.antecedents_entry.delete(0,END)
+        self.antecedents_entry.delete("1.0", END)
 class Ajouter_RDV(ct.CTkToplevel):
     def __init__(self, parent):  # Add parent as an argument
         super().__init__(parent)
@@ -589,14 +589,16 @@ class Accueil(ct.CTk):
         # Configure the font for the column headings
         style.configure("Custom.Treeview.Heading", font=('Karla', 24, 'bold'), foreground="#1C1278")
         # Tableau Treeview
-        columns = ('Matricule', 'Nom', 'Prénom', 'Age', 'Téléphone', 'Groupage')
-        self.treeview_patients = ttk.Treeview(self.center_frame, columns=columns, show='headings', style="Custom.Treeview")
+        columns = ('Matricule', 'Nom', 'Prénom', 'Age', 'Téléphone', 'Groupage', 'Antécédent')
+        self.treeview_patients = ttk.Treeview(self.center_frame, columns=columns, show='headings',
+                                              style="Custom.Treeview")
         self.treeview_patients.pack(expand=True, fill='both')
 
         # Définition des en-têtes
         for col in columns:
             self.treeview_patients.heading(col, text=col, anchor='center')
-            self.treeview_patients.column(col, anchor='center', width=150)
+            width = 50 if col == "maricule" else 150
+            self.treeview_patients.column(col, anchor='center', width=width)
 
     def create_appointments_treeview(self):
         # Style for Treeview
@@ -669,7 +671,7 @@ class Accueil(ct.CTk):
         cur = con.cursor()
 
         # Récupération des données des patients depuis la table
-        cur.execute("SELECT matricule_patient, nom, prenom, age, telephone, groupage FROM patient")
+        cur.execute("SELECT matricule_patient, nom, prenom, age, telephone, groupage,Antecedents FROM patient")
         rows = cur.fetchall()
         for row in rows:
             # Appeler add_patient avec les valeurs appropriées
