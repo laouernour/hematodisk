@@ -18,6 +18,7 @@ def transform_date(date_str):
         return None
 
 class Inscrire(ct.CTkToplevel):
+    #Médecin
     def __init__(self, parent):  # Add parent as an argument
         super().__init__(parent)
         self.title("S'inscrire")
@@ -143,7 +144,7 @@ class Inscrire_patient(ct.CTkToplevel):
     def __init__(self, parent):  # Add parent as an argument
         super().__init__(parent)
         self.title("S'inscrire")
-        self.geometry('850x500+300+100')
+        self.geometry('850x590+300+50')
         self.configure(bg='#263A5F')
 
         self.formulaire_frame = ct.CTkFrame(self, fg_color='#FFFFFF', width=800, height=490, border_width=2,
@@ -189,13 +190,6 @@ class Inscrire_patient(ct.CTkToplevel):
         self.phone_nmbrP_label.grid(row=2, column=0, padx=20, pady=20, sticky="w")
         self.phone_nmbrP_entry = ct.CTkEntry(self.inscription_frame, width=200, height=30, corner_radius=10, font=('Karla', 14))
         self.phone_nmbrP_entry.grid(row=2, column=1, padx=20, pady=20, sticky="w")
-
-       # Matricule
-        '''self.matricule_Patient_label = ct.CTkLabel(self.inscription_frame, text="Matricule Patient:", font=('Karla', 16))
-        self.matricule_Patient_label.grid(row=2, column=2, padx=20, pady=20, sticky="w")
-        self.matricule_Patient_entry = ct.CTkEntry(self.inscription_frame,  width=200, height=30, corner_radius=10, font=('Karla', 14))
-        self.matricule_Patient_entry.grid(row=2, column=3, padx=20, pady=20, sticky="w")'''
-
         # Matricule
         self.sexe_Patient_label = ct.CTkLabel(self.inscription_frame, text="Sexe :",
                                                    font=('Karla', 16))
@@ -215,7 +209,8 @@ class Inscrire_patient(ct.CTkToplevel):
         # Antecedents
         self.antecedents_label = ct.CTkLabel(self.inscription_frame, text="Antécédents", font=('Karla', 16))
         self.antecedents_label.grid(row=3, column=2, padx=20, pady=20, sticky="w")
-        self.antecedents_entry = ct.CTkEntry(self.inscription_frame, width=200, height=30, corner_radius=10, font=('Karla', 14))
+        self.antecedents_entry = ct.CTkTextbox(self.inscription_frame, width=250, height=150, corner_radius=10,
+                                               font=('Karla', 14))
         self.antecedents_entry.grid(row=3, column=3, padx=20, pady=20, sticky="w")
 
         # Button to Create Account
@@ -513,6 +508,14 @@ class Accueil(ct.CTk):
         self.center_frame = ct.CTkScrollableFrame(self, fg_color='#ffffff', border_width=2, border_color='#263A5F', width=w - 275, height=h - 290, corner_radius=0, orientation="vertical")
         self.center_frame.place(x=250, y=200)
 
+        self.show_consultations()  # Appel sans argument explicite
+
+        def show_consultations(self, center_frame=None):
+            if center_frame is None:
+                center_frame = self.center_frame
+            print(f"Affichage des consultations pour: {center_frame}")
+            # Implémentez la logique de la méthode en utilisant center_frame
+
         self.toplevelDocteur_window = None
         self.toplevelP_window = None
         self.toplevelRDV_window = None
@@ -550,16 +553,12 @@ class Accueil(ct.CTk):
                 self.rech_txt.delete(0, 'end')
             con.close()
 
-
-
         elif self.current_search_list == "rdv":
 
             # Rechercher dans la liste des rendez-vous
 
             con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
-
             cur = con.cursor()
-
             recherche = " ".join(nom_prenom)
 
             cur.execute(
@@ -590,7 +589,7 @@ class Accueil(ct.CTk):
         # Configure the font for the column headings
         style.configure("Custom.Treeview.Heading", font=('Karla', 24, 'bold'), foreground="#1C1278")
         # Tableau Treeview
-        columns = ('Matricule', 'Nom', 'Prénom', 'Date de naissance', 'Téléphone', 'Groupage')
+        columns = ('Matricule', 'Nom', 'Prénom', 'Age', 'Téléphone', 'Groupage')
         self.treeview_patients = ttk.Treeview(self.center_frame, columns=columns, show='headings', style="Custom.Treeview")
         self.treeview_patients.pack(expand=True, fill='both')
 
@@ -641,12 +640,6 @@ class Accueil(ct.CTk):
         for col in columns:
             self.treeview_doctors.heading(col, text=col, anchor='center')
             self.treeview_doctors.column(col, anchor='center',width=150 )
-    def add_appointment(self, treeview, date, heure, patient, medecin):
-        treeview.insert('', 'end', values=(date, heure, patient, medecin, 'Modifier', 'Voir'))
-
-    def add_consultation(self, treeview, date, heure, patient, medecin, notes):
-        treeview.insert('', 'end', values=(date, heure, patient, medecin, notes, 'Modifier', 'Voir'))
-
 
     def add_patient(self, treeview, row):
         # Insérer une ligne dans le Treeview avec les données du patient
@@ -657,8 +650,6 @@ class Accueil(ct.CTk):
 
     def add_appointment(self, treeview, row):
         treeview.insert('', 'end', values=row)
-
-
 
     def show_patients_tab(self):
         # Clear the center frame
@@ -678,7 +669,7 @@ class Accueil(ct.CTk):
         cur = con.cursor()
 
         # Récupération des données des patients depuis la table
-        cur.execute("SELECT matricule_patient, nom, prenom, date_de_naissance, telephone, groupage FROM patient")
+        cur.execute("SELECT matricule_patient, nom, prenom, age, telephone, groupage FROM patient")
         rows = cur.fetchall()
         for row in rows:
             # Appeler add_patient avec les valeurs appropriées
