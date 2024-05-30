@@ -879,7 +879,7 @@ class Accueil(ct.CTk):
                     diagnostique = self.diagnostique_entry.get("1.0", tk.END)  # Récupérer tout le texte
 
                     # Requête SQL pour insérer les données de consultation
-                    query_insert = "INSERT INTO  historique_consultations (matricule_patient, matricule_medecin, 	date_de_consultation, geste_medical, diagnostique) VALUES (%s, %s, %s, %s, %s)"
+                    query_insert = "INSERT INTO  historique_consultations (matricule_patient, matricule_medecin, date_de_consultation, geste_medical, diagnostique) VALUES (%s, %s, %s, %s, %s)"
 
                     # Exécuter la requête SQL pour l'insertion
                     cur.execute(query_insert,
@@ -974,7 +974,7 @@ class Accueil(ct.CTk):
         details_frame.pack(fill='both', expand=True)
 
         # Define labels and corresponding values for appointment details
-        labels = ['N°RDV','Date de Création du  Rendez-vous', 'Patient', 'Geste médical']
+        labels = ['N°RDV', 'Patient', 'Date de Création du  Rendez-vous','Geste médical']
         for i, (label_text, value) in enumerate(zip(labels, values)):
             label = ct.CTkLabel(details_frame, text=label_text, font=('Karla', 16))
             label.grid(row=i, column=0, sticky='w', padx=10, pady=5)
