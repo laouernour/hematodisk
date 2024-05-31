@@ -494,7 +494,7 @@ class Accueil(ct.CTk):
             ("Liste des Rendez-vous", self.show_appointments_tab),
             ("Ajouter Médecin", self.report_appointments),
             ("Liste des Médecin", self.show_doctors_tab),
-            ("Statistique", self.show_statistics),
+            ("Statistique", self.create_statistics_frame),
             ("Paramètres", self.show_settings)
         ]
 
@@ -1257,6 +1257,43 @@ class Accueil(ct.CTk):
     def add_administrateur(self, treeview, row):
         treeview.insert('', 'end', values=row)
 
+    def create_statistics_frame(self):
+        # Effacer le cadre central
+        for widget in self.center_frame.winfo_children():
+            widget.destroy()
+
+        # Configuration du style
+        style = ttk.Style(self.center_frame)
+        style.configure('Stats.TFrame', background='#ffffff')
+        style.configure('Stats.TLabel', background='#ffffff', font=('Helvetica', 12))
+        style.configure('Border.TFrame', background='#ffffff', borderwidth=5, relief='solid', bordercolor='#87CEEB',
+                        cornerradius=100)
+
+        # Cadre des statistiques
+        stats_frame = ttk.Frame(self.center_frame, style='Stats.TFrame')
+        stats_frame.pack(pady=20, fill='x', expand=True)
+
+        # Configuration de la grille
+        stats_frame.columnconfigure(0, weight=1)
+        stats_frame.columnconfigure(1, weight=1)
+        stats_frame.columnconfigure(2, weight=1)
+        stats_frame.columnconfigure(3, weight=1)
+
+        # Création des statistiques
+        self.create_statistic(stats_frame, "Nombre total des patients", self.calculate_new_patients(), 0, 0)
+        self.create_statistic(stats_frame, "Homme", self.calculate_new_patients_homme(), 1, 0)
+        self.create_statistic(stats_frame, "Femme", self.calculate_new_patients_femme(), 2, 0)
+        self.create_statistic(stats_frame, "Nombre total de geste medical", self.calculate_geste_medical(), 0, 4)
+        self.create_statistic(stats_frame, "Transfusion", self.calculate_transfusion(), 1, 4)
+        self.create_statistic(stats_frame, "chimio", self.calculate_chimio(), 2, 4)
+        self.create_statistic(stats_frame, "frotis", self.calculate_frotis(), 3, 4)
+        self.create_statistic(stats_frame, "controle", self.calculate_controle(), 0, 6)
+        self.create_statistic(stats_frame, "bom", self.calculate_bom(), 1, 6)
+        self.create_statistic(stats_frame, "cup", self.calculate_cup(), 2, 6)
+        self.create_statistic(stats_frame, "facteur", self.calculate_facteur(), 3, 6)
+        self.create_statistic(stats_frame, "moelle", self.calculate_moelle(), 0, 7)
+
+
     def show_settings(self):
         # Clear the center frame
         for widget in self.center_frame.winfo_children():
@@ -1331,8 +1368,115 @@ class Accueil(ct.CTk):
 
             except Exception as e:
                 messagebox.showerror("Erreur", f"Une erreur est survenue : {str(e)}")
-    def show_statistics(self):
-        print("Show statistiques")
+
+    def calculate_new_patients(self):
+        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+        cur = con.cursor()
+        cur.execute("SELECT COUNT(*) FROM patient")
+        total_patients = cur.fetchone()[0]
+        con.close()
+        return total_patients
+
+    def calculate_new_patients_homme(self):
+        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+        cur = con.cursor()
+        cur.execute("SELECT COUNT(*) FROM patient WHERE sexe = 'Homme'")
+        total_hommes = cur.fetchone()[0]
+        con.close()
+        return total_hommes
+
+    def calculate_new_patients_femme(self):
+        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+        cur = con.cursor()
+        cur.execute("SELECT COUNT(*) FROM patient WHERE sexe = 'Femme'")
+        total_femmes = cur.fetchone()[0]
+        con.close()
+        return total_femmes
+
+    def calculate_geste_medical(self):
+        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+        cur = con.cursor()
+        cur.execute("SELECT COUNT(*) FROM rendez_vous WHERE geste_medical IS NOT NULL")
+        total_gestes_medicaux = cur.fetchone()[0]
+        con.close()
+        return total_gestes_medicaux
+
+    def calculate_transfusion(self):
+        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+        cur = con.cursor()
+        cur.execute("SELECT COUNT(*) FROM rendez_vous WHERE geste_medical = 'Transfusion'")
+        nombre_transfusions = cur.fetchone()[0]
+        con.close()
+        return nombre_transfusions
+
+    def calculate_chimio(self):
+        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+        cur = con.cursor()
+        cur.execute("SELECT COUNT(*) FROM rendez_vous WHERE geste_medical = 'Chimiothérapie'")
+        nombre_chimiotherapies = cur.fetchone()[0]
+        con.close()
+        return nombre_chimiotherapies
+
+    def calculate_frotis(self):
+        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+        cur = con.cursor()
+        cur.execute("SELECT COUNT(*) FROM rendez_vous WHERE geste_medical = 'Frotis'")
+        nombre_frottis = cur.fetchone()[0]
+        con.close()
+        return nombre_frottis
+
+    def calculate_controle(self):
+        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+        cur = con.cursor()
+        cur.execute("SELECT COUNT(*) FROM rendez_vous WHERE geste_medical = 'Contrôle'")
+        nombre_controles = cur.fetchone()[0]
+        con.close()
+        return nombre_controles
+
+    def calculate_bom(self):
+        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+        cur = con.cursor()
+        cur.execute("SELECT COUNT(*) FROM rendez_vous WHERE geste_medical = 'BOM'")
+        nombre_bom = cur.fetchone()[0]
+        con.close()
+        return nombre_bom
+
+    def calculate_cup(self):
+        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+        cur = con.cursor()
+        cur.execute("SELECT COUNT(*) FROM rendez_vous WHERE geste_medical = 'CUP'")
+        nombre_cup = cur.fetchone()[0]
+        con.close()
+        return nombre_cup
+
+    def calculate_facteur(self):
+        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+        cur = con.cursor()
+        cur.execute("SELECT COUNT(*) FROM rendez_vous WHERE geste_medical = 'Facteur'")
+        nombre_facteurs = cur.fetchone()[0]
+        con.close()
+        return nombre_facteurs
+
+    def calculate_moelle(self):
+        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+        cur = con.cursor()
+        cur.execute("SELECT COUNT(*) FROM rendez_vous WHERE geste_medical = 'Moelle'")
+        nombre_moelles = cur.fetchone()[0]
+        con.close()
+        return nombre_moelles
+
+    def create_statistic(self, parent, label, value, column, row):
+        # Create a frame with a rounded black border
+        border_frame = ttk.Frame(parent, style='Border.TFrame')
+        border_frame.grid(row=row, column=column, padx=10, pady=10, sticky='ew')
+
+        # Create a frame inside the border frame to hold the statistic labels
+        stat_frame = ttk.Frame(border_frame, style='Stats.TFrame')
+        stat_frame.grid(row=0, column=0, padx=10, pady=10, sticky='nsew')
+
+        # Create the statistic labels
+        ttk.Label(stat_frame, text=label, style='Stats.TLabel').grid(row=0, column=0, pady=(0, 5), sticky='w')
+        ttk.Label(stat_frame, text=value, style='Stats.TLabel').grid(row=1, column=0, pady=(0, 5), sticky='w')
 
     def open_toplevelP(self):
         if self.toplevelP_window is None or not self.toplevelP_window.winfo_exists():
@@ -1340,6 +1484,7 @@ class Accueil(ct.CTk):
             self.toplevelP_window.grab_set()  # Make the new window modal
         else:
             self.toplevelP_window.focus()  # if window exists focus it
+
 
     def open_toplevelRDV(self):
         if self.toplevelRDV_window is None or not self.toplevelRDV_window.winfo_exists():
