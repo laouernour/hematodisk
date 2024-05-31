@@ -1716,7 +1716,7 @@ class Accueil(ct.CTk):
 
     def create_statistic(self, parent, label, value, column, row):
         # Create a frame with a rounded black border
-        border_frame = ct.CTkFrame(parent, fg_color="#ffffff", border_color="#28A0C6", border_width=2, corner_radius=10)
+        border_frame = ct.CTkFrame(parent, fg_color="#ffffff", border_color="#263A5F", border_width=2, corner_radius=10)
         border_frame.grid(row=row, column=column, padx=13, pady=10, sticky='nsew')
 
         # Create a frame inside the border frame to hold the statistic labels
@@ -1724,10 +1724,10 @@ class Accueil(ct.CTk):
         stat_frame.pack(padx=10, pady=10, expand=True, fill='both')
 
         # Create the statistic labels
-        label_widget = ct.CTkLabel(stat_frame, text=label, font=('Karla', 18, 'bold'), text_color='black')
+        label_widget = ct.CTkLabel(stat_frame, text=label, font=('Karla', 18, 'bold'), text_color='#263A5F')
         label_widget.pack(pady=(0, 5), anchor='w')
 
-        value_widget = ct.CTkLabel(stat_frame, text=value, font=('Karla', 18, 'bold'), text_color='black')
+        value_widget = ct.CTkLabel(stat_frame, text=value, font=('Karla', 18, 'bold'), text_color='#263A5F')
         value_widget.pack(pady=(0, 5), anchor='w')
 
     def create_statistics_frame(self):
