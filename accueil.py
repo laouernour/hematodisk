@@ -524,7 +524,7 @@ class Accueil(ct.CTk):
         self.left_frame = ct.CTkFrame(self, fg_color='#28A0C6', width=250, height=h - 240, corner_radius=0)
         self.left_frame.place(x=0, y=200)
         self.down_frame = ct.CTkFrame(self, fg_color='#28A0C6', width=1600, height=50, corner_radius=0)
-        self.down_frame.place(x=0, y=self.winfo_screenheight() -100)
+        self.down_frame.place(x=0, y=self.winfo_screenheight() -94)
 
         buttons_info = [
             ("Liste des Patients", self.show_patients_tab),
