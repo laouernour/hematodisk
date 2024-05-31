@@ -1520,10 +1520,6 @@ class Accueil(ct.CTk):
 
     def add_administrateur(self, treeview, row):
         treeview.insert('', 'end', values=row)
-
-
-
-
     def show_settings(self):
         # Clear the center frame
         for widget in self.center_frame.winfo_children():
@@ -1695,61 +1691,49 @@ class Accueil(ct.CTk):
         con.close()
         return nombre_moelles
 
+    def create_statistic(self, parent, label, value, column, row):
+        # Create a frame with a rounded black border
+        border_frame = ct.CTkFrame(parent, fg_color="#ffffff", border_color="black", border_width=2, corner_radius=10)
+        border_frame.grid(row=row, column=column, padx=10, pady=10, sticky='nsew')
+
+        # Create a frame inside the border frame to hold the statistic labels
+        stat_frame = ct.CTkFrame(border_frame, fg_color="white",width=800)
+        stat_frame.pack(padx=10, pady=10, expand=True, fill='both')
+
+        # Create the statistic labels
+        label_widget = ct.CTkLabel(stat_frame, text=label, font=('Karla', 18, 'bold'), text_color='black')
+        label_widget.pack(pady=(0, 5), anchor='w')
+
+        value_widget = ct.CTkLabel(stat_frame, text=value, font=('Karla', 18, 'bold'), text_color='black')
+        value_widget.pack(pady=(0, 5), anchor='w')
+
     def create_statistics_frame(self):
-        # Effacer le cadre central
+        # Clear the center frame
         for widget in self.center_frame.winfo_children():
             widget.destroy()
 
-        # Configuration du style
-        style = ttk.Style(self.center_frame)
-        style.configure('Stats.TFrame', background='#ffffff')
-        style.configure('Stats.TLabel', background='#ffffff', font=('Helvetica', 12))
-        style.configure('Border.TFrame', background='#ffffff', borderwidth=2, relief='solid', bordercolor='black',
-                        highlightthickness=0, highlightbackground="black", highlightcolor="black",
-                        cornerradius=10)  # ajuster la taille de la bordure et le rayon de courbure
+        # Statistics frame
+        stats_frame = ct.CTkFrame(self.center_frame, fg_color="#ffffff",width=800)
+        stats_frame.pack( fill='both', expand=True)
 
-        # Cadre des statistiques
-        stats_frame = ttk.Frame(self.center_frame, style='Stats.TFrame')
-        stats_frame.grid(row=0, column=0, sticky='nsew')
-
-        # Configuration de la grille
-        self.center_frame.rowconfigure(0, weight=1)
-        self.center_frame.columnconfigure(0, weight=1)
-
-        # Configuration de la grille pour les statistiques
-        stats_frame.rowconfigure(0, weight=1)
-        stats_frame.columnconfigure(0, weight=1)
-
-        # Create statistic frames and labels
-        for i in range(5):  # number of rows
-            stats_frame.rowconfigure(i, weight=1)
+        # Grid configuration
+        for i in range(4):
             stats_frame.columnconfigure(i, weight=1)
 
-        self.create_statistic(stats_frame, "Nombre total des patients :", self.calculate_new_patients(), 0, 0)
-        self.create_statistic(stats_frame, "Homme :", self.calculate_new_patients_homme(), 1, 0)
-        self.create_statistic(stats_frame, "Femme :", self.calculate_new_patients_femme(), 2, 0)
-        self.create_statistic(stats_frame, "Nombre total de geste medical :", self.calculate_geste_medical(), 0, 1)
-        self.create_statistic(stats_frame, "Transfusion :", self.calculate_transfusion(), 1, 1)
-        self.create_statistic(stats_frame, "Chimiotherapie :", self.calculate_chimio(), 2, 1)
-        self.create_statistic(stats_frame, "Frotis :", self.calculate_frotis(), 3, 1)
-        self.create_statistic(stats_frame, "Controle :", self.calculate_controle(), 0, 2)
-        self.create_statistic(stats_frame, "BOM :", self.calculate_bom(), 1, 2)
-        self.create_statistic(stats_frame, "CUP :", self.calculate_cup(), 2, 2)
-        self.create_statistic(stats_frame, "Facteur :", self.calculate_facteur(), 3, 2)
-        self.create_statistic(stats_frame, "Moelle :", self.calculate_moelle(), 0, 3)
+        # Create statistics
+        self.create_statistic(stats_frame, "Nombre total des patients", self.calculate_new_patients(), 0, 0)
+        self.create_statistic(stats_frame, "Homme", self.calculate_new_patients_homme(), 1, 0)
+        self.create_statistic(stats_frame, "Femme", self.calculate_new_patients_femme(), 2, 0)
+        self.create_statistic(stats_frame, "Nombre total de geste medical", self.calculate_geste_medical(), 0, 1)
+        self.create_statistic(stats_frame, "Transfusion", self.calculate_transfusion(), 1, 1)
+        self.create_statistic(stats_frame, "Chimio", self.calculate_chimio(), 2, 1)
+        self.create_statistic(stats_frame, "Frotis", self.calculate_frotis(), 3, 1)
+        self.create_statistic(stats_frame, "Controle", self.calculate_controle(), 0, 2)
+        self.create_statistic(stats_frame, "BOM", self.calculate_bom(), 1, 2)
+        self.create_statistic(stats_frame, "CUP", self.calculate_cup(), 2, 2)
+        self.create_statistic(stats_frame, "Facteur", self.calculate_facteur(), 3, 2)
+        self.create_statistic(stats_frame, "Moelle", self.calculate_moelle(), 0, 3)
 
-    def create_statistic(self, parent, label, value, column, row):
-        # Create a frame with a rounded black border
-        border_frame = ttk.Frame(parent, style='Border.TFrame')
-        border_frame.grid(row=row, column=column, sticky='nsew', padx=35, pady=35)  # ajuster l'espace entre les cadres
-
-        # Create a frame inside the border frame to hold the statistic labels
-        stat_frame = ttk.Frame(border_frame, style='Stats.TFrame')
-        stat_frame.grid(row=0, column=0, sticky='nsew', padx=5, pady=5)
-
-        # Create the statistic labels
-        ttk.Label(stat_frame, text=label, style='Stats.TLabel').grid(row=0, column=0, sticky='w')
-        ttk.Label(stat_frame, text=value, style='Stats.TLabel').grid(row=1, column=0, sticky='w')
 
     def open_toplevelP(self):
         if self.toplevelP_window is None or not self.toplevelP_window.winfo_exists():
@@ -1757,7 +1741,6 @@ class Accueil(ct.CTk):
             self.toplevelP_window.grab_set()  # Make the new window modal
         else:
             self.toplevelP_window.focus()  # if window exists focus it
-
 
     def open_toplevelRDV(self):
         if self.toplevelRDV_window is None or not self.toplevelRDV_window.winfo_exists():
