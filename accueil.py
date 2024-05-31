@@ -7,6 +7,22 @@ import tkinter as tk
 from tkcalendar import Calendar
 from datetime import datetime
 from PIL import Image, ImageTk
+import re
+def wilaya():
+    wilaya_list = ['01 Adrar','02 Chlef','03 Laghouat','04 Oum El Bouaghi','05 Batna','06 Béjaïa','07 Biskra','08 Béchar','09 Blida','10 Bouira',
+                   '11 Tamanrasset','12 Tébessa','13 Tlemcen','14 Tiaret','15 Tizi Ouzou','16 Alger','17 Djelfa','18 Jijel','19 Sétif','20 Saïda',
+                   '21 Skikda','22 Sidi Bel Abbès','23 Annaba','24 Guelma','25 Constantine','26 Médéa','27 Mostaganem','28 MSila','29 Mascara',
+                   '30  Ouargla','31 Oran','32 El Bayadh','33 Illizi','34 Bordj Bou Arreridj','35 Boumerdès','36 El Tarf','37 Tindouf','38 Tissemsilt',
+                   '39 El Oued','40 Khenchela','41 Souk Ahras','42 Tipaza','43 Mila','44 Aïn Defla','45 Naâma','46 Aïn Témouchent','47 Ghardaïa','48 Relizane','49 Timimmoun',
+                   '50 Bordj Badji Mokhtar','53 Ouled Djellal','54 Béni Abbès','53 In Salah','54 Guessam','55 Touggourt','56 Djanet','57 El Mghair','58El Meniaa']
+    return wilaya_list
+
+def invalid_characters(entry):
+    pattern = re.compile(r'[0-9!@#$%^&*(),.?":{}|<>/-]')
+    return bool(pattern.search(entry))
+def invalid_characters_numbr(entry):
+    pattern1 = re.compile(r'[!@#$%^&*(),.?":{}|<>/-]')
+    return bool(pattern1.search(entry))
 
 def transform_date(date_str):
     # Convertit la date du format 'dd-mm-yyyy' au format 'yyyy-mm-dd'
@@ -61,10 +77,11 @@ class Inscrire(ct.CTkToplevel):
         self.date_naissance_entry.grid(row=1, column=1, padx=20, pady=20, sticky="w")
 
         # Wilaya
+
         self.wilaya_label = ct.CTkLabel(self.inscription_frame, text="Wilaya :", font=('Karla', 18))
         self.wilaya_label.grid(row=1, column=2, padx=20, pady=20, sticky="w")
-        self.wilaya_entry = ct.CTkEntry(self.inscription_frame, width=250, height=35, corner_radius=10,
-                                        font=('Karla', 14))
+        self.wilaya_entry = ct.CTkComboBox(self.inscription_frame, width=250, height=35, corner_radius=10,
+                                        font=('Karla', 14), values=wilaya())
         self.wilaya_entry.grid(row=1, column=3, padx=20, pady=20, sticky="w")
 
         # Téléphone
@@ -104,38 +121,50 @@ class Inscrire(ct.CTkToplevel):
         label_image.pack()  # Ajustez la position selon vos besoins
 
     def creer(self):
+        # Vérification des champs obligatoires
         if (self.nom_entry.get() == "" or self.prenom_entry.get() == "" or self.date_naissance_entry.get() == ""
                 or self.wilaya_entry.get() == "" or self.phone_nmbr_entry.get() == ""
                 or self.matricule_doctor_entry.get() == ""):
             messagebox.showerror("Erreur", "Inscription incomplète", parent=self)
         else:
-            # Placeholder for database connection and operation
-            try:
-                mydb = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
-                mycursor = mydb.cursor()
-                mycursor.execute("insert into medecin (matricule_medecin,nom,prenom,date_de_naissance,wilaya,telephone,grade)values(%s,%s,%s,%s,%s,%s,%s)",
-                                 (
-                                 self.matricule_doctor_entry.get(),
-                                 self.nom_entry.get(),
-                                 self.prenom_entry.get(),
-                                 transform_date(self.date_naissance_entry.get()),
-                                 self.wilaya_entry.get(),
-                                 self.phone_nmbr_entry.get(),
-                                 self.grad_entry.get(),
-                ))
-                messagebox.showinfo("Success",f"Médecin enregistrer", parent=self )
-                mydb.commit()
-                self.vider()
-                mydb.close
-            except Exception as es:
-                messagebox.showerror("Erreur", f"Erreur de connexion : {str(es)}", parent=self)
+            # Vérification des caractères non autorisés dans les champs
+
+            if (invalid_characters(self.nom_entry.get()) or
+                    invalid_characters(self.prenom_entry.get()) or
+                    invalid_characters(self.wilaya_entry.get()) or
+                    invalid_characters_numbr(self.phone_nmbr_entry.get()) or
+                    invalid_characters_numbr(self.matricule_doctor_entry.get())):
+
+                messagebox.showerror("Erreur",
+                                     "Les champs ne doivent pas contenir de chiffres ou de caractères spéciaux",
+                                     parent=self)
+            else:
+                try:
+                    mydb = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+                    mycursor = mydb.cursor()
+                    mycursor.execute(
+                        "insert into medecin (matricule_medecin,nom,prenom,date_de_naissance,wilaya,telephone,grade)values(%s,%s,%s,%s,%s,%s,%s)",
+                        (
+                            self.matricule_doctor_entry.get(),
+                            self.nom_entry.get(),
+                            self.prenom_entry.get(),
+                            transform_date(self.date_naissance_entry.get()),
+                            self.wilaya_entry.get(),
+                            self.phone_nmbr_entry.get(),
+                            self.grad_entry.get(),
+                        ))
+                    messagebox.showinfo("Success", "Médecin enregistré", parent=self)
+                    mydb.commit()
+                    self.vider()
+                    mydb.close()
+                except Exception as es:
+                    messagebox.showerror("Erreur", f"Erreur de connexion : {str(es)}", parent=self)
 
     def vider(self):
         self.matricule_doctor_entry.delete(0, END),
         self.nom_entry.delete(0, END),
         self.prenom_entry.delete(0, END),
         self.date_naissance_entry.delete(0, END),
-        self.wilaya_entry.delete(0, END),
         self.phone_nmbr_entry.delete(0, END),
 
 
@@ -182,7 +211,7 @@ class Inscrire_patient(ct.CTkToplevel):
         # Wilaya
         self.wilayaP_label = ct.CTkLabel(self.inscription_frame, text="Wilaya :", font=('Karla', 16))
         self.wilayaP_label.grid(row=1, column=2, padx=20, pady=20, sticky="w")
-        self.wilayaP_entry = ct.CTkEntry(self.inscription_frame,  width=200, height=30, corner_radius=10, font=('Karla', 14))
+        self.wilayaP_entry = ct.CTkComboBox(self.inscription_frame,  width=200, height=30, corner_radius=10, font=('Karla', 14),values=wilaya())
         self.wilayaP_entry.grid(row=1, column=3, padx=20, pady=20, sticky="w")
 
         # Téléphone
@@ -232,44 +261,53 @@ class Inscrire_patient(ct.CTkToplevel):
 
     def creer(self):
         if (self.nomP_entry.get() == "" or self.prenomP_entry.get() == "" or self.date_naissanceP_entry.get() == ""
-                or self.wilayaP_entry.get() == "" or self.phone_nmbrP_entry.get() == ""
-                or self.groupage_entry.get() == ""):
+                or self.wilayaP_entry.get() == "" or self.phone_nmbrP_entry.get() == ""):
             messagebox.showerror("Erreur", "Inscription incomplète", parent=self)
+
+            # Vérifier les entrées
         else:
-            try:
-                # Établir une connexion à la base de données
-                con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
-                cur = con.cursor()
+            if invalid_characters(self.nomP_entry.get()) or invalid_characters(
+                    self.prenomP_entry.get()) or invalid_characters(
+                    self.wilayaP_entry.get()) or invalid_characters_numbr(self.phone_nmbrP_entry.get()):
+                messagebox.showerror("Erreur",
+                                     "Les champs ne doivent pas contenir de chiffres ou de caractères spéciaux",
+                                     parent=self)
+                return
+            else:
+                try:
+                    # Établir une connexion à la base de données
+                    con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+                    cur = con.cursor()
 
-                # Récupération du matricule_administrateur à partir de la table administrateur
-                cur.execute("SELECT matricule_administrateur FROM administrateur")
-                matricule_administrateur = cur.fetchone()[0]
+                    # Récupération du matricule_administrateur à partir de la table administrateur
+                    cur.execute("SELECT matricule_administrateur FROM administrateur")
+                    matricule_administrateur = cur.fetchone()[0]
 
-                # Insertion des données dans la table patient avec vérification de l'existence du matricule_administrateur
-                cur.execute("""
-                       INSERT INTO patient (nom, prenom, date_de_naissance, sexe, wilaya, telephone, groupage, antecedents,FKmatricule_administrateur) 
-                       VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-                   """,
-                            (
-                                self.nomP_entry.get(), self.prenomP_entry.get(),
-                                transform_date(self.date_naissanceP_entry.get()), self.sexe_Patient_entry.get(),
-                                self.wilayaP_entry.get(), self.phone_nmbrP_entry.get(),
-                                self.groupage_entry.get(), self.antecedents_entry.get("1.0", END),
-                                matricule_administrateur
-                            ))
+                    # Insertion des données dans la table patient avec vérification de l'existence du matricule_administrateur
+                    cur.execute("""
+                           INSERT INTO patient (nom, prenom, date_de_naissance, sexe, wilaya, telephone, groupage, antecedents,FKmatricule_administrateur) 
+                           VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                       """,
+                                (
+                                    self.nomP_entry.get(), self.prenomP_entry.get(),
+                                    transform_date(self.date_naissanceP_entry.get()), self.sexe_Patient_entry.get(),
+                                    self.wilayaP_entry.get(), self.phone_nmbrP_entry.get(),
+                                    self.groupage_entry.get(), self.antecedents_entry.get("1.0", END),
+                                    matricule_administrateur
+                                ))
 
-                # Committez les changements
-                con.commit()
-                messagebox.showinfo("Succès", "Inscription réussie", parent=self)
+                    # Committez les changements
+                    con.commit()
+                    messagebox.showinfo("Succès", "Inscription réussie", parent=self)
 
-            except Exception as e:
-                messagebox.showerror("Erreur", f"Erreur lors de l'inscription : {str(e)}", parent=self)
-                print(str(e))
-            finally:
-                # Fermez la connexion
-                if con:
-                    self.vider()
-                    con.close()
+                except Exception as e:
+                    messagebox.showerror("Erreur", f"Erreur lors de l'inscription : {str(e)}", parent=self)
+                    print(str(e))
+                finally:
+                    # Fermez la connexion
+                    if con:
+                        self.vider()
+                        con.close()
 
     def vider(self):
         self.nomP_entry.delete(0, END),
@@ -485,8 +523,10 @@ class Accueil(ct.CTk):
         self.rech_txt_butt.place(x=555, y=132)
 
         # Left frame
-        self.left_frame = ct.CTkFrame(self, fg_color='#28A0C6', width=250, height=h - 250, corner_radius=0)
+        self.left_frame = ct.CTkFrame(self, fg_color='#28A0C6', width=250, height=h - 240, corner_radius=0)
         self.left_frame.place(x=0, y=200)
+        self.down_frame = ct.CTkFrame(self, fg_color='#28A0C6', width=1600, height=50, corner_radius=0)
+        self.down_frame.place(x=0, y=self.winfo_screenheight() -100)
 
         buttons_info = [
             ("Liste des Patients", self.show_patients_tab),
@@ -505,7 +545,7 @@ class Accueil(ct.CTk):
             button.place(x=25, y=30 + 60 * idx)
 
         # Center frame
-        self.center_frame = ct.CTkScrollableFrame(self, fg_color='#ffffff', border_width=2, border_color='#263A5F', width=w - 275, height=h - 290, corner_radius=0, orientation="vertical")
+        self.center_frame = ct.CTkFrame(self, fg_color='#ffffff', border_width=2, border_color='#263A5F', width=w - 260, height=h - 270, corner_radius=0)
         self.center_frame.place(x=250, y=200)
 
         self.show_consultations()  # Appel sans argument explicite
@@ -580,24 +620,33 @@ class Accueil(ct.CTk):
             # Supprimer le texte de la barre de recherche
             self.rech_txt.delete(0, 'end')
             con.close()
+
     def create_patients_treeview(self):
         # Style for Treeview
         style = ttk.Style()
-        style.configure("Custom.Treeview", background="#ffffff", foreground="black", fieldbackground="#ffffff", font=('Karla', 16), rowheight=60)
+        style.configure("Custom.Treeview", background="#ffffff", foreground="black", fieldbackground="#ffffff",
+                        font=('Karla', 16), rowheight=60)
         style.map("Custom.Treeview", background=[('selected', '#263A5F')])
 
         # Configure the font for the column headings
         style.configure("Custom.Treeview.Heading", font=('Karla', 24, 'bold'), foreground="#1C1278")
+
         # Tableau Treeview
         columns = ('Matricule', 'Nom', 'Prénom', 'Age', 'Téléphone', 'Groupage', 'Antécédent')
         self.treeview_patients = ttk.Treeview(self.center_frame, columns=columns, show='headings',
                                               style="Custom.Treeview")
+
+        # Add a vertical scrollbar
+        scrollbar = ttk.Scrollbar(self.center_frame, orient="vertical", command=self.treeview_patients.yview)
+        scrollbar.pack(side="right", fill="y")
+        self.treeview_patients.configure(yscrollcommand=scrollbar.set)
+
         self.treeview_patients.pack(expand=True, fill='both')
 
         # Définition des en-têtes
         for col in columns:
             self.treeview_patients.heading(col, text=col, anchor='center')
-            width = 50 if col == "maricule" else 150
+            width = 155 if col == "Matricule" else 225
             self.treeview_patients.column(col, anchor='center', width=width)
 
     def create_appointments_treeview(self):
@@ -614,12 +663,17 @@ class Accueil(ct.CTk):
         columns = ('N°RDV', 'Patient', 'Date','geste_medical')
         self.treeview_appointments = ttk.Treeview(self.center_frame, columns=columns, show='headings',
                                                   style="Custom.Treeview")
+        # Add a vertical scrollbar
+        scrollbar = ttk.Scrollbar(self.center_frame, orient="vertical", command=self.treeview_appointments.yview)
+        scrollbar.pack(side="right", fill="y")
+        self.treeview_appointments.configure(yscrollcommand=scrollbar.set)
         self.treeview_appointments.pack(expand=True, fill='both')
 
         # Définition des en-têtes
         for col in columns:
             self.treeview_appointments.heading(col, text=col, anchor='center')
-            self.treeview_appointments.column(col, anchor='center', width=150)
+            width = 250 if col == "N°RDV" else 418
+            self.treeview_appointments.column(col, anchor='center',width=width)
 
         self.treeview_appointments.bind("<Button-1>", self.on_click_RDV)
 
@@ -636,12 +690,17 @@ class Accueil(ct.CTk):
         columns = ('Matricule', 'Nom','Prénom', 'Grade', 'Téléphone')
         self.treeview_doctors = ttk.Treeview(self.center_frame, columns=columns, show='headings',
                                                   style="Custom.Treeview")
+        # Add a vertical scrollbar
+        scrollbar = ttk.Scrollbar(self.center_frame, orient="vertical", command=self.treeview_doctors.yview)
+        scrollbar.pack(side="right", fill="y")
+        self.treeview_doctors.configure(yscrollcommand=scrollbar.set)
         self.treeview_doctors.pack(expand=True, fill='both')
 
         # Définition des en-têtes
         for col in columns:
             self.treeview_doctors.heading(col, text=col, anchor='center')
-            self.treeview_doctors.column(col, anchor='center',width=150 )
+            width = 250 if col == "N°RDV" else 300
+            self.treeview_doctors.column(col, anchor='center',width=width )
 
     def add_patient(self, treeview, row):
         # Insérer une ligne dans le Treeview avec les données du patient
@@ -789,26 +848,33 @@ class Accueil(ct.CTk):
                 con.close()
 
     def enregistrer(self, nom, prenom):
-        try:
-            # Établir une connexion à la base de données
-            con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
-            # Mise à jour des antécédents et du numéro de téléphone du patient dans la base de données
-            cur = con.cursor()
-            cur.execute("""
-                UPDATE patient 
-                SET antecedents = %s, telephone = %s
-                WHERE nom = %s AND prenom = %s
-            """, (
-                self.antecedents_entry.get("1.0", END),
-                self.telephone_entry.get(),
-                nom,
-                prenom
-            ))
-            con.commit()
-            messagebox.showinfo("Succès", "Les modifications ont été enregistrées avec succès", parent=self)
-        except Exception as e:
-            messagebox.showerror("Erreur", f"Erreur lors de l'enregistrement des modifications : {str(e)}", parent=self)
-            print(str(e))
+        if invalid_characters_numbr(self.telephone_entry.get()):
+            messagebox.showerror("Erreur", "Le numéro de téléphone ne doit pas contenir de caractères spéciaux",
+                                 parent=self)
+            return
+        else:
+            try:
+                # Établir une connexion à la base de données
+                con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+                # Mise à jour des antécédents et du numéro de téléphone du patient dans la base de données
+                cur = con.cursor()
+                cur.execute("""
+                    UPDATE patient 
+                    SET antecedents = %s, telephone = %s
+                    WHERE nom = %s AND prenom = %s
+                """, (
+                    self.antecedents_entry.get("1.0", END),
+                    self.telephone_entry.get(),
+                    nom,
+                    prenom
+                ))
+                con.commit()
+                messagebox.showinfo("Succès", "Les modifications ont été enregistrées avec succès", parent=self)
+            except Exception as e:
+                messagebox.showerror("Erreur", f"Erreur lors de l'enregistrement des modifications : {str(e)}",
+                                     parent=self)
+                print(str(e))
+
 
     def afficher_suivi_patient(self, matricule_patient):
         try:
@@ -1062,6 +1128,32 @@ class Accueil(ct.CTk):
             label.grid(row=i, column=0, sticky='w', padx=10, pady=5)
             value_label = ct.CTkLabel(details_frame, text=value, font=('Karla', 16))
             value_label.grid(row=i, column=1, sticky='w', padx=10, pady=5)
+        # Ajouter le Checkbutton pour valider le RDV
+        validate_var = tk.BooleanVar()
+        validate_checkbox = ct.CTkCheckBox(details_frame, text="Valider le RDV", variable=validate_var,command=lambda: self.update_validation('N°RDV', validate_var))
+        validate_checkbox.grid(row=len(labels), columnspan=2, padx=10, pady=5)
+
+    def update_validation(self, matricule_RDV, validate_var):
+        validated = validate_var.get()  # Récupérer l'état du Checkbutton
+
+        # Convertir l'état en chaîne 'oui' ou 'non'
+        validation_status = 'oui' if validated else 'non'
+
+        try:
+            con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+            cur = con.cursor()
+
+            # Mise à jour de la colonne "valider" dans la table "rendez_vous"
+            cur.execute(
+                "UPDATE rendez_vous SET validation = %s WHERE id_rendez_vous = %s",
+                (validation_status, matricule_RDV)
+            )
+            con.commit()
+            con.close()
+            messagebox.showinfo("Succès", "Validation du RDV mise à jour avec succès")
+        except Exception as es:
+            messagebox.showerror("Erreur", f"Erreur lors de la mise à jour de la validation du RDV : {str(es)}")
+            print(str(es))
 
     def reporter_RDV(self, window, values):
         for widget in self.info_frame.winfo_children():
@@ -1214,12 +1306,17 @@ class Accueil(ct.CTk):
         columns = ("Date", "Patient", "Geste médical")
         self.treeview_consultations = ttk.Treeview(self.center_frame, columns=columns, show="headings",
                                                    style="Custom.Treeview")
-        self.treeview_consultations.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        # Add a vertical scrollbar
+        scrollbar = ttk.Scrollbar(self.center_frame, orient="vertical", command=self.treeview_consultations.yview)
+        scrollbar.pack(side="right", fill="y")
+        self.treeview_consultations.configure(yscrollcommand=scrollbar.set)
+        self.treeview_consultations.pack(expand=True, fill='both')
+
 
         # Définition des en-têtes
         for col in columns:
             self.treeview_consultations.heading(col, text=col, anchor='center')
-            self.treeview_consultations.column(col, anchor='center', width=150)
+            self.treeview_consultations.column(col, anchor='center', width=502)
 
         # Add the appointments to the treeview
         for appointment in appointments:
@@ -1241,12 +1338,17 @@ class Accueil(ct.CTk):
         columns = ("Matricule", "Nom", "Prénom", "Date de naissance", "Téléphone")
         self.treeview_administrateurs = ttk.Treeview(self.center_frame, columns=columns, show="headings",
                                                      style="Custom.Treeview")
-        self.treeview_administrateurs.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        # Add a vertical scrollbar
+        scrollbar = ttk.Scrollbar(self.center_frame, orient="vertical", command=self.treeview_administrateurs.yview)
+        scrollbar.pack(side="right", fill="y")
+        self.treeview_administrateurs.configure(yscrollcommand=scrollbar.set)
+        self.treeview_administrateurs.pack( expand=True ,fill='both')
 
         # Définition des en-têtes
         for col in columns:
             self.treeview_administrateurs.heading(col, text=col, anchor='center')
-            self.treeview_administrateurs.column(col, anchor='center', width=150)
+            width = 250 if columns == "Matricule" else 301
+            self.treeview_administrateurs.column(col, anchor='center', width=width)
 
         # Bind the Treeview select event to the on_row_select method
         self.treeview_administrateurs.bind('<<TreeviewSelect>>', self.on_row_select)

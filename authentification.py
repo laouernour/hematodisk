@@ -3,7 +3,7 @@ import pymysql
 from tkinter import *
 from tkinter import messagebox
 from PIL import Image, ImageTk  # Import PIL for image handling
-from accueil import transform_date
+from accueil import transform_date, invalid_characters, invalid_characters_numbr,wilaya
 
 class Inscrire_ADM(ct.CTk):
     def __init__(self):
@@ -51,8 +51,8 @@ class Inscrire_ADM(ct.CTk):
         # Wilaya
         self.wilayaADM_label = ct.CTkLabel(self.inscription_frame, text="Wilaya :", font=('Karla', 18))
         self.wilayaADM_label.grid(row=1, column=2, padx=20, pady=20, sticky="w")
-        self.wilayaADM_entry = ct.CTkEntry(self.inscription_frame, width=250, height=35, corner_radius=10,
-                                        font=('Karla', 14))
+        self.wilayaADM_entry = ct.CTkComboBox(self.inscription_frame, width=250, height=35, corner_radius=10,
+                                        font=('Karla', 14),values=wilaya())
         self.wilayaADM_entry.grid(row=1, column=3, padx=20, pady=20, sticky="w")
 
         # Téléphone
@@ -144,27 +144,43 @@ class Inscrire_ADM(ct.CTk):
         elif self.MP_ADM_entry.get() != self.confirmation_MP_ADM_entry.get():
             messagebox.showerror("Erreur", "Les mots de passe ne sont pas conformes", parent=self)
         else:
-            try:
-                mydb = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
-                mycursor = mydb.cursor()
-                mycursor.execute(
-                    "insert into administrateur (matricule_administrateur,mot_de_passe,confirmer_mot_passe,nom,prenom,date_de_naissance,telephone,wilaya)values(%s,%s,%s,%s,%s,%s,%s,%s)",
-                    (
-                        self.matricule_ADM_entry.get(),
-                        self.MP_ADM_entry.get(),
-                        self.confirmation_MP_ADM_entry.get(),
-                        self.nomADM_entry.get(),
-                        self.prenomADM_entry.get(),
-                        transform_date(self.date_naissanceADM_entry.get()),
-                        self.phone_nmbrADM_entry.get(),
-                        self.wilayaADM_entry.get()
-                    ))
-                messagebox.showinfo("Success", f"Administrateur enregistré", parent=self)
-                mydb.commit()
-                self.vider()
-                mydb.close()
-            except Exception as es:
-                messagebox.showerror("Erreur", f"Erreur de connexion : {str(es)}", parent=self)
+            if invalid_characters(self.nomADM_entry.get()) or invalid_characters(
+                    self.prenomADM_entry.get()) or invalid_characters(
+                    self.wilayaADM_entry.get()) or invalid_characters_numbr(self.matricule_ADM_entry.get()) or invalid_characters_numbr(self.phone_nmbrADM_entry.get()):
+                messagebox.showerror("Erreur",
+                                     "Les champs ne doivent pas contenir de chiffres ou de caractères spéciaux",
+                                     parent=self)
+            else:
+                try:
+                    mydb = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+                    mycursor = mydb.cursor()
+                    mycursor.execute(
+                        "insert into administrateur (matricule_administrateur,mot_de_passe,confirmer_mot_passe,nom,prenom,date_de_naissance,telephone,wilaya)values(%s,%s,%s,%s,%s,%s,%s,%s)",
+                        (
+                            self.matricule_ADM_entry.get(),
+                            self.MP_ADM_entry.get(),
+                            self.confirmation_MP_ADM_entry.get(),
+                            self.nomADM_entry.get(),
+                            self.prenomADM_entry.get(),
+                            transform_date(self.date_naissanceADM_entry.get()),
+                            self.phone_nmbrADM_entry.get(),
+                            self.wilayaADM_entry.get()
+                        ))
+                    messagebox.showinfo("Success", f"Administrateur enregistré", parent=self)
+                    mydb.commit()
+                    self.vider()
+                    mydb.close()
+                except Exception as es:
+                    messagebox.showerror("Erreur", f"Erreur de connexion : {str(es)}", parent=self)
+
+
+
+
+
+
+
+
+
     #vider les cellules d'entrée
     def vider(self):
         self.matricule_ADM_entry.delete(0,END),
