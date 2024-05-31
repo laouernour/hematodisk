@@ -131,7 +131,6 @@ class Inscrire(ct.CTkToplevel):
 
             if (invalid_characters(self.nom_entry.get()) or
                     invalid_characters(self.prenom_entry.get()) or
-                    invalid_characters(self.wilaya_entry.get()) or
                     invalid_characters_numbr(self.phone_nmbr_entry.get()) or
                     invalid_characters_numbr(self.matricule_doctor_entry.get())):
 
@@ -267,8 +266,7 @@ class Inscrire_patient(ct.CTkToplevel):
             # Vérifier les entrées
         else:
             if invalid_characters(self.nomP_entry.get()) or invalid_characters(
-                    self.prenomP_entry.get()) or invalid_characters(
-                    self.wilayaP_entry.get()) or invalid_characters_numbr(self.phone_nmbrP_entry.get()):
+                    self.prenomP_entry.get()) or  invalid_characters_numbr(self.phone_nmbrP_entry.get()):
                 messagebox.showerror("Erreur",
                                      "Les champs ne doivent pas contenir de chiffres ou de caractères spéciaux",
                                      parent=self)
@@ -547,6 +545,8 @@ class Accueil(ct.CTk):
         # Center frame
         self.center_frame = ct.CTkFrame(self, fg_color='#ffffff', border_width=2, border_color='#263A5F', width=w - 260, height=h - 270, corner_radius=0)
         self.center_frame.place(x=250, y=200)
+        self.center_frame.columnconfigure(0, weight=1)
+        self.center_frame.rowconfigure(0, weight=1)
 
         self.show_consultations()  # Appel sans argument explicite
 
@@ -1521,41 +1521,7 @@ class Accueil(ct.CTk):
     def add_administrateur(self, treeview, row):
         treeview.insert('', 'end', values=row)
 
-    def create_statistics_frame(self):
-        # Effacer le cadre central
-        for widget in self.center_frame.winfo_children():
-            widget.destroy()
 
-        # Configuration du style
-        style = ttk.Style(self.center_frame)
-        style.configure('Stats.TFrame', background='#ffffff')
-        style.configure('Stats.TLabel', background='#ffffff', font=('Helvetica', 12))
-        style.configure('Border.TFrame', background='#ffffff', borderwidth=5, relief='solid', bordercolor='#87CEEB',
-                        cornerradius=100)
-
-        # Cadre des statistiques
-        stats_frame = ttk.Frame(self.center_frame, style='Stats.TFrame')
-        stats_frame.pack(pady=20, fill='x', expand=True)
-
-        # Configuration de la grille
-        stats_frame.columnconfigure(0, weight=1)
-        stats_frame.columnconfigure(1, weight=1)
-        stats_frame.columnconfigure(2, weight=1)
-        stats_frame.columnconfigure(3, weight=1)
-
-        # Création des statistiques
-        self.create_statistic(stats_frame, "Nombre total des patients", self.calculate_new_patients(), 0, 0)
-        self.create_statistic(stats_frame, "Homme", self.calculate_new_patients_homme(), 1, 0)
-        self.create_statistic(stats_frame, "Femme", self.calculate_new_patients_femme(), 2, 0)
-        self.create_statistic(stats_frame, "Nombre total de geste medical", self.calculate_geste_medical(), 0, 4)
-        self.create_statistic(stats_frame, "Transfusion", self.calculate_transfusion(), 1, 4)
-        self.create_statistic(stats_frame, "chimio", self.calculate_chimio(), 2, 4)
-        self.create_statistic(stats_frame, "frotis", self.calculate_frotis(), 3, 4)
-        self.create_statistic(stats_frame, "controle", self.calculate_controle(), 0, 6)
-        self.create_statistic(stats_frame, "bom", self.calculate_bom(), 1, 6)
-        self.create_statistic(stats_frame, "cup", self.calculate_cup(), 2, 6)
-        self.create_statistic(stats_frame, "facteur", self.calculate_facteur(), 3, 6)
-        self.create_statistic(stats_frame, "moelle", self.calculate_moelle(), 0, 7)
 
 
     def show_settings(self):
@@ -1729,18 +1695,61 @@ class Accueil(ct.CTk):
         con.close()
         return nombre_moelles
 
+    def create_statistics_frame(self):
+        # Effacer le cadre central
+        for widget in self.center_frame.winfo_children():
+            widget.destroy()
+
+        # Configuration du style
+        style = ttk.Style(self.center_frame)
+        style.configure('Stats.TFrame', background='#ffffff')
+        style.configure('Stats.TLabel', background='#ffffff', font=('Helvetica', 12))
+        style.configure('Border.TFrame', background='#ffffff', borderwidth=2, relief='solid', bordercolor='black',
+                        highlightthickness=0, highlightbackground="black", highlightcolor="black",
+                        cornerradius=10)  # ajuster la taille de la bordure et le rayon de courbure
+
+        # Cadre des statistiques
+        stats_frame = ttk.Frame(self.center_frame, style='Stats.TFrame')
+        stats_frame.grid(row=0, column=0, sticky='nsew')
+
+        # Configuration de la grille
+        self.center_frame.rowconfigure(0, weight=1)
+        self.center_frame.columnconfigure(0, weight=1)
+
+        # Configuration de la grille pour les statistiques
+        stats_frame.rowconfigure(0, weight=1)
+        stats_frame.columnconfigure(0, weight=1)
+
+        # Create statistic frames and labels
+        for i in range(5):  # number of rows
+            stats_frame.rowconfigure(i, weight=1)
+            stats_frame.columnconfigure(i, weight=1)
+
+        self.create_statistic(stats_frame, "Nombre total des patients :", self.calculate_new_patients(), 0, 0)
+        self.create_statistic(stats_frame, "Homme :", self.calculate_new_patients_homme(), 1, 0)
+        self.create_statistic(stats_frame, "Femme :", self.calculate_new_patients_femme(), 2, 0)
+        self.create_statistic(stats_frame, "Nombre total de geste medical :", self.calculate_geste_medical(), 0, 1)
+        self.create_statistic(stats_frame, "Transfusion :", self.calculate_transfusion(), 1, 1)
+        self.create_statistic(stats_frame, "Chimiotherapie :", self.calculate_chimio(), 2, 1)
+        self.create_statistic(stats_frame, "Frotis :", self.calculate_frotis(), 3, 1)
+        self.create_statistic(stats_frame, "Controle :", self.calculate_controle(), 0, 2)
+        self.create_statistic(stats_frame, "BOM :", self.calculate_bom(), 1, 2)
+        self.create_statistic(stats_frame, "CUP :", self.calculate_cup(), 2, 2)
+        self.create_statistic(stats_frame, "Facteur :", self.calculate_facteur(), 3, 2)
+        self.create_statistic(stats_frame, "Moelle :", self.calculate_moelle(), 0, 3)
+
     def create_statistic(self, parent, label, value, column, row):
         # Create a frame with a rounded black border
         border_frame = ttk.Frame(parent, style='Border.TFrame')
-        border_frame.grid(row=row, column=column, padx=10, pady=10, sticky='ew')
+        border_frame.grid(row=row, column=column, sticky='nsew', padx=35, pady=35)  # ajuster l'espace entre les cadres
 
         # Create a frame inside the border frame to hold the statistic labels
         stat_frame = ttk.Frame(border_frame, style='Stats.TFrame')
-        stat_frame.grid(row=0, column=0, padx=10, pady=10, sticky='nsew')
+        stat_frame.grid(row=0, column=0, sticky='nsew', padx=5, pady=5)
 
         # Create the statistic labels
-        ttk.Label(stat_frame, text=label, style='Stats.TLabel').grid(row=0, column=0, pady=(0, 5), sticky='w')
-        ttk.Label(stat_frame, text=value, style='Stats.TLabel').grid(row=1, column=0, pady=(0, 5), sticky='w')
+        ttk.Label(stat_frame, text=label, style='Stats.TLabel').grid(row=0, column=0, sticky='w')
+        ttk.Label(stat_frame, text=value, style='Stats.TLabel').grid(row=1, column=0, sticky='w')
 
     def open_toplevelP(self):
         if self.toplevelP_window is None or not self.toplevelP_window.winfo_exists():
