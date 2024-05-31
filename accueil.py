@@ -595,7 +595,7 @@ class Accueil(ct.CTk):
 
         elif self.current_search_list == "rdv":
 
-            # Rechercher dans la liste des rendez-vous
+            # Recherche dans la liste des rendez-vous
 
             con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
             cur = con.cursor()
