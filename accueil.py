@@ -311,7 +311,6 @@ class Inscrire_patient(ct.CTkToplevel):
         self.nomP_entry.delete(0, END),
         self.prenomP_entry.delete(0, END),
         self.date_naissanceP_entry.delete(0, END),
-        self.wilayaP_entry.delete(0, END),
         self.phone_nmbrP_entry.delete(0, END),
         self.antecedents_entry.delete("1.0", END)
 class Ajouter_RDV(ct.CTkToplevel):
@@ -1622,7 +1621,7 @@ class Accueil(ct.CTk):
     def calculate_geste_medical(self):
         con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
         cur = con.cursor()
-        cur.execute("SELECT COUNT(*) FROM rendez_vous WHERE geste_medical IS NOT NULL")
+        cur.execute("SELECT COUNT(*) FROM historique_consultations WHERE geste_medical IS NOT NULL")
         total_gestes_medicaux = cur.fetchone()[0]
         con.close()
         return total_gestes_medicaux
@@ -1630,7 +1629,7 @@ class Accueil(ct.CTk):
     def calculate_transfusion(self):
         con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
         cur = con.cursor()
-        cur.execute("SELECT COUNT(*) FROM rendez_vous WHERE geste_medical = 'Transfusion'")
+        cur.execute("SELECT COUNT(*) FROM historique_consultations WHERE geste_medical = 'Transfusion'")
         nombre_transfusions = cur.fetchone()[0]
         con.close()
         return nombre_transfusions
@@ -1638,7 +1637,7 @@ class Accueil(ct.CTk):
     def calculate_chimio(self):
         con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
         cur = con.cursor()
-        cur.execute("SELECT COUNT(*) FROM rendez_vous WHERE geste_medical = 'Chimiothérapie'")
+        cur.execute("SELECT COUNT(*) FROM historique_consultations WHERE geste_medical = 'Chimiothérapie'")
         nombre_chimiotherapies = cur.fetchone()[0]
         con.close()
         return nombre_chimiotherapies
@@ -1646,7 +1645,7 @@ class Accueil(ct.CTk):
     def calculate_frotis(self):
         con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
         cur = con.cursor()
-        cur.execute("SELECT COUNT(*) FROM rendez_vous WHERE geste_medical = 'Frotis'")
+        cur.execute("SELECT COUNT(*) FROM historique_consultations WHERE geste_medical = 'Frotis'")
         nombre_frottis = cur.fetchone()[0]
         con.close()
         return nombre_frottis
@@ -1654,7 +1653,7 @@ class Accueil(ct.CTk):
     def calculate_controle(self):
         con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
         cur = con.cursor()
-        cur.execute("SELECT COUNT(*) FROM rendez_vous WHERE geste_medical = 'Contrôle'")
+        cur.execute("SELECT COUNT(*) FROM historique_consultations WHERE geste_medical = 'Contrôle'")
         nombre_controles = cur.fetchone()[0]
         con.close()
         return nombre_controles
@@ -1662,7 +1661,7 @@ class Accueil(ct.CTk):
     def calculate_bom(self):
         con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
         cur = con.cursor()
-        cur.execute("SELECT COUNT(*) FROM rendez_vous WHERE geste_medical = 'BOM'")
+        cur.execute("SELECT COUNT(*) FROM historique_consultations WHERE geste_medical = 'BOM'")
         nombre_bom = cur.fetchone()[0]
         con.close()
         return nombre_bom
@@ -1670,7 +1669,7 @@ class Accueil(ct.CTk):
     def calculate_cup(self):
         con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
         cur = con.cursor()
-        cur.execute("SELECT COUNT(*) FROM rendez_vous WHERE geste_medical = 'CUP'")
+        cur.execute("SELECT COUNT(*) FROM historique_consultations WHERE geste_medical = 'CUP'")
         nombre_cup = cur.fetchone()[0]
         con.close()
         return nombre_cup

@@ -1,8 +1,37 @@
+import customtkinter as ct
+from tkinter import  ttk
 from tkinter import *
-from PIL import Image, ImageTk
+from tkinter import messagebox
 import pymysql
-from tkinter import messagebox  # Importer messagebox depuis tkinter
-import customtkinter as ct  # Importer les widgets customtkinter
+import tkinter as tk
+from tkcalendar import Calendar
+from datetime import datetime
+from PIL import Image, ImageTk
+import re
+def wilaya():
+    wilaya_list = ['01 Adrar','02 Chlef','03 Laghouat','04 Oum El Bouaghi','05 Batna','06 Béjaïa','07 Biskra','08 Béchar','09 Blida','10 Bouira',
+                   '11 Tamanrasset','12 Tébessa','13 Tlemcen','14 Tiaret','15 Tizi Ouzou','16 Alger','17 Djelfa','18 Jijel','19 Sétif','20 Saïda',
+                   '21 Skikda','22 Sidi Bel Abbès','23 Annaba','24 Guelma','25 Constantine','26 Médéa','27 Mostaganem','28 MSila','29 Mascara',
+                   '30  Ouargla','31 Oran','32 El Bayadh','33 Illizi','34 Bordj Bou Arreridj','35 Boumerdès','36 El Tarf','37 Tindouf','38 Tissemsilt',
+                   '39 El Oued','40 Khenchela','41 Souk Ahras','42 Tipaza','43 Mila','44 Aïn Defla','45 Naâma','46 Aïn Témouchent','47 Ghardaïa','48 Relizane','49 Timimmoun',
+                   '50 Bordj Badji Mokhtar','53 Ouled Djellal','54 Béni Abbès','53 In Salah','54 Guessam','55 Touggourt','56 Djanet','57 El Mghair','58El Meniaa']
+    return wilaya_list
+
+def invalid_characters(entry):
+    pattern = re.compile(r'[0-9!@#$%^&*(),.?":{}|<>/-]')
+    return bool(pattern.search(entry))
+def invalid_characters_numbr(entry):
+    pattern1 = re.compile(r'[!@#$%^&*(),.?":{}|<>/-]')
+    return bool(pattern1.search(entry))
+
+def transform_date(date_str):
+    # Convertit la date du format 'dd-mm-yyyy' au format 'yyyy-mm-dd'
+    try:
+        date_obj = datetime.strptime(date_str, '%d/%m/%Y')
+        return date_obj.strftime('%Y/%m/%d')
+    except ValueError as e:
+        messagebox.showerror("Erreur de date", f"Format de date incorrect: {date_str}. Utilisez le format 'jj-mm-aaaa'.\nErreur: {e}")
+        return None
 
 class Inscrire_ADM(ct.CTkToplevel):
     def __init__(self, parent):  # Add parent as an argument
@@ -50,8 +79,8 @@ class Inscrire_ADM(ct.CTkToplevel):
         # Wilaya
         self.wilayaADM_label = ct.CTkLabel(self.inscription_frame, text="Wilaya :", font=('Karla', 18))
         self.wilayaADM_label.grid(row=1, column=2, padx=20, pady=20, sticky="w")
-        self.wilayaADM_entry = ct.CTkEntry(self.inscription_frame, width=250, height=35, corner_radius=10,
-                                        font=('Karla', 14))
+        self.wilayaADM_entry = ct.CTkComboBox(self.inscription_frame, width=250, height=35, corner_radius=10,
+                                        font=('Karla', 14), values=wilaya())
         self.wilayaADM_entry.grid(row=1, column=3, padx=20, pady=20, sticky="w")
 
         # Téléphone
@@ -143,27 +172,34 @@ class Inscrire_ADM(ct.CTkToplevel):
         elif self.MP_ADM_entry.get() != self.confirmation_MP_ADM_entry.get():
             messagebox.showerror("Erreur", "Les mots de passe ne sont pas conformes", parent=self)
         else:
-            try:
-                mydb = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
-                mycursor = mydb.cursor()
-                mycursor.execute(
-                    "insert into administrateur (matricule_administrateur,mot_de_passe,confirmer_mot_passe,nom,prenom,date_de_naissance,telephone,wilaya)values(%s,%s,%s,%s,%s,%s,%s,%s)",
-                    (
-                        self.matricule_ADM_entry.get(),
-                        self.MP_ADM_entry.get(),
-                        self.confirmation_MP_ADM_entry.get(),
-                        self.nomADM_entry.get(),
-                        self.prenomADM_entry.get(),
-                        self.date_naissanceADM_entry.get(),
-                        self.phone_nmbrADM_entry.get(),
-                        self.wilayaADM_entry.get()
-                    ))
-                messagebox.showinfo("Success", f"Administrateur enregistré", parent=self)
-                mydb.commit()
-                self.vider()
-                mydb.close()
-            except Exception as es:
-                messagebox.showerror("Erreur", f"Erreur de connexion : {str(es)}", parent=self)
+            if invalid_characters(self.nomADM_entry.get()) or invalid_characters(
+                    self.prenomADM_entry.get()) or invalid_characters_numbr(self.matricule_ADM_entry.get()) or invalid_characters_numbr(self.phone_nmbrADM_entry.get()):
+                messagebox.showerror("Erreur",
+                                     "Les champs ne doivent pas contenir de chiffres ou de caractères spéciaux",
+                                     parent=self)
+            else:
+                try:
+                    mydb = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+                    mycursor = mydb.cursor()
+                    mycursor.execute(
+                        "insert into administrateur (matricule_administrateur,mot_de_passe,confirmer_mot_passe,nom,prenom,date_de_naissance,telephone,wilaya)values(%s,%s,%s,%s,%s,%s,%s,%s)",
+                        (
+                            self.matricule_ADM_entry.get(),
+                            self.MP_ADM_entry.get(),
+                            self.confirmation_MP_ADM_entry.get(),
+                            self.nomADM_entry.get(),
+                            self.prenomADM_entry.get(),
+                            transform_date(self.date_naissanceADM_entry.get()),
+                            self.phone_nmbrADM_entry.get(),
+                            self.wilayaADM_entry.get()
+                        ))
+                    messagebox.showinfo("Success", f"Administrateur enregistré", parent=self)
+                    mydb.commit()
+                    self.vider()
+                    mydb.close()
+                except Exception as es:
+                    messagebox.showerror("Erreur", f"Erreur de connexion : {str(es)}", parent=self)
+
     #vider les cellules d'entrée
     def vider(self):
         self.matricule_ADM_entry.delete(0,END),
@@ -173,7 +209,7 @@ class Inscrire_ADM(ct.CTkToplevel):
         self.prenomADM_entry.delete(0,END),
         self.date_naissanceADM_entry.delete(0,END),
         self.phone_nmbrADM_entry.delete(0,END),
-        self.wilayaADM_entry.delete(0,END)
+
 
 class login(ct.CTk):
     def __init__(self):
