@@ -1716,8 +1716,8 @@ class Accueil(ct.CTk):
 
     def create_statistic(self, parent, label, value, column, row):
         # Create a frame with a rounded black border
-        border_frame = ct.CTkFrame(parent, fg_color="#ffffff", border_color="black", border_width=2, corner_radius=10)
-        border_frame.grid(row=row, column=column, padx=10, pady=10, sticky='nsew')
+        border_frame = ct.CTkFrame(parent, fg_color="#ffffff", border_color="#28A0C6", border_width=2, corner_radius=10)
+        border_frame.grid(row=row, column=column, padx=13, pady=10, sticky='nsew')
 
         # Create a frame inside the border frame to hold the statistic labels
         stat_frame = ct.CTkFrame(border_frame, fg_color="white",width=800)
@@ -1747,16 +1747,16 @@ class Accueil(ct.CTk):
         self.create_statistic(stats_frame, "Nombre total des patients : ", self.calculate_new_patients(), 0, 0)
         self.create_statistic(stats_frame, "Homme : ", self.calculate_new_patients_homme(), 1, 0)
         self.create_statistic(stats_frame, "Femme : ", self.calculate_new_patients_femme(), 2, 0)
-        self.create_statistic(stats_frame, "Nombre total de geste medical : ", self.calculate_geste_medical(), 0, 1)
+        self.create_statistic(stats_frame, "Nombre total des gestes medicaux : ", self.calculate_geste_medical(), 0, 1)
         self.create_statistic(stats_frame, "Transfusion : ", self.calculate_transfusion(), 1, 1)
-        self.create_statistic(stats_frame, "Chimiotherapie : ", self.calculate_chimio(), 3, 0)
+        self.create_statistic(stats_frame, "Chimiotherapie : ", self.calculate_chimio(), 3, 1)
         self.create_statistic(stats_frame, "Frotis : ", self.calculate_frotis(), 0, 2)
         self.create_statistic(stats_frame, "Controle : ", self.calculate_controle(), 1, 2)
         self.create_statistic(stats_frame, "BOM : ", self.calculate_bom(), 2, 1)
-        self.create_statistic(stats_frame, "CUP : ", self.calculate_cup(), 3, 1)
+        self.create_statistic(stats_frame, "CUP : ", self.calculate_cup(), 2, 2)
         self.create_statistic(stats_frame, "Facteur : ", self.calculate_facteur(), 0, 3)
         self.create_statistic(stats_frame, "Moelle : ", self.calculate_moelle(), 1, 3)
-        self.create_statistic(stats_frame, "Nombre des rendez_vous  validès :", self.calculate_nombre_rdv_valider(), 2, 2)
+        self.create_statistic(stats_frame, "Nombre des rendez_vous  validès :", self.calculate_nombre_rdv_valider(), 3, 0)
 
 
     def open_toplevelP(self):
