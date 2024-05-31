@@ -524,7 +524,7 @@ class Accueil(ct.CTk):
         self.left_frame = ct.CTkFrame(self, fg_color='#28A0C6', width=250, height=h - 240, corner_radius=0)
         self.left_frame.place(x=0, y=200)
         self.down_frame = ct.CTkFrame(self, fg_color='#28A0C6', width=1600, height=50, corner_radius=0)
-        self.down_frame.place(x=0, y=self.winfo_screenheight() -94)
+        self.down_frame.place(x=0, y=self.winfo_screenheight() -95)
 
         buttons_info = [
             ("Liste des Patients", self.show_patients_tab),
@@ -540,7 +540,7 @@ class Accueil(ct.CTk):
             button = ct.CTkButton(self.left_frame, text=text, command=command, width=200,
                                   height=45, corner_radius=15, font=('Karla', 16, 'bold'), fg_color="transparent",
                                   cursor='hand2', text_color='#FFFFFF', hover_color="#1E88E5")
-            button.place(x=25, y=30 + 60 * idx)
+            button.place(x=25, y=30 + 58 * idx)
 
         # Center frame
         self.center_frame = ct.CTkFrame(self, fg_color='#ffffff', border_width=2, border_color='#263A5F', width=w - 260, height=h - 270, corner_radius=0)
