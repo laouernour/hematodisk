@@ -1568,7 +1568,7 @@ class Accueil(ct.CTk):
         return nombre_moelles
 
     def create_statistic(self, parent, label, value, column, row):
-        # Create a frame with a roundd black border
+        # Create a frame with a rounded black border
         border_frame = ttk.Frame(parent, style='Border.TFrame')
         border_frame.grid(row=row, column=column, padx=10, pady=10, sticky='ew')
 
