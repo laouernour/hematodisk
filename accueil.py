@@ -1264,19 +1264,21 @@ class Accueil(ct.CTk):
     def report_appointments(self):
         self.open_toplevelDocteur()
 
+
     def filter_appointments(self, date):
         filtered_appointments = []
         con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
         cur = con.cursor()
         cur.execute(
-            "SELECT patient, date_du_rendez_vous, geste_medical FROM rendez_vous WHERE date_du_rendez_vous = %s",
+            "SELECT id_rendez_vous, patient, date_du_rendez_vous, geste_medical FROM rendez_vous WHERE date_du_rendez_vous = %s",
             (date,))
         rows = cur.fetchall()
         for row in rows:
-            patient_name = row[0].split(' ')[0]
-            medical_gesture_name = row[2]
+            patient_name = row[1]  # Nom complet du patient (nom et prénom)
+            medical_gesture_name = row[3]
             filtered_appointments.append({
-                'date': row[1],
+                "N°RDV": row[0],
+                'date': row[2],
                 'patient': patient_name,
                 'medical_gesture': medical_gesture_name,
             })
@@ -1303,7 +1305,7 @@ class Accueil(ct.CTk):
         # Configure the font for the column headings
         style.configure("Custom.Treeview.Heading", font=('Karla', 24, 'bold'), foreground="#1C1278")
 
-        columns = ("Date", "Patient", "Geste médical")
+        columns = ("N°RDV", "Date", "Patient", "Geste médical")
         self.treeview_consultations = ttk.Treeview(self.center_frame, columns=columns, show="headings",
                                                    style="Custom.Treeview")
         # Add a vertical scrollbar
@@ -1312,17 +1314,128 @@ class Accueil(ct.CTk):
         self.treeview_consultations.configure(yscrollcommand=scrollbar.set)
         self.treeview_consultations.pack(expand=True, fill='both')
 
-
         # Définition des en-têtes
         for col in columns:
             self.treeview_consultations.heading(col, text=col, anchor='center')
-            self.treeview_consultations.column(col, anchor='center', width=502)
+            width = 250 if col == "N°RDV" else 420
+            self.treeview_consultations.column(col, anchor='center', width=width)
 
         # Add the appointments to the treeview
         for appointment in appointments:
             self.treeview_consultations.insert('', 'end', values=(
-                appointment['date'], appointment['patient'], appointment['medical_gesture']
+                appointment["N°RDV"], appointment['date'], appointment['patient'], appointment['medical_gesture']
             ))
+
+        # Bind the click event to a method
+        self.treeview_consultations.bind("<Double-1>", self.on_click_consultation)
+
+    def on_click_consultation(self, event):
+        item = self.treeview_consultations.focus()  # Get the currently selected item in Treeview
+        values = self.treeview_consultations.item(item, 'values')  # Get the values of the item's columns
+        if values:
+            # Obtenez la valeur de l'identifiant du rendez-vous
+            self.id_rendez_vous = values[0]
+            # Open a new window with the values of the item
+            self.new_window = ct.CTkToplevel(self)
+            self.new_window.grab_set()
+            self.new_window.title("Détails de la Consultation")
+            self.new_window.geometry("650x400+400+200")
+
+            self.menu_frame = ct.CTkFrame(self.new_window, width=760, height=50, border_width=0, corner_radius=0,
+                                          fg_color='#B8F9FF')
+            self.menu_frame.pack()
+
+            showConsult_butt = ct.CTkButton(self.menu_frame, text="Voir détails de la Consultation",
+                                            command=lambda: self.afficher_détails_consult(self.info_frame, values),
+                                            width=50, height=30, corner_radius=15, font=('Karla', 14, 'bold'),
+                                            fg_color='#FF0000', cursor='hand2', text_color='#FFFFFF')
+            showConsult_butt.place(x=35, y=10)
+
+            reporterConsult_butt = ct.CTkButton(self.menu_frame, text="Reporter Consultation",
+                                                command=lambda: self.reporter_RDV(self.info_frame, values),
+                                                width=50, height=30, corner_radius=15, font=('Karla', 14, 'bold'),
+                                                fg_color='#FF0000', cursor='hand2', text_color='#FFFFFF')
+            reporterConsult_butt.place(x=400, y=10)
+
+            self.info_frame = ct.CTkFrame(self.new_window, width=697, height=400, border_color='#FF0000',
+                                          border_width=2,
+                                          fg_color='transparent')
+            self.info_frame.pack(fill='both', expand=True)
+            # Call afficher_détails_consult to display the default information
+            self.afficher_détails_consult(self.info_frame, values)
+
+    def afficher_détails_consult(self, info_frame, values):
+        # Clear the frame
+        for widget in info_frame.winfo_children():
+            widget.destroy()
+        # Create a frame to display the appointment details
+        details_frame = ct.CTkFrame(info_frame, fg_color='#ffffff')
+        details_frame.pack(fill='both', expand=True)
+
+        # Add details to the frame
+        labels = ["N°RDV: ", "Date:", "Patient:", "Geste médical:"]
+        for i, label in enumerate(labels):
+            lbl = ct.CTkLabel(details_frame, text=label, font=('Karla', 16, 'bold'), text_color='#1C1278')
+            lbl.grid(row=i, column=0, padx=10, pady=10, sticky='w')
+            val = ct.CTkLabel(details_frame, text=values[i], font=('Karla', 16), text_color='#000000')
+            val.grid(row=i, column=1, padx=10, pady=10, sticky='w')
+
+    def create_administrateur_treeview(self):
+        # Style for Treeview
+        style = ttk.Style()
+        style.configure("Custom.Treeview", background="#ffffff", foreground="black", fieldbackground="#ffffff",
+                        font=('Karla', 16), rowheight=60)
+        style.map("Custom.Treeview", background=[('selected', '#263A5F')])
+
+        # Configure the font for the column headings
+        style.configure("Custom.Treeview.Heading", font=('Karla', 24, 'bold'), foreground="#1C1278")
+
+        # Tableau Treeview
+        columns = ("Matricule", "Nom", "Prénom", "Date de naissance", "Téléphone")
+        self.treeview_administrateurs = ttk.Treeview(self.center_frame, columns=columns, show="headings",
+                                                     style="Custom.Treeview")
+        # Add a vertical scrollbar
+        scrollbar = ttk.Scrollbar(self.center_frame, orient="vertical", command=self.treeview_administrateurs.yview)
+        scrollbar.pack(side="right", fill="y")
+        self.treeview_administrateurs.configure(yscrollcommand=scrollbar.set)
+        self.treeview_administrateurs.pack( expand=True ,fill='both')
+
+        # Définition des en-têtes
+        for col in columns:
+            self.treeview_administrateurs.heading(col, text=col, anchor='center')
+            width = 250 if columns == "Matricule" else 301
+            self.treeview_administrateurs.column(col, anchor='center', width=width)
+
+        # Bind the Treeview select event to the on_row_select method
+        self.treeview_administrateurs.bind('<<TreeviewSelect>>', self.on_row_select)
+
+        def add_administrateur(self, treeview, row):
+            treeview.insert('', 'end', values=row)
+
+    def add_administrateur(self, treeview, row):
+        treeview.insert('', 'end', values=row)
+
+    def show_settings(self):
+        # Clear the center frame
+        for widget in self.center_frame.winfo_children():
+            widget.destroy()
+
+        # Create and display the Treeview for administrateurs
+        self.create_administrateur_treeview()
+
+        # Connexion à la base de données
+        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+        cur = con.cursor()
+
+        # Récupération des données des administrateurs depuis la table
+        cur.execute("SELECT matricule_administrateur, nom, prenom, date_de_naissance, telephone FROM administrateur")
+        rows = cur.fetchall()
+        cur.close()
+        con.close()
+
+        for row in rows:
+            # Appeler add_administrateur avec les valeurs appropriées
+            self.add_administrateur(self.treeview_administrateurs, row)
 
     def create_administrateur_treeview(self):
         # Style for Treeview
