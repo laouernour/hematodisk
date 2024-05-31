@@ -1677,7 +1677,7 @@ class Accueil(ct.CTk):
     def calculate_facteur(self):
         con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
         cur = con.cursor()
-        cur.execute("SELECT COUNT(*) FROM rendez_vous WHERE geste_medical = 'Facteur'")
+        cur.execute("SELECT COUNT(*) FROM historique_consultations WHERE geste_medical = 'Facteur'")
         nombre_facteurs = cur.fetchone()[0]
         con.close()
         return nombre_facteurs
@@ -1685,7 +1685,7 @@ class Accueil(ct.CTk):
     def calculate_moelle(self):
         con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
         cur = con.cursor()
-        cur.execute("SELECT COUNT(*) FROM rendez_vous WHERE geste_medical = 'Moelle'")
+        cur.execute("SELECT COUNT(*) FROM historique_consultations WHERE geste_medical = 'Moelle'")
         nombre_moelles = cur.fetchone()[0]
         con.close()
         return nombre_moelles
@@ -1711,6 +1711,15 @@ class Accueil(ct.CTk):
         except Exception as e:
             print("Error fetching number of validated appointments:", e)
             return "0"
+
+    def count_new_patients(self, month, year):
+        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+        cur = con.cursor()
+        cur.execute("""SELECT COUNT(*) FROM patient WHERE MONTH(création) = %s AND YEAR(création) = %s
+            """, (month, year))
+        count = cur.fetchone()[0]
+        con.close()
+        return count
 
 
     def create_statistic(self, parent, label, value, column, row):
@@ -1742,6 +1751,11 @@ class Accueil(ct.CTk):
         for i in range(3):
             stats_frame.columnconfigure(i, weight=1)
 
+        import datetime
+        current_date = datetime.datetime.now()
+        current_month = current_date.month
+        current_year = current_date.year
+
         # Create statistics
         self.create_statistic(stats_frame, "Nombre total des patients : ", self.calculate_new_patients(), 0, 0)
         self.create_statistic(stats_frame, "Homme : ", self.calculate_new_patients_homme(), 1, 0)
@@ -1756,6 +1770,7 @@ class Accueil(ct.CTk):
         self.create_statistic(stats_frame, "Facteur : ", self.calculate_facteur(), 0, 3)
         self.create_statistic(stats_frame, "Moelle : ", self.calculate_moelle(), 1, 3)
         self.create_statistic(stats_frame, "Nombre des rendez_vous  validès :", self.calculate_nombre_rdv_valider(), 3, 0)
+        self.create_statistic(stats_frame, "Nombre de nouveau patient :", self.count_new_patients(current_month, current_year), 3, 3)
 
 
     def open_toplevelP(self):
