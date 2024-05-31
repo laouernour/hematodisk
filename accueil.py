@@ -1691,6 +1691,29 @@ class Accueil(ct.CTk):
         con.close()
         return nombre_moelles
 
+    def calculate_nombre_rdv_valider(self):
+        try:
+            # Connect to the database
+            con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+            cur = con.cursor()
+
+            # Retrieve the number of validated appointments
+            cur.execute("SELECT COUNT(*) FROM rendez_vous WHERE validation = 'oui validé'")
+            result = cur.fetchone()
+
+            # Close the connection
+            con.close()
+
+            if result:
+                return str(result[0])
+            else:
+                return "0"
+
+        except Exception as e:
+            print("Error fetching number of validated appointments:", e)
+            return "0"
+
+
     def create_statistic(self, parent, label, value, column, row):
         # Create a frame with a rounded black border
         border_frame = ct.CTkFrame(parent, fg_color="#ffffff", border_color="black", border_width=2, corner_radius=10)
@@ -1717,22 +1740,23 @@ class Accueil(ct.CTk):
         stats_frame.pack( fill='both', expand=True)
 
         # Grid configuration
-        for i in range(4):
+        for i in range(3):
             stats_frame.columnconfigure(i, weight=1)
 
         # Create statistics
-        self.create_statistic(stats_frame, "Nombre total des patients", self.calculate_new_patients(), 0, 0)
-        self.create_statistic(stats_frame, "Homme", self.calculate_new_patients_homme(), 1, 0)
-        self.create_statistic(stats_frame, "Femme", self.calculate_new_patients_femme(), 2, 0)
-        self.create_statistic(stats_frame, "Nombre total de geste medical", self.calculate_geste_medical(), 0, 1)
-        self.create_statistic(stats_frame, "Transfusion", self.calculate_transfusion(), 1, 1)
-        self.create_statistic(stats_frame, "Chimio", self.calculate_chimio(), 2, 1)
-        self.create_statistic(stats_frame, "Frotis", self.calculate_frotis(), 3, 1)
-        self.create_statistic(stats_frame, "Controle", self.calculate_controle(), 0, 2)
-        self.create_statistic(stats_frame, "BOM", self.calculate_bom(), 1, 2)
-        self.create_statistic(stats_frame, "CUP", self.calculate_cup(), 2, 2)
-        self.create_statistic(stats_frame, "Facteur", self.calculate_facteur(), 3, 2)
-        self.create_statistic(stats_frame, "Moelle", self.calculate_moelle(), 0, 3)
+        self.create_statistic(stats_frame, "Nombre total des patients : ", self.calculate_new_patients(), 0, 0)
+        self.create_statistic(stats_frame, "Homme : ", self.calculate_new_patients_homme(), 1, 0)
+        self.create_statistic(stats_frame, "Femme : ", self.calculate_new_patients_femme(), 2, 0)
+        self.create_statistic(stats_frame, "Nombre total de geste medical : ", self.calculate_geste_medical(), 0, 1)
+        self.create_statistic(stats_frame, "Transfusion : ", self.calculate_transfusion(), 1, 1)
+        self.create_statistic(stats_frame, "Chimiotherapie : ", self.calculate_chimio(), 3, 0)
+        self.create_statistic(stats_frame, "Frotis : ", self.calculate_frotis(), 0, 2)
+        self.create_statistic(stats_frame, "Controle : ", self.calculate_controle(), 1, 2)
+        self.create_statistic(stats_frame, "BOM : ", self.calculate_bom(), 2, 1)
+        self.create_statistic(stats_frame, "CUP : ", self.calculate_cup(), 3, 1)
+        self.create_statistic(stats_frame, "Facteur : ", self.calculate_facteur(), 0, 3)
+        self.create_statistic(stats_frame, "Moelle : ", self.calculate_moelle(), 1, 3)
+        self.create_statistic(stats_frame, "Nombre des rendez_vous  validès :", self.calculate_nombre_rdv_valider(), 2, 2)
 
 
     def open_toplevelP(self):
