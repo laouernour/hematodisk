@@ -1128,32 +1128,6 @@ class Accueil(ct.CTk):
             label.grid(row=i, column=0, sticky='w', padx=10, pady=5)
             value_label = ct.CTkLabel(details_frame, text=value, font=('Karla', 16))
             value_label.grid(row=i, column=1, sticky='w', padx=10, pady=5)
-        # Ajouter le Checkbutton pour valider le RDV
-        validate_var = tk.BooleanVar()
-        validate_checkbox = ct.CTkCheckBox(details_frame, text="Valider le RDV", variable=validate_var,command=lambda: self.update_validation('N°RDV', validate_var))
-        validate_checkbox.grid(row=len(labels), columnspan=2, padx=10, pady=5)
-
-    def update_validation(self, matricule_RDV, validate_var):
-        validated = validate_var.get()  # Récupérer l'état du Checkbutton
-
-        # Convertir l'état en chaîne 'oui' ou 'non'
-        validation_status = 'oui' if validated else 'non'
-
-        try:
-            con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
-            cur = con.cursor()
-
-            # Mise à jour de la colonne "valider" dans la table "rendez_vous"
-            cur.execute(
-                "UPDATE rendez_vous SET validation = %s WHERE id_rendez_vous = %s",
-                (validation_status, matricule_RDV)
-            )
-            con.commit()
-            con.close()
-            messagebox.showinfo("Succès", "Validation du RDV mise à jour avec succès")
-        except Exception as es:
-            messagebox.showerror("Erreur", f"Erreur lors de la mise à jour de la validation du RDV : {str(es)}")
-            print(str(es))
 
     def reporter_RDV(self, window, values):
         for widget in self.info_frame.winfo_children():
@@ -1368,17 +1342,92 @@ class Accueil(ct.CTk):
         # Clear the frame
         for widget in info_frame.winfo_children():
             widget.destroy()
+
         # Create a frame to display the appointment details
-        details_frame = ct.CTkFrame(info_frame, fg_color='#ffffff')
-        details_frame.pack(fill='both', expand=True)
+        self.details_frame = ct.CTkFrame(info_frame, fg_color='#ffffff')
+        self.details_frame.pack(fill='both', expand=True)
 
         # Add details to the frame
         labels = ["N°RDV: ", "Date:", "Patient:", "Geste médical:"]
         for i, label in enumerate(labels):
-            lbl = ct.CTkLabel(details_frame, text=label, font=('Karla', 16, 'bold'), text_color='#1C1278')
+            lbl = ct.CTkLabel(self.details_frame, text=label, font=('Karla', 16, 'bold'), text_color='#1C1278')
             lbl.grid(row=i, column=0, padx=10, pady=10, sticky='w')
-            val = ct.CTkLabel(details_frame, text=values[i], font=('Karla', 16), text_color='#000000')
+            val = ct.CTkLabel(self.details_frame, text=values[i], font=('Karla', 16), text_color='#000000')
             val.grid(row=i, column=1, padx=10, pady=10, sticky='w')
+
+        # Add the Checkbutton to validate the appointment
+        validate_var = tk.BooleanVar()
+        validate_checkbox = ct.CTkCheckBox(self.details_frame, text="Valider le RDV", variable=validate_var,
+                                           command=lambda: self.update_validation(values[0], validate_var,
+                                                                                  validate_checkbox))
+        validate_checkbox.grid(row=len(labels), columnspan=3, padx=50, pady=20)
+
+        # Retrieve the validation status from the database for this appointment
+        validation_status = self.get_validation_status(values[0])  # Assuming values[0] contains the appointment ID
+
+        # Set the initial state of the checkbox based on the validation status
+        validate_var.set(validation_status == "oui validé")
+
+        # Disable the checkbox if the appointment is already validated
+        if validation_status == "oui validé":
+            validate_checkbox.config(state=tk.DISABLED)
+
+    def get_validation_status(self, appointment_id):
+        try:
+            # Connect to the database
+            con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+            cur = con.cursor()
+
+            # Retrieve the validation status from the database
+            cur.execute("SELECT validation FROM rendez_vous WHERE id_rendez_vous = %s", (appointment_id,))
+            result = cur.fetchone()
+
+            # Close the connection
+            con.close()
+
+            if result:
+                return result[0]
+            else:
+                return "non"  # Default validation status if not found
+
+        except Exception as e:
+            print("Error fetching validation status:", e)
+            return "non"  # Default validation status in case of error
+
+    def update_validation(self, appointment_id, validate_var, validate_checkbox):
+        try:
+            # Retrieve the current validation status
+            validation_status = 'oui validé' if validate_var.get() else 'non'
+
+            # Connect to the database
+            con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+            cur = con.cursor()
+
+            # Update the validation status in the database
+            cur.execute(
+                "UPDATE rendez_vous SET validation = %s WHERE id_rendez_vous = %s",
+                (validation_status, appointment_id)
+            )
+
+            # Commit the transaction
+            con.commit()
+
+            # Close the connection
+            con.close()
+
+            # Show success message
+            messagebox.showinfo("Succès", "Validation du RDV mise à jour avec succès")
+
+            # Disable the checkbox after validation
+            self.disable_checkbox(validate_checkbox)
+
+        except Exception as e:
+            # Show error message in case of failure
+            messagebox.showerror("Erreur", f"Erreur lors de la mise à jour de la validation du RDV : {str(e)}")
+            print("Error updating validation status:", e)
+
+    def disable_checkbox(self, checkbox):
+        checkbox.configure(state=tk.DISABLED)
 
     def create_administrateur_treeview(self):
         # Style for Treeview
