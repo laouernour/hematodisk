@@ -488,6 +488,11 @@ class Accueil(ct.CTk):
         self.top_frame.place(x=0, y=0)
         label_text = Label(self.top_frame, text="Service Hématologie", font=('Karla', 48, 'bold'), bg="#28A0C6")
         label_text.place(x=750, y=60)
+        #ajouter geste medicale
+        self.ajouter_geste_button = ct.CTkButton(self.top_frame, text="+ Geste", command=self.geste_medicale,
+                                                 width=120, height=40, corner_radius=15, font=('Karla', 16, 'bold'),
+                                                 fg_color='#00555D', cursor='hand2', text_color='#FFFFFF')
+        self.ajouter_geste_button.place(x=1130, y=60)
 
         #button ajouter patient
         self.ajouter_patient = ct.CTkButton(self.top_frame, text="+ Ajouter Patient", command=self.open_toplevelP,
@@ -558,6 +563,47 @@ class Accueil(ct.CTk):
         self.toplevelDocteur_window = None
         self.toplevelP_window = None
         self.toplevelRDV_window = None
+
+    def geste_medicale(self):
+        # Clear the center frame
+        for widget in self.center_frame.winfo_children():
+            widget.destroy()
+        self.geste_label = ct.CTkLabel(self.center_frame, text="Nouveau Geste Médicale :", font=('Karla', 22, 'bold'),
+                                       text_color='#263A5F')
+        self.geste_label.place(x=350, y=100)
+
+        self.geste_entry = ct.CTkEntry(self.center_frame, width=200, height=35, corner_radius=10, font=('Karla', 14))
+        self.geste_entry.place(x=385, y=150)
+
+        self.ajouter_g_button = ct.CTkButton(self.center_frame, text="Ajouter", command=self.ajouter_geste,
+                                             width=110, height=30, corner_radius=15, font=('Karla', 14, 'bold'),
+                                             cursor='hand2', text_color='#FFFFFF')
+        self.ajouter_g_button.place(x=420, y=200)
+
+    def ajouter_geste(self):
+        geste = self.geste_entry.get()
+        if geste == "":
+            messagebox.showerror("Erreur", "Le champ de geste médicale est vide", parent=self.center_frame)
+        else:
+            try:
+                con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+                cur = con.cursor()
+
+                # Vérifiez si le geste existe déjà
+                cur.execute("SELECT * FROM geste_medicale WHERE geste = %s", (geste,))
+                result = cur.fetchone()
+
+                if result:
+                    messagebox.showerror("Erreur", "Le geste médicale existe déjà", parent=self.center_frame)
+                else:
+                    # Insertion du nouveau geste dans la table geste_medicle
+                    cur.execute("INSERT INTO geste_medicale (geste) VALUES (%s)", (geste,))
+                    con.commit()
+                    messagebox.showinfo("Succès", "Geste médicale ajouté avec succès", parent=self.center_frame)
+
+                con.close()
+            except Exception as es:
+                messagebox.showerror("Erreur", f"Erreur de connexion : {str(es)}", parent=self.center_frame)
 
     def rechercher_patient(self):
         nom_prenom = self.rech_txt.get().split()  # Récupérer le nom et prénom du patient saisi dans la barre de recherche
@@ -1228,7 +1274,7 @@ class Accueil(ct.CTk):
         cur = con.cursor()
 
         # Récupération des données des patients depuis la table
-        cur.execute("SELECT matricule_medecin  , nom,prenom,grade,grade FROM medecin")
+        cur.execute("SELECT matricule_medecin  , nom,prenom,grade,telephone FROM medecin")
         rows = cur.fetchall()
         for row in rows:
             # Appeler add_patient avec les valeurs appropriées
