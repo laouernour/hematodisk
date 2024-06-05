@@ -192,60 +192,79 @@ class Inscrire_patient(ct.CTkToplevel):
 
         # Nom and Prénom in the same row du patient
         self.nomP_label = ct.CTkLabel(self.inscription_frame, text="Nom :", font=('Karla', 16))
-        self.nomP_label.grid(row=0, column=0, padx=20, pady=20, sticky="w")
-        self.nomP_entry = ct.CTkEntry(self.inscription_frame, width=200, height=30, corner_radius=10, font=('Karla', 14))
-        self.nomP_entry.grid(row=0, column=1, padx=20, pady=20, sticky="w")
+        self.nomP_label.grid(row=0, column=0, padx=20, pady=10, sticky="w")
+        self.nomP_entry = ct.CTkEntry(self.inscription_frame, width=200, height=30, corner_radius=10,
+                                      font=('Karla', 14))
+        self.nomP_entry.grid(row=0, column=1, padx=20, pady=10, sticky="w")
 
         self.prenomP_label = ct.CTkLabel(self.inscription_frame, text="Prénom :", font=('Karla', 16))
-        self.prenomP_label.grid(row=0, column=2, padx=20, pady=20, sticky="w")
-        self.prenomP_entry = ct.CTkEntry(self.inscription_frame,  width=200, height=30, corner_radius=10, font=('Karla', 14))
-        self.prenomP_entry.grid(row=0, column=3, padx=20, pady=20, sticky="w")
+        self.prenomP_label.grid(row=0, column=2, padx=20, pady=10, sticky="w")
+        self.prenomP_entry = ct.CTkEntry(self.inscription_frame, width=200, height=30, corner_radius=10,
+                                         font=('Karla', 14))
+        self.prenomP_entry.grid(row=0, column=3, padx=20, pady=10, sticky="w")
+
+        # Matricule
+        self.matriculeP_label = ct.CTkLabel(self.inscription_frame, text="Matricule :", font=('Karla', 16))
+        self.matriculeP_label.grid(row=1, column=0, padx=20, pady=20, sticky="w")
+        self.matriculeP_entry = ct.CTkEntry(self.inscription_frame, width=200, height=30, corner_radius=10,
+                                            font=('Karla', 14))
+        self.matriculeP_entry.grid(row=1, column=1, padx=20, pady=20, sticky="w")
 
         # Date de Naissance
         self.date_naissanceP_label = ct.CTkLabel(self.inscription_frame, text="Date de Naissance :", font=('Karla', 16))
-        self.date_naissanceP_label.grid(row=1, column=0, padx=20, pady=20, sticky="w")
-        self.date_naissanceP_entry = ct.CTkEntry(self.inscription_frame, width=200, height=30, corner_radius=10, font=('Karla', 14))
-        self.date_naissanceP_entry.grid(row=1, column=1, padx=20, pady=20, sticky="w")
+        self.date_naissanceP_label.grid(row=1, column=2, padx=20, pady=20, sticky="w")
+        self.date_naissanceP_entry = ct.CTkEntry(self.inscription_frame, width=200, height=30, corner_radius=10,
+                                                 font=('Karla', 14))
+        self.date_naissanceP_entry.grid(row=1, column=3, padx=20, pady=20, sticky="w")
 
         # Wilaya
         self.wilayaP_label = ct.CTkLabel(self.inscription_frame, text="Wilaya :", font=('Karla', 16))
-        self.wilayaP_label.grid(row=1, column=2, padx=20, pady=20, sticky="w")
-        self.wilayaP_entry = ct.CTkComboBox(self.inscription_frame,  width=200, height=30, corner_radius=10, font=('Karla', 14),values=wilaya())
-        self.wilayaP_entry.grid(row=1, column=3, padx=20, pady=20, sticky="w")
+        self.wilayaP_label.grid(row=2, column=0, padx=20, pady=20, sticky="w")
+        self.wilayaP_entry = ct.CTkComboBox(self.inscription_frame, width=200, height=30, corner_radius=10,
+                                            font=('Karla', 14), values=wilaya())
+        self.wilayaP_entry.grid(row=2, column=1, padx=20, pady=20, sticky="w")
 
         # Téléphone
         self.phone_nmbrP_label = ct.CTkLabel(self.inscription_frame, text="Téléphone:", font=('Karla', 16))
-        self.phone_nmbrP_label.grid(row=2, column=0, padx=20, pady=20, sticky="w")
-        self.phone_nmbrP_entry = ct.CTkEntry(self.inscription_frame, width=200, height=30, corner_radius=10, font=('Karla', 14))
-        self.phone_nmbrP_entry.grid(row=2, column=1, padx=20, pady=20, sticky="w")
-        # Matricule
-        self.sexe_Patient_label = ct.CTkLabel(self.inscription_frame, text="Sexe :",
-                                                   font=('Karla', 16))
-        self.sexe_Patient_label.grid(row=2, column=2, padx=20, pady=20, sticky="w")
-        sexe=['Homme','Femme']
-        self.sexe_Patient_entry = ct.CTkComboBox(self.inscription_frame, width=200, height=30, corner_radius=10,values=sexe, dropdown_fg_color='#FFFFFF',
-                                                   font=('Karla', 14))
-        self.sexe_Patient_entry.grid(row=2, column=3, padx=20, pady=20, sticky="w")
+        self.phone_nmbrP_label.grid(row=2, column=2, padx=20, pady=20, sticky="w")
+        self.phone_nmbrP_entry = ct.CTkEntry(self.inscription_frame, width=200, height=30, corner_radius=10,
+                                             font=('Karla', 14))
+        self.phone_nmbrP_entry.grid(row=2, column=3, padx=20, pady=20, sticky="w")
+
+        # Sexe
+        self.sexe_Patient_label = ct.CTkLabel(self.inscription_frame, text="Sexe :", font=('Karla', 16))
+        self.sexe_Patient_label.grid(row=3, column=0, padx=20, pady=20, sticky="w")
+        sexe = ['Homme', 'Femme']
+        self.sexe_Patient_entry = ct.CTkComboBox(self.inscription_frame, width=200, height=30, corner_radius=10,
+                                                 values=sexe, dropdown_fg_color='#FFFFFF',
+                                                 font=('Karla', 14))
+        self.sexe_Patient_entry.grid(row=3, column=1, padx=20, pady=20, sticky="w")
 
         # Groupage
         self.groupage_label = ct.CTkLabel(self.inscription_frame, text="Groupage: ", font=('Karla', 16))
-        self.groupage_label.grid(row=3, column=0, padx=20, pady=20, sticky="w")
+        self.groupage_label.grid(row=3, column=2, padx=20, pady=20, sticky="w")
         groupage = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]
-        self.groupage_entry = ct.CTkComboBox(self.inscription_frame, values=groupage, dropdown_font=('Karla', 14),  width=200, height=30, corner_radius=10, font=('Karla', 14), dropdown_fg_color='#FFFFFF')
-        self.groupage_entry.grid(row=3, column=1, padx=20, pady=20, sticky="w")
+        self.groupage_entry = ct.CTkComboBox(self.inscription_frame, values=groupage, dropdown_font=('Karla', 14),
+                                             width=200)
+
+        self.groupage_entry = ct.CTkComboBox(self.inscription_frame, values=groupage, dropdown_font=('Karla', 14),
+                                             width=200, height=30, corner_radius=10, font=('Karla', 14),
+                                             dropdown_fg_color='#FFFFFF')
+        self.groupage_entry.grid(row=3, column=3, padx=20, pady=20, sticky="w")
 
         # Antecedents
         self.antecedents_label = ct.CTkLabel(self.inscription_frame, text="Antécédents", font=('Karla', 16))
-        self.antecedents_label.grid(row=3, column=2, padx=20, pady=20, sticky="w")
-        self.antecedents_entry = ct.CTkTextbox(self.inscription_frame, width=250, height=150, corner_radius=10,
+        self.antecedents_label.grid(row=4, column=0, padx=20, pady=20, sticky="w")
+        self.antecedents_entry = ct.CTkTextbox(self.inscription_frame, width=200, height=100, corner_radius=10,
                                                font=('Karla', 14))
-        self.antecedents_entry.grid(row=3, column=3, padx=20, pady=20, sticky="w")
+        self.antecedents_entry.grid(row=4, column=1, columnspan=3, padx=20, pady=20, sticky="w")
 
         # Button to Create Account
         self.enregistrer_patient = ct.CTkButton(self.inscription_frame, text="Créer", command=self.creer, width=250,
-                                                height=40, corner_radius=15, font=('Karla', 16, 'bold'), fg_color='#263A5F',
+                                                height=40, corner_radius=15, font=('Karla', 16, 'bold'),
+                                                fg_color='#263A5F',
                                                 cursor='hand2', text_color='#FFFFFF')
-        self.enregistrer_patient.grid(row=4, column=1, columnspan=2, pady=8)
+        self.enregistrer_patient.grid(row=5, column=1, columnspan=2,  pady=0)
 
         # Load the image
 
@@ -259,14 +278,15 @@ class Inscrire_patient(ct.CTkToplevel):
         label_image.pack()
 
     def creer(self):
-        if (self.nomP_entry.get() == "" or self.prenomP_entry.get() == "" or self.date_naissanceP_entry.get() == ""
+        if (
+                self.nomP_entry.get() == "" or self.prenomP_entry.get() == "" or self.matriculeP_entry.get() == "" or self.date_naissanceP_entry.get() == ""
                 or self.wilayaP_entry.get() == "" or self.phone_nmbrP_entry.get() == ""):
             messagebox.showerror("Erreur", "Inscription incomplète", parent=self)
 
-            # Vérifier les entrées
+        # Vérifier les entrées
         else:
             if invalid_characters(self.nomP_entry.get()) or invalid_characters(
-                    self.prenomP_entry.get()) or  invalid_characters_numbr(self.phone_nmbrP_entry.get()):
+                    self.prenomP_entry.get()) or invalid_characters_numbr(self.phone_nmbrP_entry.get()):
                 messagebox.showerror("Erreur",
                                      "Les champs ne doivent pas contenir de chiffres ou de caractères spéciaux",
                                      parent=self)
@@ -277,17 +297,23 @@ class Inscrire_patient(ct.CTkToplevel):
                     con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
                     cur = con.cursor()
 
+                    # Vérifier si le matricule du patient existe déjà
+                    cur.execute("SELECT * FROM patient WHERE matricule_patient = %s", (self.matriculeP_entry.get(),))
+                    if cur.fetchone():
+                        messagebox.showerror("Erreur", "Le patient existe déjà", parent=self)
+                        return
+
                     # Récupération du matricule_administrateur à partir de la table administrateur
                     cur.execute("SELECT matricule_administrateur FROM administrateur")
                     matricule_administrateur = cur.fetchone()[0]
 
                     # Insertion des données dans la table patient avec vérification de l'existence du matricule_administrateur
                     cur.execute("""
-                           INSERT INTO patient (nom, prenom, date_de_naissance, sexe, wilaya, telephone, groupage, antecedents,FKmatricule_administrateur) 
-                           VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-                       """,
+                               INSERT INTO patient (matricule_patient, nom, prenom, date_de_naissance, sexe, wilaya, telephone, groupage, antecedents, FKmatricule_administrateur) 
+                               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                           """,
                                 (
-                                    self.nomP_entry.get(), self.prenomP_entry.get(),
+                                    self.matriculeP_entry.get(), self.nomP_entry.get(), self.prenomP_entry.get(),
                                     transform_date(self.date_naissanceP_entry.get()), self.sexe_Patient_entry.get(),
                                     self.wilayaP_entry.get(), self.phone_nmbrP_entry.get(),
                                     self.groupage_entry.get(), self.antecedents_entry.get("1.0", END),
@@ -310,6 +336,7 @@ class Inscrire_patient(ct.CTkToplevel):
     def vider(self):
         self.nomP_entry.delete(0, END),
         self.prenomP_entry.delete(0, END),
+        self.matriculeP_entry.delete(0,END),
         self.date_naissanceP_entry.delete(0, END),
         self.phone_nmbrP_entry.delete(0, END),
         self.antecedents_entry.delete("1.0", END)
@@ -317,7 +344,7 @@ class Ajouter_RDV(ct.CTkToplevel):
     def __init__(self, parent):  # Add parent as an argument
         super().__init__(parent)
         self.title("Ajouter RDV")
-        self.geometry('850x500+300+100')
+        self.geometry('850x540+300+100')
         self.configure(bg='#263A5F')
 
         self.formulaire_frame = ct.CTkFrame(self, fg_color='#FFFFFF', width=800, height=490, border_width=2,
@@ -368,28 +395,41 @@ class Ajouter_RDV(ct.CTkToplevel):
 
         # Patient
         self.nom_patient_label = ct.CTkLabel(self.inscription_frame, text="Nom Patient :", font=('Karla', 16),
-                                         text_color='#263A5F')
+                                             text_color='#263A5F')
         self.nom_patient_label.grid(row=1, column=0, padx=20, pady=20, sticky="w")
 
         self.nom_patient_entry = ct.CTkEntry(self.inscription_frame, width=200, height=35, corner_radius=10,
-                                         font=('Karla', 14))
+                                             font=('Karla', 14))
         self.nom_patient_entry.grid(row=1, column=1, padx=20, pady=20, sticky="w")
+
         self.prenom_patient_label = ct.CTkLabel(self.inscription_frame, text="Prénom Patient :", font=('Karla', 16),
-                                         text_color='#263A5F')
+                                                text_color='#263A5F')
         self.prenom_patient_label.grid(row=1, column=2, padx=20, pady=20, sticky="w")
 
         self.prenom_patient_entry = ct.CTkEntry(self.inscription_frame, width=200, height=35, corner_radius=10,
-                                         font=('Karla', 14))
+                                                font=('Karla', 14))
         self.prenom_patient_entry.grid(row=1, column=3, padx=20, pady=20, sticky="w")
+
+        # Matricule Patient
+        self.matricule_patient_label = ct.CTkLabel(self.inscription_frame, text="Matricule Patient :",
+                                                   font=('Karla', 16),
+                                                   text_color='#263A5F')
+        self.matricule_patient_label.grid(row=2, column=0, padx=20, pady=20, sticky="w")
+
+        self.matricule_patient_entry = ct.CTkEntry(self.inscription_frame, width=200, height=35, corner_radius=10,
+                                                   font=('Karla', 14))
+        self.matricule_patient_entry.grid(row=2, column=1, padx=20, pady=20, sticky="w")
+
         # Geste medical
         self.geste_medical_label = ct.CTkLabel(self.inscription_frame, text="Geste médical :", font=('Karla', 16),
                                                text_color='#263A5F')
-        self.geste_medical_label.grid(row=2, column=0, padx=20, pady=20, sticky="w")
+        self.geste_medical_label.grid(row=3, column=0, padx=20, pady=20, sticky="w")
 
         gestes = ["Transfusion", "Chimiothérapie", "Frotis", "Contrôle", "BOM", "CUP", "Facteur", "Moelle"]
         self.geste_medical_combobox = ct.CTkComboBox(self.inscription_frame, values=gestes, width=200, height=35,
                                                      corner_radius=10, font=('Karla', 14), dropdown_fg_color='#FFFFFF')
-        self.geste_medical_combobox.grid(row=2, column=1, padx=20, pady=20, sticky="w")
+        self.geste_medical_combobox.grid(row=3, column=1, padx=20, pady=20, sticky="w")
+
         # Medecin
         self.medecin_label = ct.CTkLabel(self.inscription_frame, text="Médecin :", font=('Karla', 16),
                                          text_color='#263A5F')
@@ -403,7 +443,7 @@ class Ajouter_RDV(ct.CTkToplevel):
         self.creer_button = ct.CTkButton(self.inscription_frame, text="Créer", command=self.creer, width=250, height=40,
                                          corner_radius=15, font=('Karla', 16, 'bold'), fg_color='#263A5F',
                                          cursor='hand2', text_color='#FFFFFF')
-        self.creer_button.grid(row=7, column=1, columnspan=2, pady=30)
+        self.creer_button.grid(row=4, column=1, columnspan=2, pady=10)
 
         # Image
         image_path = 'Hemato Desk logo.png'
@@ -438,7 +478,7 @@ class Ajouter_RDV(ct.CTkToplevel):
         nom_complet = f"{self.nom_patient_entry.get()} {self.prenom_patient_entry.get()}"
 
         if (
-                self.date_rdv_entry.get() == "" or self.date_de_creation_entry.get() == "" or nom_complet == "" or
+                self.date_rdv_entry.get() == "" or self.date_de_creation_entry.get() == "" or nom_complet == "" or self.matricule_patient_entry.get() == "" or
                 self.medecin_entry.get() == "" or self.geste_medical_combobox.get() == ""
         ):
             messagebox.showerror("Erreur", "Inscription incomplète", parent=self)
@@ -447,33 +487,46 @@ class Ajouter_RDV(ct.CTkToplevel):
                 con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
                 cur = con.cursor()
 
-                # Récupération du matricule_medecin à partir de la table medecin
-                cur.execute("SELECT matricule_medecin FROM medecin WHERE nom = %s", (self.medecin_entry.get(),))
-                matricule_medecin = cur.fetchone()
-                if matricule_medecin is None:
-                    messagebox.showerror("Erreur", "Médecin non trouvé", parent=self)
-                    return
-                matricule_medecin = matricule_medecin[0]
+                # Vérifier si le patient existe déjà
+                cur.execute("SELECT * FROM patient WHERE nom = %s AND prenom = %s AND matricule_patient = %s",
+                            (self.nom_patient_entry.get(), self.prenom_patient_entry.get(),
+                             self.matricule_patient_entry.get()))
+                patient_exists = cur.fetchone()
+                if patient_exists:
+                    # Récupération du matricule_medecin à partir de la table medecin
+                    cur.execute("SELECT matricule_medecin FROM medecin WHERE nom = %s", (self.medecin_entry.get(),))
+                    matricule_medecin = cur.fetchone()
+                    if matricule_medecin is None:
+                        messagebox.showerror("Erreur", "Médecin non trouvé", parent=self)
+                        return
+                    matricule_medecin = matricule_medecin[0]
 
-                # Insertion des données dans la table des rendez-vous avec le nom complet du patient
-                cur.execute(
-                    """INSERT INTO rendez_vous (date_creation_du_rendez_vous, date_du_rendez_vous, patient, geste_medical, medecin, matricule_medecin, validation) 
-                    VALUES (%s, %s, %s, %s, %s, %s, %s)""",
-                    (transform_date(self.date_de_creation_entry.get()), transform_date(self.date_rdv_entry.get()),
-                     nom_complet, self.geste_medical_combobox.get(), self.medecin_entry.get(), matricule_medecin,
-                     'Non validé')
-                )
-                con.commit()
-                self.vider()
-                con.close()
-                messagebox.showinfo("Succès", "Inscription réussie", parent=self)
+                    # Insertion des données dans la table des rendez-vous avec le nom complet du patient
+                    cur.execute(
+                        """INSERT INTO rendez_vous (date_creation_du_rendez_vous, date_du_rendez_vous, patient,matricule_patient, geste_medical, medecin, matricule_medecin, validation) 
+                        VALUES (%s, %s, %s, %s, %s, %s, %s,%s)""",
+                        (transform_date(self.date_de_creation_entry.get()), transform_date(self.date_rdv_entry.get()),
+                         nom_complet, self.matricule_patient_entry.get(), self.geste_medical_combobox.get(),
+                         self.medecin_entry.get(), matricule_medecin,
+                         'Non validé')
+                    )
+                    con.commit()
+                    self.vider()
+                    con.close()
+                    messagebox.showinfo("Succès", "Inscription réussie", parent=self)
+                else:
+                    messagebox.showerror("Erreur", "Le patient n'existe pas", parent=self)
             except Exception as es:
                 messagebox.showerror("Erreur", f"Erreur de connexion : {str(es)}", parent=self)
+            finally:
+                if con:
+                    con.close()
 
     def vider(self):
         self.date_rdv_entry.delete(0, END),
         self.nom_patient_entry.delete(0, END),
         self.prenom_patient_entry.delete(0, END),
+        self.matricule_patient_entry.delete(0,END)
         self.medecin_entry.delete(0, END),
 
 class Accueil(ct.CTk):
@@ -527,8 +580,21 @@ class Accueil(ct.CTk):
         # Left frame
         self.left_frame = ct.CTkFrame(self, fg_color='#28A0C6', width=250, height=h - 240, corner_radius=0)
         self.left_frame.place(x=0, y=200)
+        # Down frame
         self.down_frame = ct.CTkFrame(self, fg_color='#28A0C6', width=1600, height=50, corner_radius=0)
-        self.down_frame.place(x=0, y=self.winfo_screenheight() -95)
+        self.down_frame.place(x=0, y=self.winfo_screenheight() - 95)
+
+        # Ajouter votre nom
+        label_nom = Label(self.down_frame, text="Rèaliser par : AFANE NORHAN AMARIA et LAOUER NOUR EL IMENE", font=('Karla', 11, 'bold'), bg="#28A0C6")
+        label_nom.place(x=1300, y=10)
+
+        # Ajouter le logo
+        image_path = 'logo univ 1.png'
+        self.original_image = PhotoImage(file=image_path)
+        nouvelle_image = self.original_image.subsample(2, 2)  # Resize to half the original size
+        label_imageL = Label(self.down_frame, image=nouvelle_image, bg="#28A0C6")
+        label_imageL.image = nouvelle_image  # Keep a reference to the image
+        label_imageL.place(x=1808, y=0)
 
         buttons_info = [
             ("Liste des Patients", self.show_patients_tab),
