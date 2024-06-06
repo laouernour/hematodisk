@@ -880,6 +880,8 @@ class Accueil(ct.CTk):
             self.new_window .grab_set()
             self.new_window.title("Détails du Patient")
             self.new_window.geometry("760x450+300+200")
+            # Configure la fenêtre pour désactiver le redimensionnement en largeur et autoriser le redimensionnement en hauteur
+            self.new_window.resizable(width=False, height=False)
 
 
             self.menu_frame = ct.CTkFrame(self.new_window, width=760, height=50, border_width=0,corner_radius=0,
@@ -1221,7 +1223,8 @@ class Accueil(ct.CTk):
             self.new_window.grab_set()
             self.new_window.title("Détails du Rendez-vous")
             self.new_window.geometry("650x400+400+200")
-            self.resizable(False, False)
+            # Configure la fenêtre pour désactiver le redimensionnement en largeur et autoriser le redimensionnement en hauteur
+            self.new_window.resizable(width=False, height=False)
 
             self.menu_frame = ct.CTkFrame(self.new_window, width=760, height=50, border_width=0, corner_radius=0,
                                           fg_color='#B8F9FF')
