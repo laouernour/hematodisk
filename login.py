@@ -258,10 +258,10 @@ class login(ct.CTk):
 
         self.toplevelADM_window = None
 
-        def on_enter(e):
+        def on_enter_user(e):
             self.user.delete(0, 'end')
 
-        def on_leave(e):
+        def on_leave_user(e):
             self.name = self.user.get()
             if self.name == '':
                 self.user.insert(0, 'Entrer votre matricule')
@@ -271,13 +271,13 @@ class login(ct.CTk):
         self.user = ct.CTkEntry(frame, width=250, height=40, border_width=2, border_color='#263A5F',font=('Karla', 16))
         self.user.place(x=80,y=150)
         self.user.insert(0, 'Entrer votre matricule')
-        self.user.bind('<FocusIn>', on_enter)
-        self.user.bind('<FocusOut>', on_leave)
+        self.user.bind('<FocusIn>', on_enter_user)
+        self.user.bind('<FocusOut>', on_leave_user)
 
-        def on_enter(e):
+        def on_enter_pass(e):
             self.MP.delete(0, 'end')
-
-        def on_leave(e):
+            self.MP.configure(show='*')
+        def on_leave_pass(e):
             self.name = self.MP.get()
             if self.name == '':
                 self.MP.insert(0, 'Entrer votre mot de passe')
@@ -287,8 +287,8 @@ class login(ct.CTk):
         self.MP = ct.CTkEntry(frame, width=250, height=40, border_width=2, border_color='#263A5F', font=('Karla', 16))
         self.MP.place(x=80, y=230)
         self.MP.insert(0, 'Entrer votre mot de passe')
-        self.MP.bind('<FocusIn>', on_enter)
-        self.MP.bind('<FocusOut>', on_leave)
+        self.MP.bind('<FocusIn>', on_enter_pass)
+        self.MP.bind('<FocusOut>', on_leave_pass)
 
         def hide():
             self.eyebutton.configure(image=self.closeeyeresize, command=show)
