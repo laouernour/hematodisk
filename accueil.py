@@ -8,6 +8,24 @@ from tkcalendar import Calendar
 from datetime import datetime
 from PIL import Image, ImageTk
 import re
+def get_medical_gestures_from_db():
+    try:
+        # Connect to the database
+        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+        cur = con.cursor()
+
+        # Execute a query to fetch all medical gestures
+        cur.execute("SELECT geste FROM geste_medicale")
+
+        # Fetch all rows
+        gestes = [row[0] for row in cur.fetchall()]
+
+        # Close the database connection
+        con.close()
+
+        return gestes
+    except Exception as e:
+        raise RuntimeError(f"Erreur lors de la récupération des gestes médicaux depuis la base de données : {str(e)}")
 def wilaya():
     wilaya_list = ['01 Adrar','02 Chlef','03 Laghouat','04 Oum El Bouaghi','05 Batna','06 Béjaïa','07 Biskra','08 Béchar','09 Blida','10 Bouira',
                    '11 Tamanrasset','12 Tébessa','13 Tlemcen','14 Tiaret','15 Tizi Ouzou','16 Alger','17 Djelfa','18 Jijel','19 Sétif','20 Saïda',
@@ -41,6 +59,7 @@ class Inscrire(ct.CTkToplevel):
         w, h = self.winfo_screenwidth(), self.winfo_screenheight()
         self.geometry("%dx%d+0+0" % (w, h))
         self.configure(bg='#263A5F')
+
 
         self.formulaire_frame = ct.CTkFrame(self, fg_color='#FFFFFF', width=w, height=h, border_width=2,
                                             border_color='#263A5F')
@@ -174,6 +193,7 @@ class Inscrire_patient(ct.CTkToplevel):
         self.title("S'inscrire")
         self.geometry('850x590+300+50')
         self.configure(bg='#263A5F')
+        self.resizable(False, False)
 
         self.formulaire_frame = ct.CTkFrame(self, fg_color='#FFFFFF', width=800, height=490, border_width=2,
                                             border_color='#263A5F',corner_radius= 0)
@@ -344,8 +364,9 @@ class Ajouter_RDV(ct.CTkToplevel):
     def __init__(self, parent):  # Add parent as an argument
         super().__init__(parent)
         self.title("Ajouter RDV")
-        self.geometry('850x540+300+100')
+        self.geometry('860x550+300+100')
         self.configure(bg='#263A5F')
+        self.resizable(False, False)
 
         self.formulaire_frame = ct.CTkFrame(self, fg_color='#FFFFFF', width=800, height=490, border_width=2,
                                             border_color='#263A5F', corner_radius=0)
@@ -425,7 +446,7 @@ class Ajouter_RDV(ct.CTkToplevel):
                                                text_color='#263A5F')
         self.geste_medical_label.grid(row=3, column=0, padx=20, pady=20, sticky="w")
 
-        gestes = ["Transfusion", "Chimiothérapie", "Frotis", "Contrôle", "BOM", "CUP", "Facteur", "Moelle"]
+        gestes = get_medical_gestures_from_db()
         self.geste_medical_combobox = ct.CTkComboBox(self.inscription_frame, values=gestes, width=200, height=35,
                                                      corner_radius=10, font=('Karla', 14), dropdown_fg_color='#FFFFFF')
         self.geste_medical_combobox.grid(row=3, column=1, padx=20, pady=20, sticky="w")
@@ -585,8 +606,8 @@ class Accueil(ct.CTk):
         self.down_frame.place(x=0, y=self.winfo_screenheight() - 95)
 
         # Ajouter votre nom
-        label_nom = Label(self.down_frame, text="Rèaliser par : AFANE NORHAN AMARIA et LAOUER NOUR EL IMENE", font=('Karla', 11, 'bold'), bg="#28A0C6")
-        label_nom.place(x=1300, y=10)
+        label_nom = Label(self.down_frame, text="Rèaliser par : - AFANE NORHAN AMARIA : afanenorhan@gmail.com et - LAOUER NOUR EL IMENE : laouernourelimene@yahoo.com", font=('Karla', 11, 'bold'), bg="#28A0C6")
+        label_nom.place(x=800, y=10)
 
         # Ajouter le logo
         image_path = 'logo univ 1.png'
@@ -860,6 +881,7 @@ class Accueil(ct.CTk):
             self.new_window.title("Détails du Patient")
             self.new_window.geometry("760x450+300+200")
 
+
             self.menu_frame = ct.CTkFrame(self.new_window, width=760, height=50, border_width=0,corner_radius=0,
                                      fg_color='#B8F9FF')
             self.menu_frame.pack()
@@ -1082,10 +1104,10 @@ class Accueil(ct.CTk):
         self.geste_medical_label = ct.CTkLabel(Consultation_frame, text="Geste médical :", font=('Karla', 16),
                                                text_color='#263A5F')
         self.geste_medical_label.grid(row=3, column=0, padx=10, pady=10, sticky="w")
-        gestes = ["Transfusion", "Chimiothérapie", "Frotis", "Contrôle", "BOM", "CUP", "Facteur", "Moelle"]
-        self.geste_medical_combobox = ct.CTkComboBox(Consultation_frame, values=gestes, width=200, height=30,
+        gestes = get_medical_gestures_from_db()
+        self.geste_medical_combobox = ct.CTkComboBox(Consultation_frame, values=gestes, width=200, height=35,
                                                      corner_radius=10, font=('Karla', 14), dropdown_fg_color='#FFFFFF')
-        self.geste_medical_combobox.grid(row=3, column=1, padx=10, pady=10, sticky="w")
+        self.geste_medical_combobox.grid(row=3, column=1, padx=20, pady=20, sticky="w")
 
 
         # le médecin de la consultation
@@ -1199,6 +1221,7 @@ class Accueil(ct.CTk):
             self.new_window.grab_set()
             self.new_window.title("Détails du Rendez-vous")
             self.new_window.geometry("650x400+400+200")
+            self.resizable(False, False)
 
             self.menu_frame = ct.CTkFrame(self.new_window, width=760, height=50, border_width=0, corner_radius=0,
                                           fg_color='#B8F9FF')
