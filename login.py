@@ -1,10 +1,7 @@
 import customtkinter as ct
-from tkinter import  ttk
 from tkinter import *
 from tkinter import messagebox
 import pymysql
-import tkinter as tk
-from tkcalendar import Calendar
 from datetime import datetime
 from PIL import Image, ImageTk
 import re
@@ -125,12 +122,19 @@ class Inscrire_ADM(ct.CTkToplevel):
         # Bind key release event to password and confirmation password entries
         self.MP_ADM_entry.bind('<KeyRelease>', self.on_key_release)
         self.confirmation_MP_ADM_entry.bind('<KeyRelease>', self.on_key_release)
+        #validation_code
+        self.validation_code_label = ct.CTkLabel(self.inscription_frame, text="Code de validation :",
+                                                 font=('Karla', 18))
+        self.validation_code_label.grid(row=4, column=0, padx=20, pady=20, sticky="w")
+        self.validation_code_entry = ct.CTkEntry(self.inscription_frame, width=250, height=35, corner_radius=10,
+                                                 font=('Karla', 14))
+        self.validation_code_entry.grid(row=4, column=1, padx=20, pady=20, sticky="w")
 
         # Button to Create Account
         self.enregistrer_ADM = ct.CTkButton(self.inscription_frame, text="Créer", command=self.creer, width=250,
                                             height=40, corner_radius=15, font=('Karla', 18, 'bold'), fg_color='#263A5F',
                                             cursor='hand2', text_color='#FFFFFF')
-        self.enregistrer_ADM.grid(row=4, column=1, columnspan=2, pady=20)
+        self.enregistrer_ADM.grid(row=4, column=2, columnspan=2, pady=20)
 
         image_path = 'Hemato Desk logo.png'
         self.original_image = PhotoImage(file=image_path)
@@ -167,38 +171,45 @@ class Inscrire_ADM(ct.CTkToplevel):
             self.show_confirm_pass_button.config(state=NORMAL)
 
     def creer(self):
-        if self.nomADM_entry.get() == "" or self.prenomADM_entry.get() == "" or self.date_naissanceADM_entry.get() == "" or self.wilayaADM_entry.get() == "" or self.phone_nmbrADM_entry.get() == "" or self.matricule_ADM_entry.get() == "" or self.MP_ADM_entry.get() == "" or self.confirmation_MP_ADM_entry.get() == "":
-            messagebox.showerror("Erreur", "Inscription incomplète", parent=self)
-        elif self.MP_ADM_entry.get() != self.confirmation_MP_ADM_entry.get():
-            messagebox.showerror("Erreur", "Les mots de passe ne sont pas conformes", parent=self)
-        else:
-            if invalid_characters(self.nomADM_entry.get()) or invalid_characters(
-                    self.prenomADM_entry.get()) or invalid_characters_numbr(self.matricule_ADM_entry.get()) or invalid_characters_numbr(self.phone_nmbrADM_entry.get()):
-                messagebox.showerror("Erreur",
-                                     "Les champs ne doivent pas contenir de chiffres ou de caractères spéciaux",
-                                     parent=self)
+        validation_code_attendu = '20245'  # Code de validation attendu, à remplacer par le code réel ou une vérification dynamique
+        validation_code = self.validation_code_entry.get()
+
+        if validation_code == validation_code_attendu:
+            if self.nomADM_entry.get() == "" or self.prenomADM_entry.get() == "" or self.date_naissanceADM_entry.get() == "" or self.wilayaADM_entry.get() == "" or self.phone_nmbrADM_entry.get() == "" or self.matricule_ADM_entry.get() == "" or self.MP_ADM_entry.get() == "" or self.confirmation_MP_ADM_entry.get() == "":
+                messagebox.showerror("Erreur", "Inscription incomplète", parent=self)
+            elif self.MP_ADM_entry.get() != self.confirmation_MP_ADM_entry.get():
+                messagebox.showerror("Erreur", "Les mots de passe ne sont pas conformes", parent=self)
             else:
-                try:
-                    mydb = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
-                    mycursor = mydb.cursor()
-                    mycursor.execute(
-                        "insert into administrateur (matricule_administrateur,mot_de_passe,confirmer_mot_passe,nom,prenom,date_de_naissance,telephone,wilaya)values(%s,%s,%s,%s,%s,%s,%s,%s)",
-                        (
-                            self.matricule_ADM_entry.get(),
-                            self.MP_ADM_entry.get(),
-                            self.confirmation_MP_ADM_entry.get(),
-                            self.nomADM_entry.get(),
-                            self.prenomADM_entry.get(),
-                            transform_date(self.date_naissanceADM_entry.get()),
-                            self.phone_nmbrADM_entry.get(),
-                            self.wilayaADM_entry.get()
-                        ))
-                    messagebox.showinfo("Success", f"Administrateur enregistré", parent=self)
-                    mydb.commit()
-                    self.vider()
-                    mydb.close()
-                except Exception as es:
-                    messagebox.showerror("Erreur", f"Erreur de connexion : {str(es)}", parent=self)
+                if invalid_characters(self.nomADM_entry.get()) or invalid_characters(
+                        self.prenomADM_entry.get()) or invalid_characters_numbr(
+                        self.matricule_ADM_entry.get()) or invalid_characters_numbr(self.phone_nmbrADM_entry.get()):
+                    messagebox.showerror("Erreur",
+                                         "Les champs ne doivent pas contenir de chiffres ou de caractères spéciaux",
+                                         parent=self)
+                else:
+                    try:
+                        mydb = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+                        mycursor = mydb.cursor()
+                        mycursor.execute(
+                            "INSERT INTO administrateur (matricule_administrateur, mot_de_passe, confirmer_mot_passe, nom, prenom, date_de_naissance, telephone, wilaya) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+                            (
+                                self.matricule_ADM_entry.get(),
+                                self.MP_ADM_entry.get(),
+                                self.confirmation_MP_ADM_entry.get(),
+                                self.nomADM_entry.get(),
+                                self.prenomADM_entry.get(),
+                                transform_date(self.date_naissanceADM_entry.get()),
+                                self.phone_nmbrADM_entry.get(),
+                                self.wilayaADM_entry.get()
+                            ))
+                        messagebox.showinfo("Success", "Administrateur enregistré", parent=self)
+                        mydb.commit()
+                        self.vider()
+                        mydb.close()
+                    except Exception as es:
+                        messagebox.showerror("Erreur", f"Erreur de connexion : {str(es)}", parent=self)
+        else:
+            messagebox.showerror("Erreur", "Code de validation incorrect", parent=self)
 
     #vider les cellules d'entrée
     def vider(self):
@@ -209,6 +220,7 @@ class Inscrire_ADM(ct.CTkToplevel):
         self.prenomADM_entry.delete(0,END),
         self.date_naissanceADM_entry.delete(0,END),
         self.phone_nmbrADM_entry.delete(0,END),
+        self.validation_code_entry.delete(0, 'end')
 
 
 class login(ct.CTk):
@@ -287,15 +299,11 @@ class login(ct.CTk):
 
         self.openeye = Image.open('eye open.png')
         self.closeeye = Image.open('close eye.png')
-
         self.openeyeresize = ImageTk.PhotoImage(self.openeye.resize((self.openeye.width // 7, self.openeye.height // 7)))
         self.closeeyeresize = ImageTk.PhotoImage(self.closeeye.resize((self.closeeye.width // 10, self.closeeye.height // 10)))
-
         self.eyebutton = Button(frame, image=self.closeeyeresize, bd=0, bg="#FFFFFF", command=hide)
         self.eyebutton.place(x=440, y=360)
-
         self.eyebutton.config(state=DISABLED)
-
         def on_key_release(e):
             self.name = self.MP.get()
             if self.name == '':
@@ -304,7 +312,6 @@ class login(ct.CTk):
                 self.eyebutton.config(state=NORMAL)
 
         self.MP.bind('<KeyRelease>', on_key_release)
-
         ########################################
         button = ct.CTkButton(frame, text="Se Connecter", width=150, height=50, corner_radius=15,
                                font=('Karla', 20, 'bold'), fg_color='#263A5F', cursor='hand2', text_color='#FFFFFF',
@@ -316,7 +323,6 @@ class login(ct.CTk):
         inscrire = Button(frame, text="S'inscrire", font=('Karla', 12, 'bold'), border=0, bg='white', cursor='hand2',
                           activebackground='white', fg='#DD2F2E', command=self.open_toplevelADM)
         inscrire.place(x=362, y=562)
-
     def connecter(self):
         if self.user.get() == "" or self.MP.get() == "" :
             messagebox.showerror("Erreur", f"Veuillez saisir le Matricule et le Mot de passe ", parent=self)
