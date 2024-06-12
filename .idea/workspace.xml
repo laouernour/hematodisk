@@ -4,8 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4f75c642-f6c4-4703-bd79-24d9224c9ba6" name="Changes" comment="test">
+    <list default="true" id="4f75c642-f6c4-4703-bd79-24d9224c9ba6" name="Changes" comment="photo logo et conditon matricule">
+      <change beforePath="$PROJECT_DIR$/.idea/HematoDisk.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/HematoDisk.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/login.py" beforeDir="false" afterPath="$PROJECT_DIR$/login.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,20 +25,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "laouernour"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;laouernour&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings">
-    <option name="selectedUrlAndAccountId">
-      <UrlAndAccount>
-        <option name="accountId" value="a893648d-928e-42fa-b6e0-4fb5e86288fe" />
-        <option name="url" value="https://github.com/laouernour/hematodisk.git" />
-      </UrlAndAccount>
-    </option>
-  </component>
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/laouernour/hematodisk.git&quot;,
+    &quot;accountId&quot;: &quot;69ece4ba-6d2f-42ef-9ae0-04f9daf2bae4&quot;
+  }
+}</component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -48,23 +49,37 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.authentification 2.executor": "Run",
-    "Python.authentification.executor": "Run",
-    "Python.test 2.executor": "Run",
-    "Python.test.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "C:/Users/HP/PycharmProjects/HematoDisk",
-    "settings.editor.selected.configurable": "editor.preferences.tabs"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.accueil.executor&quot;: &quot;Run&quot;,
+    &quot;Python.authentification 2.executor&quot;: &quot;Run&quot;,
+    &quot;Python.authentification.executor&quot;: &quot;Run&quot;,
+    &quot;Python.doctor.executor&quot;: &quot;Run&quot;,
+    &quot;Python.login.executor&quot;: &quot;Run&quot;,
+    &quot;Python.medecin.executor&quot;: &quot;Run&quot;,
+    &quot;Python.patient.executor&quot;: &quot;Run&quot;,
+    &quot;Python.rendez-vous.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test 2.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/S/PycharmProjects/hematodisk&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.tabs&quot;
   }
-}]]></component>
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\S\PycharmProjects\hematodisk" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\S\PycharmProjects\hematodisk" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-d68999036c7f-d3b881c8e49f-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-233.14475.56" />
+        <option value="bundled-python-sdk-0509580d9d50-746f403e7f0c-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-241.14494.241" />
       </set>
     </attachedChunks>
   </component>
@@ -77,21 +92,326 @@
       <option name="presentableId" value="Default" />
       <updated>1712842153122</updated>
     </task>
+    <task id="LOCAL-00001" summary="affichage des images et position des buttons">
+      <option name="closed" value="true" />
+      <created>1713623421017</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1713623421017</updated>
+    </task>
+    <task id="LOCAL-00002" summary="les messages derreur">
+      <option name="closed" value="true" />
+      <created>1713632623212</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1713632623212</updated>
+    </task>
+    <task id="LOCAL-00003" summary="eyes button&#10;connect db">
+      <option name="closed" value="true" />
+      <created>1714042113387</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1714042113387</updated>
+    </task>
+    <task id="LOCAL-00004" summary="images">
+      <option name="closed" value="true" />
+      <created>1714072097736</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1714072097737</updated>
+    </task>
+    <task id="LOCAL-00005" summary="disactivetion de buton eye jusqua lentrer du mot de passe">
+      <option name="closed" value="true" />
+      <created>1714083486919</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1714083486920</updated>
+    </task>
+    <task id="LOCAL-00006" summary="ajout du logo au formulaires medecin et administrateur">
+      <option name="closed" value="true" />
+      <created>1714564913024</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1714564913024</updated>
+    </task>
+    <task id="LOCAL-00007" summary="corner radius acceuil">
+      <option name="closed" value="true" />
+      <created>1716158164218</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1716158164219</updated>
+    </task>
+    <task id="LOCAL-00008" summary="open,close eye for authentification ADM">
+      <option name="closed" value="true" />
+      <created>1716329201008</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1716329201008</updated>
+    </task>
+    <task id="LOCAL-00009" summary="open,close eye for authentification ADM">
+      <option name="closed" value="true" />
+      <created>1716362723215</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1716362723215</updated>
+    </task>
+    <task id="LOCAL-00010" summary="ajouter RDV , calendar">
+      <option name="closed" value="true" />
+      <created>1716380599817</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1716380599817</updated>
+    </task>
+    <task id="LOCAL-00011" summary="ajouter RDV , calendar">
+      <option name="closed" value="true" />
+      <created>1716380981307</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1716380981307</updated>
+    </task>
+    <task id="LOCAL-00012" summary="ajouter RDV , calendar, cnx">
+      <option name="closed" value="true" />
+      <created>1716421068394</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1716421068394</updated>
+    </task>
+    <task id="LOCAL-00013" summary="ajouter RDV , calendar, cnx">
+      <option name="closed" value="true" />
+      <created>1716421107021</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1716421107021</updated>
+    </task>
+    <task id="LOCAL-00014" summary="ajouter RDV , calendar, cnxe">
+      <option name="closed" value="true" />
+      <created>1716421142982</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1716421142982</updated>
+    </task>
+    <task id="LOCAL-00015" summary="modify,view icon">
+      <option name="closed" value="true" />
+      <created>1716507192152</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1716507192152</updated>
+    </task>
+    <task id="LOCAL-00016" summary="cnx frame rdv avec db">
+      <option name="closed" value="true" />
+      <created>1716586453739</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1716586453739</updated>
+    </task>
+    <task id="LOCAL-00017" summary="cnx de barre de recheche with database">
+      <option name="closed" value="true" />
+      <created>1716856297629</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1716856297629</updated>
+    </task>
+    <task id="LOCAL-00018" summary="cnx de barre de recheche with database">
+      <option name="closed" value="true" />
+      <created>1716857166297</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1716857166297</updated>
+    </task>
+    <task id="LOCAL-00019" summary="liste de administrateur dans parametres">
+      <option name="closed" value="true" />
+      <created>1716861055400</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1716861055400</updated>
+    </task>
+    <task id="LOCAL-00020" summary="parametre et icon calendar">
+      <option name="closed" value="true" />
+      <created>1716925074100</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1716925074101</updated>
+    </task>
+    <task id="LOCAL-00021" summary="liste de consultation (rdv) selon le jour actuel">
+      <option name="closed" value="true" />
+      <created>1716938173281</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1716938173281</updated>
+    </task>
+    <task id="LOCAL-00022" summary="liste de consultation (rdv) selon le jour actuel">
+      <option name="closed" value="true" />
+      <created>1716939627319</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1716939627319</updated>
+    </task>
+    <task id="LOCAL-00023" summary="suivi patient">
+      <option name="closed" value="true" />
+      <created>1716943810632</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1716943810632</updated>
+    </task>
+    <task id="LOCAL-00024" summary="configuration de barre de recherche selon les liste patient ou RDV">
+      <option name="closed" value="true" />
+      <created>1717032712592</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1717032712592</updated>
+    </task>
+    <task id="LOCAL-00025" summary="statistique">
+      <option name="closed" value="true" />
+      <created>1717121285744</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1717121285744</updated>
+    </task>
+    <task id="LOCAL-00026" summary="statistique">
+      <option name="closed" value="true" />
+      <created>1717121418457</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1717121418457</updated>
+    </task>
+    <task id="LOCAL-00027" summary="statistique">
+      <option name="closed" value="true" />
+      <created>1717159608089</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1717159608089</updated>
+    </task>
+    <task id="LOCAL-00028" summary="wilaya , stat">
+      <option name="closed" value="true" />
+      <created>1717172220010</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1717172220010</updated>
+    </task>
+    <task id="LOCAL-00029" summary="frame au dessus">
+      <option name="closed" value="true" />
+      <created>1717172339172</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1717172339172</updated>
+    </task>
+    <task id="LOCAL-00030" summary="frame au dessus">
+      <option name="closed" value="true" />
+      <created>1717173335857</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1717173335857</updated>
+    </task>
+    <task id="LOCAL-00031" summary="frame au dessus">
+      <option name="closed" value="true" />
+      <created>1717173701379</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1717173701379</updated>
+    </task>
+    <task id="LOCAL-00032" summary="stat">
+      <option name="closed" value="true" />
+      <created>1717176635076</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1717176635077</updated>
+    </task>
+    <task id="LOCAL-00033" summary="stat">
+      <option name="closed" value="true" />
+      <created>1717188167513</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1717188167513</updated>
+    </task>
+    <task id="LOCAL-00034" summary="stat">
+      <option name="closed" value="true" />
+      <created>1717188511722</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1717188511722</updated>
+    </task>
+    <task id="LOCAL-00035" summary="photo logo et conditon matricule">
+      <option name="closed" value="true" />
+      <created>1717626562213</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1717626562213</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="test" />
-    <option name="LAST_COMMIT_MESSAGE" value="test" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/authentification 2.py</url>
-          <line>23</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="affichage des images et position des buttons" />
+    <MESSAGE value="les messages derreur" />
+    <MESSAGE value="eyes button&#10;connect db" />
+    <MESSAGE value="images" />
+    <MESSAGE value="disactivetion de buton eye jusqua lentrer du mot de passe" />
+    <MESSAGE value="ajout du logo au formulaires medecin et administrateur" />
+    <MESSAGE value="corner radius acceuil" />
+    <MESSAGE value="open,close eye for authentification ADM" />
+    <MESSAGE value="ajouter RDV , calendar" />
+    <MESSAGE value="ajouter RDV , calendar, cnx" />
+    <MESSAGE value="ajouter RDV , calendar, cnxe" />
+    <MESSAGE value="modify,view icon" />
+    <MESSAGE value="cnx frame rdv avec db" />
+    <MESSAGE value="cnx de barre de recheche with database" />
+    <MESSAGE value="liste de administrateur dans parametres" />
+    <MESSAGE value="parametre et icon calendar" />
+    <MESSAGE value="liste de consultation (rdv) selon le jour actuel" />
+    <MESSAGE value="suivi patient" />
+    <MESSAGE value="configuration de barre de recherche selon les liste patient ou RDV" />
+    <MESSAGE value="statistique" />
+    <MESSAGE value="wilaya , stat" />
+    <MESSAGE value="frame au dessus" />
+    <MESSAGE value="stat" />
+    <MESSAGE value="photo logo et conditon matricule" />
+    <option name="LAST_COMMIT_MESSAGE" value="photo logo et conditon matricule" />
   </component>
 </project>

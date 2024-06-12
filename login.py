@@ -312,7 +312,7 @@ class login(ct.CTk):
                 self.eyebutton.config(state=NORMAL)
 
         self.MP.bind('<KeyRelease>', on_key_release)
-        ########################################
+
         button = ct.CTkButton(frame, text="Se Connecter", width=150, height=50, corner_radius=15,
                                font=('Karla', 20, 'bold'), fg_color='#263A5F', cursor='hand2', text_color='#FFFFFF',
                                command=self.connecter)
