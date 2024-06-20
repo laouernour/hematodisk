@@ -65,7 +65,7 @@ class Inscrire(ct.CTkToplevel):
                                             border_color='#263A5F')
         self.formulaire_frame.pack(expand=True, fill='both')
 
-        # Frame for the title label
+        # Frame for doctor
         self.label_frame = ct.CTkFrame(self.formulaire_frame, fg_color='#FFFFFF')
         self.label_frame.pack(pady=10)
 
