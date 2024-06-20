@@ -879,7 +879,7 @@ class Accueil(ct.CTk):
             self.new_window = ct.CTkToplevel(self)
             self.new_window .grab_set()
             self.new_window.title("Détails du Patient")
-            self.new_window.geometry("760x450+300+200")
+            self.new_window.geometry("760x540+350+100")
             # Configure la fenêtre pour désactiver le redimensionnement en largeur et autoriser le redimensionnement en hauteur
             self.new_window.resizable(width=False, height=False)
 
@@ -903,7 +903,7 @@ class Accueil(ct.CTk):
                                          text_color='#FFFFFF')
             modifier_butt.place(x=600, y=10)
 
-            self.info_frame = ct.CTkFrame(self.new_window, width=697, height=400, border_color='#FF0000', border_width=2,
+            self.info_frame = ct.CTkFrame(self.new_window, width=697, height=550, border_color='#FF0000', border_width=2,
                                           fg_color='transparent')
             self.info_frame.pack(fill='both', expand=True)
             # Appeler afficher_informations_patient pour afficher les informations par défaut
@@ -938,7 +938,7 @@ class Accueil(ct.CTk):
 
             # Récupérer les antécédents et le numéro de téléphone actuels du patient
             cur.execute("""
-                SELECT antecedents, telephone
+                SELECT matricule_patient ,antecedents, telephone
                 FROM patient
                 WHERE nom = %s AND prenom = %s
             """, (values[1], values[2]))  # Utilise les valeurs passées comme arguments
@@ -952,24 +952,30 @@ class Accueil(ct.CTk):
                 # Crée un cadre pour afficher les informations du patient
                 modification_frame = ct.CTkFrame(self.info_frame, fg_color='#ffffff')
                 modification_frame.pack(fill='both', expand=True)
+                # Matricule
+                self.matriculeP_label = ct.CTkLabel(modification_frame, text="Matricule :", font=('Karla', 16))
+                self.matriculeP_label.pack(pady=10)
+                self.matriculeP_entry = ct.CTkEntry(modification_frame, width=200, height=30, corner_radius=10,
+                                                    font=('Karla', 14))
+                self.matriculeP_entry.insert(0, patient_info[0])  # Afficher le matricule du patient
+                self.matriculeP_entry.pack(pady=5)
 
                 # Création des widgets pour la nouvelle fenêtre
                 self.antecedents_label = ct.CTkLabel(modification_frame, text="Antécédents:", font=('Karla', 14))
                 self.antecedents_label.pack(pady=10)
                 self.antecedents_entry = ct.CTkTextbox(modification_frame, font=('Karla', 14))
-                self.antecedents_entry.insert("1.0", patient_info[0])  # Afficher les antécédents actuels
+                self.antecedents_entry.insert("1.0", patient_info[1])  # Afficher les antécédents actuels
                 self.antecedents_entry.pack(pady=5)
 
                 self.telephone_label = ct.CTkLabel(modification_frame, text="Numéro de téléphone:", font=('Karla', 14))
                 self.telephone_label.pack(pady=10)
                 self.telephone_entry = ct.CTkEntry(modification_frame, font=('Karla', 14))
-                self.telephone_entry.insert(0, patient_info[1])  # Afficher le numéro de téléphone actuel
+                self.telephone_entry.insert(0, patient_info[2])  # Afficher le numéro de téléphone actuel
                 self.telephone_entry.pack(pady=5)
 
                 # Ajouter une lambda pour passer les valeurs du nom et du prénom à la fonction enregistrer
                 self.enregistrer_button = ct.CTkButton(modification_frame, text="Enregistrer",
-                                                       command=lambda: self.enregistrer(values[1], values[2]),
-                                                       font=('Karla', 14))
+                                                       command=lambda: self.enregistrer(values[1], values[2]), font=('Karla', 14))
                 self.enregistrer_button.pack(pady=10)
 
         except Exception as e:
@@ -995,9 +1001,10 @@ class Accueil(ct.CTk):
                 cur = con.cursor()
                 cur.execute("""
                     UPDATE patient 
-                    SET antecedents = %s, telephone = %s
+                    SET  matricule_patient = %s,antecedents = %s, telephone = %s
                     WHERE nom = %s AND prenom = %s
                 """, (
+                    self.matriculeP_entry.get(),
                     self.antecedents_entry.get("1.0", END),
                     self.telephone_entry.get(),
                     nom,
