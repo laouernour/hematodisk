@@ -879,29 +879,36 @@ class Accueil(ct.CTk):
             self.new_window = ct.CTkToplevel(self)
             self.new_window .grab_set()
             self.new_window.title("Détails du Patient")
-            self.new_window.geometry("760x540+350+100")
+            self.new_window.geometry("790x450+400+200")
             # Configure la fenêtre pour désactiver le redimensionnement en largeur et autoriser le redimensionnement en hauteur
             self.new_window.resizable(width=False, height=False)
 
 
-            self.menu_frame = ct.CTkFrame(self.new_window, width=760, height=50, border_width=0,corner_radius=0,
+            self.menu_frame = ct.CTkFrame(self.new_window, width=790, height=50, border_width=0,corner_radius=0,
                                      fg_color='#B8F9FF')
             self.menu_frame.pack()
 
             show_butt = ct.CTkButton(self.menu_frame, text="Voir dossier patient", command=lambda: self.afficher_informations_patient(self.info_frame, values), width=50, height=30,
                                      corner_radius=15, font=('Karla', 14, 'bold'), fg_color='#FF0000', cursor='hand2',
                                      text_color='#FFFFFF')
-            show_butt.place(x=25, y=10)
+            show_butt.place(x=20, y=10)
 
             history_butt = ct.CTkButton(self.menu_frame, text="Voir suivi patient", command=lambda: self.afficher_suivi_patient(values[0]), width=50, height=30,
                                         corner_radius=15, font=('Karla', 14, 'bold'), fg_color='#FF0000', cursor='hand2',
                                         text_color='#FFFFFF')
-            history_butt.place(x=310, y=10)
+            history_butt.place(x=210, y=10)
 
             modifier_butt = ct.CTkButton(self.menu_frame, text="Consultation", command=lambda: self.ajouter_consultation_patient(self.info_frame, values[0], values[1]),
                                          corner_radius=15, font=('Karla', 14, 'bold'), fg_color='#FF0000', cursor='hand2',
                                          text_color='#FFFFFF')
-            modifier_butt.place(x=600, y=10)
+            modifier_butt.place(x=385, y=10)
+
+            rdv_butt = ct.CTkButton(self.menu_frame, text="Prochain Rendez_vous",
+                                         command=lambda: self.ajouter_rdv_prochain(self.info_frame, values[0], values[1]),
+                                         corner_radius=15, font=('Karla', 14, 'bold'), fg_color='#FF0000',
+                                         cursor='hand2',
+                                         text_color='#FFFFFF')
+            rdv_butt.place(x=555, y=10)
 
             self.info_frame = ct.CTkFrame(self.new_window, width=697, height=550, border_color='#FF0000', border_width=2,
                                           fg_color='transparent')
@@ -920,7 +927,7 @@ class Accueil(ct.CTk):
                                                 height=40, corner_radius=15, font=('Karla', 16, 'bold'),
                                                 fg_color='#263A5F',
                                                 cursor='hand2', text_color='#FFFFFF')
-        self.modifier_butt.grid(row=8, column=2, columnspan=2, pady=8)
+        self.modifier_butt.grid(row=8, column=2, columnspan=2, pady=20)
 
         # Ajoute des libellés pour afficher les détails du patient
         labels = ['Matricule:', 'Nom:', 'Prénom:', 'Date de naissance:', 'Téléphone:', 'Groupage:','Antécédent:']
@@ -949,34 +956,37 @@ class Accueil(ct.CTk):
             if patient_info:
                 for widget in self.info_frame.winfo_children():
                     widget.destroy()
-                # Crée un cadre pour afficher les informations du patient
+                    # Crée un cadre pour afficher les informations du patient
                 modification_frame = ct.CTkFrame(self.info_frame, fg_color='#ffffff')
-                modification_frame.pack(fill='both', expand=True)
-                # Matricule
+                modification_frame.grid(row=0, column=0, sticky="nsew")
+                self.info_frame.grid_rowconfigure(0, weight=1)
+                self.info_frame.grid_columnconfigure(0, weight=1)
+
                 self.matriculeP_label = ct.CTkLabel(modification_frame, text="Matricule :", font=('Karla', 16))
-                self.matriculeP_label.pack(pady=10)
+                self.matriculeP_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
                 self.matriculeP_entry = ct.CTkEntry(modification_frame, width=200, height=30, corner_radius=10,
                                                     font=('Karla', 14))
                 self.matriculeP_entry.insert(0, patient_info[0])  # Afficher le matricule du patient
-                self.matriculeP_entry.pack(pady=5)
+                self.matriculeP_entry.grid(row=0, column=1, padx=10, pady=5, sticky="w")
 
                 # Création des widgets pour la nouvelle fenêtre
                 self.antecedents_label = ct.CTkLabel(modification_frame, text="Antécédents:", font=('Karla', 14))
-                self.antecedents_label.pack(pady=10)
+                self.antecedents_label.grid(row=1, column=0, padx=10, pady=10, sticky="w")
                 self.antecedents_entry = ct.CTkTextbox(modification_frame, font=('Karla', 14))
                 self.antecedents_entry.insert("1.0", patient_info[1])  # Afficher les antécédents actuels
-                self.antecedents_entry.pack(pady=5)
+                self.antecedents_entry.grid(row=1, column=1, padx=10, pady=5, sticky="w")
+
 
                 self.telephone_label = ct.CTkLabel(modification_frame, text="Numéro de téléphone:", font=('Karla', 14))
-                self.telephone_label.pack(pady=10)
+                self.telephone_label.grid(row=2, column=0, padx=10, pady=10, sticky="w")
                 self.telephone_entry = ct.CTkEntry(modification_frame, font=('Karla', 14))
                 self.telephone_entry.insert(0, patient_info[2])  # Afficher le numéro de téléphone actuel
-                self.telephone_entry.pack(pady=5)
+                self.telephone_entry.grid(row=2, column=1, padx=10, pady=5, sticky="w")
 
                 # Ajouter une lambda pour passer les valeurs du nom et du prénom à la fonction enregistrer
                 self.enregistrer_button = ct.CTkButton(modification_frame, text="Enregistrer",
                                                        command=lambda: self.enregistrer(values[1], values[2]), font=('Karla', 14))
-                self.enregistrer_button.pack(pady=10)
+                self.enregistrer_button.grid(row=3, column=0, columnspan=2, pady=10)
 
         except Exception as e:
             # Afficher une erreur en cas de problème
@@ -1027,7 +1037,7 @@ class Accueil(ct.CTk):
             # Requête SQL pour obtenir les consultations du patient avec les noms des médecins
             cur.execute(
                 """
-                SELECT hc.date_de_consultation, hc.geste_medical, hc.diagnostique, m.nom AS medecin
+                SELECT hc.date_de_consultation, hc.geste_medical, hc.diagnostique,hc.traitement, m.nom AS medecin
                 FROM historique_consultations hc
                 JOIN medecin m ON hc.matricule_medecin = m.matricule_medecin
                 WHERE hc.matricule_patient = %s AND hc.date_de_consultation <= %s
@@ -1044,7 +1054,7 @@ class Accueil(ct.CTk):
             consultations_frame.pack(fill='both', expand=True)
 
             # Ajouter des libellés pour les colonnes
-            headers = ['Date de Consultation', 'Geste Médical', 'Diagnostique', 'Médecin traitant']
+            headers = ['Date de Consultation', 'Geste Médical', 'Diagnostique','Traitement', 'Médecin traitant']
             for i, header in enumerate(headers):
                 header_label = ct.CTkLabel(consultations_frame, text=header, font=('Karla', 16, 'bold'))
                 header_label.grid(row=0, column=i, padx=10, pady=5)
@@ -1080,14 +1090,14 @@ class Accueil(ct.CTk):
         # Date de création
         self.date_de_creation_label = ct.CTkLabel(Consultation_frame, text="Date de création :", font=('Karla', 16),
                                              text_color='#263A5F')
-        self.date_de_creation_label.grid(row=4, column=2, padx=10, pady=10, sticky="w")
+        self.date_de_creation_label.grid(row=5, column=2, padx=10, pady=10, sticky="w")
 
         today_date = datetime.now().strftime('%d/%m/%Y')
         self.date_de_creation_entry = ct.CTkEntry(Consultation_frame, width=200, height=35, corner_radius=10,
                                              font=('Karla', 14))
         self.date_de_creation_entry.insert(0, today_date)
         self.date_de_creation_entry.configure(state='readonly')
-        self.date_de_creation_entry.grid(row=4, column=3, padx=10, pady=10, sticky="w")
+        self.date_de_creation_entry.grid(row=5, column=3, padx=10, pady=10, sticky="w")
 
         # Libellé et champ pour le matricule du patient
         self.matricule_patient_label = ct.CTkLabel(Consultation_frame, text="Matricule Patient :", font=('Karla', 16),
@@ -1116,7 +1126,7 @@ class Accueil(ct.CTk):
         gestes = get_medical_gestures_from_db()
         self.geste_medical_combobox = ct.CTkComboBox(Consultation_frame, values=gestes, width=200, height=35,
                                                      corner_radius=10, font=('Karla', 14), dropdown_fg_color='#FFFFFF')
-        self.geste_medical_combobox.grid(row=3, column=1, padx=20, pady=20, sticky="w")
+        self.geste_medical_combobox.grid(row=3, column=1, padx=10, pady=10, sticky="w")
 
 
         # le médecin de la consultation
@@ -1124,7 +1134,6 @@ class Accueil(ct.CTk):
         self.nom_medecin_label = ct.CTkLabel(Consultation_frame, text="Médecin:", font=('Karla', 16),
                                         text_color='#263A5F')
         self.nom_medecin_label.grid(row=3, column=2, padx=10, pady=10, sticky="w")
-
         self.nom_medecin_entry = ct.CTkEntry(Consultation_frame, width=200, height=35, corner_radius=10, font=('Karla', 14))
         self.nom_medecin_entry.grid(row=3, column=3, padx=10, pady=10, sticky="w")
 
@@ -1134,15 +1143,24 @@ class Accueil(ct.CTk):
         self.diagnostique_label.grid(row=4, column=0, padx=10, pady=10, sticky="w")
 
         # Champ de saisie de texte pour le diagnostique
-        self.diagnostique_entry = ct.CTkTextbox(Consultation_frame, width=200, height=150, corner_radius=10,
+        self.diagnostique_entry = ct.CTkTextbox(Consultation_frame, width=200, height=100, corner_radius=10,
                                            font=('Karla', 14))
         self.diagnostique_entry.grid(row=4, column=1, padx=10, pady=10, sticky="w")
+
+        # le traitement de la consultation
+        self.traitement_label = ct.CTkLabel(Consultation_frame, text="Traitement :", font=('Karla', 16),
+                                            text_color='#263A5F')
+        self.traitement_label.grid(row=4, column=2, padx=10, pady=10, sticky="w")
+
+        self.traitement_entry = ct.CTkEntry(Consultation_frame, width=200, height=35, corner_radius=10,
+                                             font=('Karla', 14))
+        self.traitement_entry.grid(row=4, column=3, padx=10, pady=10, sticky="w")
         # Button to Create Account
         self.enregistrer_consultation= ct.CTkButton(Consultation_frame, text="+Ajouter Consultation", command=self.creer_consultation, width=250,
                                                 height=40, corner_radius=15, font=('Karla', 16, 'bold'),
                                                 fg_color='#263A5F',
                                                 cursor='hand2', text_color='#FFFFFF')
-        self.enregistrer_consultation.grid(row=5, column=1, columnspan=2, pady=8)
+        self.enregistrer_consultation.grid(row=6, column=1, columnspan=2, pady=0)
 
     def creer_consultation(self):
         if self.nom_medecin_entry.get() == "" or self.diagnostique_entry.get("1.0", tk.END) == "":
@@ -1167,13 +1185,14 @@ class Accueil(ct.CTk):
                     date_creation = transform_date(self.date_de_creation_entry.get())
                     geste_medical = self.geste_medical_combobox.get()
                     diagnostique = self.diagnostique_entry.get("1.0", tk.END)  # Récupérer tout le texte
+                    traitament = self.traitement_entry.get()
 
                     # Requête SQL pour insérer les données de consultation
-                    query_insert = "INSERT INTO  historique_consultations (matricule_patient, matricule_medecin, date_de_consultation, geste_medical, diagnostique) VALUES (%s, %s, %s, %s, %s)"
+                    query_insert = "INSERT INTO  historique_consultations (matricule_patient, matricule_medecin, date_de_consultation, geste_medical, diagnostique,traitement) VALUES (%s, %s, %s, %s, %s,%s)"
 
                     # Exécuter la requête SQL pour l'insertion
                     cur.execute(query_insert,
-                                (matricule_patient, matricule_medecin, date_creation, geste_medical, diagnostique))
+                                (matricule_patient, matricule_medecin, date_creation, geste_medical, diagnostique,traitament))
 
                     # Valider la transaction
                     con.commit()
@@ -1193,6 +1212,161 @@ class Accueil(ct.CTk):
                 if con:
                     con.close()
 
+#ajouter_rdv_prochain
+    def ajouter_rdv_prochain(self, window, matricule_patient,patient):
+        for widget in self.info_frame.winfo_children():
+            widget.destroy()
+
+        # Crée un cadre pour afficher les informations du patient
+        self.rdv_prochain_frame = ct.CTkFrame(window, fg_color='#ffffff')
+        self.rdv_prochain_frame.pack(fill='both', expand=True)
+        self.calender_image = Image.open('calendar-removebg-preview.png').resize((45, 45))
+        self.calender_icon = ImageTk.PhotoImage(self.calender_image)
+
+        # Date de création
+        self.titre_label = ct.CTkLabel(self.rdv_prochain_frame, text="Rendez-vous prochain :",
+                                       font=('Karla', 18, 'bold'),
+                                       text_color='#263A5F')
+        self.titre_label.grid(row=0,column=1,padx=5,pady=10,sticky="w")
+        # Date de création
+        self.date_de_creation_label = ct.CTkLabel(self.rdv_prochain_frame, text="Date de création :", font=('Karla', 16),
+                                             text_color='#263A5F')
+        self.date_de_creation_label.grid(row=4, column=0, padx=10, pady=20, sticky="w")
+
+        today_date = datetime.now().strftime('%d/%m/%Y')
+        self.date_de_creation_entry = ct.CTkEntry(self.rdv_prochain_frame, width=200, height=35, corner_radius=10,
+                                             font=('Karla', 14))
+        self.date_de_creation_entry.insert(0, today_date)
+        self.date_de_creation_entry.configure(state='readonly')
+        self.date_de_creation_entry.grid(row=4, column=1, padx=10, pady=20, sticky="w")
+        # Date du rendez-vous
+        self.date_rdv_label = ct.CTkLabel(self.rdv_prochain_frame, text="Date du rendez-vous :", font=('Karla', 16),
+                                          text_color='#263A5F')
+        self.date_rdv_label.grid(row=4, column=2, padx=10, pady=20, sticky="w")
+
+        self.date_rdv_entry = ct.CTkEntry(self.rdv_prochain_frame, width=200, height=35, corner_radius=10,
+                                          font=('Karla', 14))
+        self.date_rdv_entry.grid(row=4, column=3, padx=10, pady=20, sticky="w")
+
+        # Ajouter l'icône de calendrier
+        self.show_calendar_button = Button(self.rdv_prochain_frame, image=self.calender_icon, width=25, height=30,
+                                           command=self.open_calendar, bd=0, bg='#FFFFFF', activebackground='#FFFFFF',
+                                           highlightthickness=0)
+        self.show_calendar_button.place(x=1100, y=340)
+
+        # Libellé et champ pour le matricule du patient
+        self.matricule_patient_label = ct.CTkLabel(self.rdv_prochain_frame, text="Matricule Patient :", font=('Karla', 16),
+                                              text_color='#263A5F')
+        self.matricule_patient_label.grid(row=1, column=0, padx=10, pady=20, sticky="w")
+
+        self.matricule_patient_entry = ct.CTkEntry(self.rdv_prochain_frame, width=200, height=35, corner_radius=10,
+                                              font=('Karla', 14))
+        self.matricule_patient_entry.insert(0, matricule_patient)
+        self.matricule_patient_entry.configure(state='readonly')
+        self.matricule_patient_entry.grid(row=1, column=1, padx=10, pady=20, sticky="w")
+
+        # Libellé et champ pour le nom et prénom du patient
+        self.patient_label = ct.CTkLabel(self.rdv_prochain_frame, text="Patient :",
+                                                    font=('Karla', 16),
+                                                    text_color='#263A5F')
+        self.patient_label.grid(row=1, column=2, padx=10, pady=20, sticky="w")
+        self.patient_entry = ct.CTkEntry(self.rdv_prochain_frame, width=200, height=35, corner_radius=10,
+                                                    font=('Karla', 14))
+        self.patient_entry.insert(0, patient)
+        self.patient_entry.configure(state='readonly')
+        self.patient_entry.grid(row=1, column=3, padx=10, pady=20, sticky="w")
+        # Geste medical
+        self.geste_medical_label = ct.CTkLabel(self.rdv_prochain_frame, text="Geste médical :", font=('Karla', 16),
+                                               text_color='#263A5F')
+        self.geste_medical_label.grid(row=3, column=0, padx=10, pady=20, sticky="w")
+        gestes = get_medical_gestures_from_db()
+        self.geste_medical_combobox = ct.CTkComboBox(self.rdv_prochain_frame, values=gestes, width=200, height=35,
+                                                     corner_radius=10, font=('Karla', 14), dropdown_fg_color='#FFFFFF')
+        self.geste_medical_combobox.grid(row=3, column=1, padx=10, pady=20, sticky="w")
+
+
+        # le médecin de la consultation
+
+        self.nom_medecin_label = ct.CTkLabel(self.rdv_prochain_frame, text="Médecin:", font=('Karla', 16),
+                                        text_color='#263A5F')
+        self.nom_medecin_label.grid(row=3, column=2, padx=10, pady=20, sticky="w")
+
+        self.nom_medecin_entry = ct.CTkEntry(self.rdv_prochain_frame, width=200, height=35, corner_radius=10, font=('Karla', 14))
+        self.nom_medecin_entry.grid(row=3, column=3, padx=10, pady=20, sticky="w")
+
+        # Button to Create appoiments
+        self.enregistrer_rdv= ct.CTkButton(self.rdv_prochain_frame, text="+Ajouter Le Rendez-vous", command=self.creer_rdv_prochain, width=250,
+                                                height=40, corner_radius=15, font=('Karla', 16, 'bold'),
+                                                fg_color='#263A5F',
+                                                cursor='hand2', text_color='#FFFFFF')
+        self.enregistrer_rdv.grid(row=5, column=1, columnspan=2, pady=30)
+
+    def creer_rdv_prochain(self):
+        if self.date_rdv_entry.get() == "" or self.date_de_creation_entry.get() == "" or self.matricule_patient_entry.get() == "" or self.nom_medecin_entry.get() == "" :
+            messagebox.showerror("Erreur", "Inscription incomplète", parent=self)
+        else:
+            try:
+                # Établir une connexion à la base de données
+                con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+                cur = con.cursor()
+
+                # Vérifier si le patient existe déjà
+                cur.execute("SELECT * FROM patient WHERE nom = %s AND matricule_patient = %s",
+                            (self.patient_entry.get(),self.matricule_patient_entry.get()))
+                patient_exists = cur.fetchone()
+
+                if patient_exists:
+                    # Récupération du matricule_medecin à partir de la table medecin
+                    cur.execute("SELECT matricule_medecin FROM medecin WHERE nom = %s", (self.nom_medecin_entry.get(),))
+                    matricule_medecin = cur.fetchone()
+                    if matricule_medecin is None:
+                        messagebox.showerror("Erreur", "Médecin non trouvé", parent=self)
+                        return
+                    matricule_medecin = matricule_medecin[0]
+
+                    # Insertion des données dans la table des rendez-vous avec le nom complet du patient
+                    cur.execute(
+                        """INSERT INTO rendez_vous (date_creation_du_rendez_vous, date_du_rendez_vous, patient,matricule_patient, geste_medical, medecin, matricule_medecin, validation) 
+                        VALUES (%s, %s, %s, %s, %s, %s, %s,%s)""",
+                        (transform_date(self.date_de_creation_entry.get()), transform_date(self.date_rdv_entry.get()),
+                         self.patient_entry, self.matricule_patient_entry.get(), self.geste_medical_combobox.get(),
+                         self.nom_medecin_entry.get(), matricule_medecin,
+                         'Non validé')
+                    )
+                    con.commit()
+                    # Afficher un message de succès
+                    messagebox.showinfo("Succès", "Consultation enregistrée avec succès", parent=self)
+                else:
+                    messagebox.showerror("Erreur", "Médecin introuvable", parent=self)
+
+            except Exception as e:
+                # Afficher une erreur en cas d'échec de l'opération
+                messagebox.showerror("Erreur", f"Erreur lors de l'enregistrement de la consultation : {str(e)}",
+                                     parent=self)
+                print(str(e))
+            finally:
+                # Fermer la connexion à la base de données
+                if con:
+                    con.close()
+
+    def open_calendar(self):
+        # Crée un frame flottant pour le calendrier
+        self.calendar_frame = Frame(self.rdv_prochain_frame, bg='#FFFFFF', bd=2, relief='raised')
+        self.calendar_frame.place(x=900, y=330)  # Ajustez les coordonnées selon vos besoins
+
+        self.cal = Calendar(self.calendar_frame, selectmode="day", locale="fr_FR", date_pattern="dd/mm/yyyy")
+        self.cal.pack(padx=10, pady=5)
+
+        self.select_button = Button(self.calendar_frame, text="Sélectionner", command=self.select_date, bg='#263A5F',
+                                    fg='#FFFFFF')
+        self.select_button.pack(pady=10)
+
+    def select_date(self):
+        # Récupérer la date sélectionnée et l'afficher dans l'entrée
+        selected_date = self.cal.get_date()
+        self.date_rdv_entry.delete(0, END)
+        self.date_rdv_entry.insert(0, selected_date)
+        self.calendar_frame.destroy()
 
     def show_appointments_tab(self):
         # Clear the center frame
