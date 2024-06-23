@@ -731,28 +731,67 @@ class Accueil(ct.CTk):
             self.rech_txt.delete(0, 'end')
             con.close()
 
+
         elif self.current_search_list == "rdv":
+
             # Recherche dans la liste des rendez-vous
+
             con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+
             cur = con.cursor()
+
             recherche = " ".join(nom_prenom)
 
-            cur.execute(
-                "SELECT id_rendez_vous, patient, date_du_rendez_vous, geste_medical FROM rendez_vous WHERE CONCAT(SUBSTRING_INDEX(patient, ', 1), ', SUBSTRING_INDEX(patient, ', -1)) LIKE %s",
-                (f"%{recherche}%",)
-            )
+            if nom_prenom[0].isdigit():  # Check if the input is a digit (matricule)
+
+                cur.execute(
+
+                    "SELECT id_rendez_vous, patient, date_du_rendez_vous, geste_medical FROM rendez_vous WHERE matricule_patient = %s",
+
+                    (int(nom_prenom[0]),)
+
+                )
+
+            else:
+
+                if len(nom_prenom) == 1:
+
+                    cur.execute(
+
+                        "SELECT id_rendez_vous, patient, date_du_rendez_vous, geste_medical FROM rendez_vous WHERE patient LIKE %s",
+
+                        (f"%{recherche}%",)
+
+                    )
+
+                else:
+
+                    nom, prenom = nom_prenom
+
+                    cur.execute(
+
+                        "SELECT id_rendez_vous, patient, date_du_rendez_vous, geste_medical FROM rendez_vous WHERE patient LIKE %s AND patient LIKE %s",
+
+                        (f"%{nom}%", f"%{prenom}%")
+
+                    )
 
             rdv = cur.fetchall()
 
             # Effacer le Treeview
+
             for item in self.treeview_appointments.get_children():
                 self.treeview_appointments.delete(item)
 
             # Ajouter les rendez-vous trouvés dans le Treeview
+
             for rendez_vous in rdv:
                 self.add_appointment(self.treeview_appointments, rendez_vous)
+
             # Supprimer le texte de la barre de recherche
+
             self.rech_txt.delete(0, 'end')
+
             con.close()
 
     def create_patients_treeview(self):
