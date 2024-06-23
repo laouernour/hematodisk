@@ -701,10 +701,16 @@ class Accueil(ct.CTk):
             cur = con.cursor()
 
             if len(nom_prenom) == 1:
-                # Rechercher par nom ou prénom
-                cur.execute(
-                    "SELECT matricule_patient, nom, prenom, date_de_naissance, telephone, groupage FROM patient WHERE nom LIKE %s OR prenom LIKE %s",
-                    (f"%{nom_prenom[0]}%", f"%{nom_prenom[0]}%"))
+                # Rechercher par nom ou prénom ou matricule
+                if nom_prenom[0].isdigit():  # Check if the input is a digit (matricule)
+                    cur.execute(
+                        "SELECT matricule_patient, nom, prenom, date_de_naissance, telephone, groupage FROM patient WHERE matricule_patient = %s",
+                        (int(nom_prenom[0]),)
+                    )
+                else:
+                    cur.execute(
+                        "SELECT matricule_patient, nom, prenom, date_de_naissance, telephone, groupage FROM patient WHERE nom LIKE %s OR prenom LIKE %s",
+                        (f"%{nom_prenom[0]}%", f"%{nom_prenom[0]}%"))
             else:
                 # Rechercher par nom et prénom
                 nom, prenom = nom_prenom
@@ -721,32 +727,28 @@ class Accueil(ct.CTk):
             # Ajouter les patients trouvés dans le Treeview
             for patient in patients:
                 self.add_patient(self.treeview_patients, patient)
-                # Supprimer le texte de la barre de recherche
-                self.rech_txt.delete(0, 'end')
+            # Supprimer le texte de la barre de recherche
+            self.rech_txt.delete(0, 'end')
             con.close()
 
         elif self.current_search_list == "rdv":
-
             # Recherche dans la liste des rendez-vous
-
             con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
             cur = con.cursor()
             recherche = " ".join(nom_prenom)
 
             cur.execute(
-                "SELECT id_rendez_vous, patient, date_du_rendez_vous, geste_medical FROM rendez_vous WHERE CONCAT(SUBSTRING_INDEX(patient, ' ', 1), ' ', SUBSTRING_INDEX(patient, ' ', -1)) LIKE %s",
+                "SELECT id_rendez_vous, patient, date_du_rendez_vous, geste_medical FROM rendez_vous WHERE CONCAT(SUBSTRING_INDEX(patient, ', 1), ', SUBSTRING_INDEX(patient, ', -1)) LIKE %s",
                 (f"%{recherche}%",)
             )
 
             rdv = cur.fetchall()
 
             # Effacer le Treeview
-
             for item in self.treeview_appointments.get_children():
                 self.treeview_appointments.delete(item)
 
             # Ajouter les rendez-vous trouvés dans le Treeview
-
             for rendez_vous in rdv:
                 self.add_appointment(self.treeview_appointments, rendez_vous)
             # Supprimer le texte de la barre de recherche
