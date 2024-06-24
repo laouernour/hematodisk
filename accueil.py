@@ -742,7 +742,7 @@ class Accueil(ct.CTk):
 
             recherche = " ".join(nom_prenom)
 
-            if nom_prenom[0].isdigit():  # Check if the input is a digit (matricule)
+            if nom_prenom[0].isdigit():  # Checker si input est digital (matricule)
 
                 cur.execute(
 
