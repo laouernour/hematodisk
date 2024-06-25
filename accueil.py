@@ -704,18 +704,18 @@ class Accueil(ct.CTk):
                 # Rechercher par nom ou prénom ou matricule
                 if nom_prenom[0].isdigit():  # Check if the input is a digit (matricule)
                     cur.execute(
-                        "SELECT matricule_patient, nom, prenom, date_de_naissance, telephone, groupage FROM patient WHERE matricule_patient = %s",
+                        "SELECT matricule_patient, nom, prenom, date_de_naissance, telephone, groupage , Antecedents  FROM patient WHERE matricule_patient = %s",
                         (int(nom_prenom[0]),)
                     )
                 else:
                     cur.execute(
-                        "SELECT matricule_patient, nom, prenom, date_de_naissance, telephone, groupage FROM patient WHERE nom LIKE %s OR prenom LIKE %s",
+                        "SELECT matricule_patient, nom, prenom, date_de_naissance, telephone, groupage , Antecedents  FROM patient WHERE nom LIKE %s OR prenom LIKE %s",
                         (f"%{nom_prenom[0]}%", f"%{nom_prenom[0]}%"))
             else:
                 # Rechercher par nom et prénom
                 nom, prenom = nom_prenom
                 cur.execute(
-                    "SELECT matricule_patient, nom, prenom, date_de_naissance, telephone, groupage FROM patient WHERE nom LIKE %s AND prenom LIKE %s",
+                    "SELECT matricule_patient, nom, prenom, date_de_naissance, telephone, groupage , Antecedents  FROM patient WHERE nom LIKE %s AND prenom LIKE %s",
                     (f"%{nom}%", f"%{prenom}%"))
 
             patients = cur.fetchall()
