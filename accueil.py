@@ -88,49 +88,34 @@ class Inscrire(ct.CTkToplevel):
                                         font=('Karla', 14))
         self.prenom_entry.grid(row=0, column=3, padx=20, pady=20, sticky="w")
 
-        # Date de Naissance
-        self.date_naissance_label = ct.CTkLabel(self.inscription_frame, text="Date de Naissance :", font=('Karla', 18))
-        self.date_naissance_label.grid(row=1, column=0, padx=20, pady=20, sticky="w")
-        self.date_naissance_entry = ct.CTkEntry(self.inscription_frame, width=250, height=35, corner_radius=10,
-                                                font=('Karla', 14))
-        self.date_naissance_entry.grid(row=1, column=1, padx=20, pady=20, sticky="w")
-
-        # Wilaya
-
-        self.wilaya_label = ct.CTkLabel(self.inscription_frame, text="Wilaya :", font=('Karla', 18))
-        self.wilaya_label.grid(row=1, column=2, padx=20, pady=20, sticky="w")
-        self.wilaya_entry = ct.CTkComboBox(self.inscription_frame, width=250, height=35, corner_radius=10,
-                                        font=('Karla', 14), values=wilaya())
-        self.wilaya_entry.grid(row=1, column=3, padx=20, pady=20, sticky="w")
-
         # Téléphone
         self.phone_nmbr_label = ct.CTkLabel(self.inscription_frame, text="Téléphone:", font=('Karla', 18))
-        self.phone_nmbr_label.grid(row=2, column=0, padx=20, pady=20, sticky="w")
+        self.phone_nmbr_label.grid(row=1, column=0, padx=20, pady=20, sticky="w")
         self.phone_nmbr_entry = ct.CTkEntry(self.inscription_frame, width=250, height=35, corner_radius=10,
                                             font=('Karla', 14))
-        self.phone_nmbr_entry.grid(row=2, column=1, padx=20, pady=20, sticky="w")
+        self.phone_nmbr_entry.grid(row=1, column=1, padx=20, pady=20, sticky="w")
 
         # Matricule
         self.matricule_doctor_label = ct.CTkLabel(self.inscription_frame, text="Matricule Médecin:", font=('Karla', 18))
-        self.matricule_doctor_label.grid(row=2, column=2, padx=20, pady=20, sticky="w")
+        self.matricule_doctor_label.grid(row=1, column=2, padx=20, pady=20, sticky="w")
         self.matricule_doctor_entry = ct.CTkEntry(self.inscription_frame, width=250, height=35, corner_radius=10,
                                                   font=('Karla', 14))
-        self.matricule_doctor_entry.grid(row=2, column=3, padx=20, pady=20, sticky="w")
+        self.matricule_doctor_entry.grid(row=1, column=3, padx=20, pady=20, sticky="w")
 
         # Grad
         self.grad_label = ct.CTkLabel(self.inscription_frame, text="Grade:", font=('Karla', 18))
-        self.grad_label.grid(row=3, column=0, padx=20, pady=20, sticky="w")
+        self.grad_label.grid(row=2, column=0, padx=20, pady=20, sticky="w")
         grad = ["Généraliste", "Résident", "Assistant", "Maître Assistant", "Professeur"]
         self.grad_entry = ct.CTkComboBox(self.inscription_frame, values=grad, dropdown_font=('Karla', 14), width=250,
                                          height=35, corner_radius=10,
                                          font=('Karla', 14), dropdown_fg_color='#FFFFFF')
-        self.grad_entry.grid(row=3, column=1, padx=20, pady=20, sticky="w")
+        self.grad_entry.grid(row=2, column=1, padx=20, pady=20, sticky="w")
 
         # Button to Create Account
         self.enregistrer_doctor = ct.CTkButton(self.inscription_frame, text="Créer", command=self.creer, width=250,
                                             height=40, corner_radius=15, font=('Karla', 18, 'bold'), fg_color='#263A5F',
                                             cursor='hand2', text_color='#FFFFFF')
-        self.enregistrer_doctor.grid(row=5, column=1, columnspan=2, pady=10)
+        self.enregistrer_doctor.grid(row=3, column=1, columnspan=2, pady=10)
 
         image_path = 'Hemato Desk logo.png'
         self.original_image = PhotoImage(file=image_path)
@@ -271,13 +256,20 @@ class Inscrire_patient(ct.CTkToplevel):
                                              width=200, height=30, corner_radius=10, font=('Karla', 14),
                                              dropdown_fg_color='#FFFFFF')
         self.groupage_entry.grid(row=3, column=3, padx=20, pady=20, sticky="w")
-
         # Antecedents
         self.antecedents_label = ct.CTkLabel(self.inscription_frame, text="Antécédents", font=('Karla', 16))
         self.antecedents_label.grid(row=4, column=0, padx=20, pady=20, sticky="w")
         self.antecedents_entry = ct.CTkTextbox(self.inscription_frame, width=200, height=100, corner_radius=10,
                                                font=('Karla', 14))
         self.antecedents_entry.grid(row=4, column=1, columnspan=3, padx=20, pady=20, sticky="w")
+
+        # diagnostique
+        self.diagnostique_label = ct.CTkLabel(self.inscription_frame, text="Diagnostique", font=('Karla', 16))
+        self.diagnostique_label.grid(row=4, column=2, padx=20, pady=20, sticky="w")
+        self.diagnostique_entry = ct.CTkEntry(self.inscription_frame, width=200, height=30, corner_radius=10,
+                                               font=('Karla', 14))
+        self.diagnostique_entry.grid(row=4, column=3, columnspan=3, padx=20, pady=20, sticky="w")
+
 
         # Button to Create Account
         self.enregistrer_patient = ct.CTkButton(self.inscription_frame, text="Créer", command=self.creer, width=250,
@@ -329,14 +321,14 @@ class Inscrire_patient(ct.CTkToplevel):
 
                     # Insertion des données dans la table patient avec vérification de l'existence du matricule_administrateur
                     cur.execute("""
-                               INSERT INTO patient (matricule_patient, nom, prenom, date_de_naissance, sexe, wilaya, telephone, groupage, antecedents, FKmatricule_administrateur) 
-                               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                               INSERT INTO patient (matricule_patient, nom, prenom, date_de_naissance, sexe, wilaya, telephone, groupage, antecedents,diagnostique, FKmatricule_administrateur) 
+                               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s)
                            """,
                                 (
                                     self.matriculeP_entry.get(), self.nomP_entry.get(), self.prenomP_entry.get(),
                                     transform_date(self.date_naissanceP_entry.get()), self.sexe_Patient_entry.get(),
                                     self.wilayaP_entry.get(), self.phone_nmbrP_entry.get(),
-                                    self.groupage_entry.get(), self.antecedents_entry.get("1.0", END),
+                                    self.groupage_entry.get(), self.antecedents_entry.get("1.0", END),self.diagnostique_entry.get(),
                                     matricule_administrateur
                                 ))
 
@@ -1178,15 +1170,15 @@ class Accueil(ct.CTk):
         self.nom_medecin_entry = ct.CTkEntry(Consultation_frame, width=200, height=35, corner_radius=10, font=('Karla', 14))
         self.nom_medecin_entry.grid(row=3, column=3, padx=10, pady=10, sticky="w")
 
-        # Libellé pour le diagnostique
-        self.diagnostique_label = ct.CTkLabel(Consultation_frame, text="Diagnostique :", font=('Karla', 16),
+        # Libellé pour le conduite à tenire
+        self.CAT_label = ct.CTkLabel(Consultation_frame, text="CAT :", font=('Karla', 16),
                                          text_color='#263A5F')
-        self.diagnostique_label.grid(row=4, column=0, padx=10, pady=10, sticky="w")
+        self.CAT_label.grid(row=4, column=0, padx=10, pady=10, sticky="w")
 
         # Champ de saisie de texte pour le diagnostique
-        self.diagnostique_entry = ct.CTkTextbox(Consultation_frame, width=200, height=100, corner_radius=10,
+        self.CAT_entry = ct.CTkTextbox(Consultation_frame, width=200, height=100, corner_radius=10,
                                            font=('Karla', 14))
-        self.diagnostique_entry.grid(row=4, column=1, padx=10, pady=10, sticky="w")
+        self.CAT_entry.grid(row=4, column=1, padx=10, pady=10, sticky="w")
 
         # le traitement de la consultation
         self.traitement_label = ct.CTkLabel(Consultation_frame, text="Traitement :", font=('Karla', 16),
@@ -2021,7 +2013,7 @@ class Accueil(ct.CTk):
     def calculate_frotis(self):
         con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
         cur = con.cursor()
-        cur.execute("SELECT COUNT(*) FROM historique_consultations WHERE geste_medical = 'Frotis'")
+        cur.execute("SELECT COUNT(*) FROM historique_consultations WHERE geste_medical = 'frottis'")
         nombre_frottis = cur.fetchone()[0]
         con.close()
         return nombre_frottis
@@ -2139,7 +2131,7 @@ class Accueil(ct.CTk):
         self.create_statistic(stats_frame, "Nombre total des gestes medicaux : ", self.calculate_geste_medical(), 0, 1)
         self.create_statistic(stats_frame, "Transfusion : ", self.calculate_transfusion(), 1, 1)
         self.create_statistic(stats_frame, "Chimiotherapie : ", self.calculate_chimio(), 3, 1)
-        self.create_statistic(stats_frame, "Frotis : ", self.calculate_frotis(), 0, 2)
+        self.create_statistic(stats_frame, "FROTTIS : ", self.calculate_frotis(), 0, 2)
         self.create_statistic(stats_frame, "Controle : ", self.calculate_controle(), 1, 2)
         self.create_statistic(stats_frame, "BOM : ", self.calculate_bom(), 2, 1)
         self.create_statistic(stats_frame, "CUP : ", self.calculate_cup(), 2, 2)
