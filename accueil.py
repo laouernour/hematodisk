@@ -599,10 +599,10 @@ class Accueil(ct.CTk):
         style.map("Custom.Treeview", background=[('selected', '#263A5F')])
 
         # Configure the font for the column headings
-        style.configure("Custom.Treeview.Heading", font=('Karla', 24, 'bold'), foreground="#1C1278")
+        style.configure("Custom.Treeview.Heading", font=('Karla', 18, 'bold'), foreground="#1C1278")
 
         # Tableau Treeview
-        columns = ('Matricule', 'Nom', 'Prénom', 'Age', 'Téléphone', 'Groupage', 'Antécédent')
+        columns = ('ID', 'Nom', 'Prénom', 'Age', 'Téléphone', 'Groupage','Diagnostique', 'Antécédent')
         self.treeview_patients = ttk.Treeview(self.center_frame, columns=columns, show='headings',
                                               style="Custom.Treeview")
 
@@ -616,7 +616,7 @@ class Accueil(ct.CTk):
         # Définition des en-têtes
         for col in columns:
             self.treeview_patients.heading(col, text=col, anchor='center')
-            width = 155 if col == "Matricule" else 225
+            width = 100 if col == "ID" else 200
             self.treeview_patients.column(col, anchor='center', width=width)
 
     def create_appointments_treeview(self):
@@ -700,7 +700,7 @@ class Accueil(ct.CTk):
         cur = con.cursor()
 
         # Récupération des données des patients depuis la table
-        cur.execute("SELECT matricule_patient, nom, prenom, age, telephone, groupage,Antecedents FROM patient")
+        cur.execute("SELECT matricule_patient, nom, prenom, age, telephone, groupage, diagnostique,Antecedents FROM patient")
         rows = cur.fetchall()
         for row in rows:
             # Appeler add_patient avec les valeurs appropriées
@@ -768,7 +768,7 @@ class Accueil(ct.CTk):
         self.modifier_butt.grid(row=8, column=2, columnspan=2, pady=20)
 
         # Ajoute des libellés pour afficher les détails du patient
-        labels = ['Matricule:', 'Nom:', 'Prénom:', 'Date de naissance:', 'Téléphone:', 'Groupage:','Antécédent:']
+        labels = ['Matricule:', 'Nom:', 'Prénom:', 'Date de naissance:', 'Téléphone:', 'Groupage:','Diagnostique','Antécédent:']
         for i, (label_text, value) in enumerate(zip(labels, values)):
             label = ct.CTkLabel(details_frame, text=label_text, font=('Karla', 16))
             label.grid(row=i, column=0, sticky='w', padx=10, pady=5)
@@ -783,7 +783,7 @@ class Accueil(ct.CTk):
 
             # Récupérer les antécédents et le numéro de téléphone actuels du patient
             cur.execute("""
-                SELECT matricule_patient ,antecedents, telephone
+                SELECT matricule_patient ,antecedents,diagnostique, telephone
                 FROM patient
                 WHERE nom = %s AND prenom = %s
             """, (values[1], values[2]))  # Utilise les valeurs passées comme arguments
@@ -807,18 +807,25 @@ class Accueil(ct.CTk):
                 self.matriculeP_entry.insert(0, patient_info[0])  # Afficher le matricule du patient
                 self.matriculeP_entry.grid(row=0, column=1, padx=10, pady=5, sticky="w")
 
-                # Création des widgets pour la nouvelle fenêtre
-                self.antecedents_label = ct.CTkLabel(modification_frame, text="Antécédents:", font=('Karla', 14))
+                # Création des widgets pour la modification
+                self.antecedents_label = ct.CTkLabel(modification_frame, text="Antécédents :", font=('Karla', 14))
                 self.antecedents_label.grid(row=1, column=0, padx=10, pady=10, sticky="w")
                 self.antecedents_entry = ct.CTkTextbox(modification_frame, font=('Karla', 14))
                 self.antecedents_entry.insert("1.0", patient_info[1])  # Afficher les antécédents actuels
                 self.antecedents_entry.grid(row=1, column=1, padx=10, pady=5, sticky="w")
 
+                # Création des widgets pour la nouvelle fenêtre
+                self.diagnostique_label = ct.CTkLabel(modification_frame, text="Diagnostique :", font=('Karla', 14))
+                self.diagnostique_label.grid(row=1, column=2, padx=10, pady=10, sticky="w")
+                self.diagnostique_entry = ct.CTkEntry(modification_frame, width=200, height=30, corner_radius=10, font=('Karla', 14))
+                self.diagnostique_entry.insert(0, patient_info[2])  # Afficher les antécédents actuels
+                self.diagnostique_entry.grid(row=1, column=3, padx=10, pady=5, sticky="w")
 
-                self.telephone_label = ct.CTkLabel(modification_frame, text="Numéro de téléphone:", font=('Karla', 14))
+
+                self.telephone_label = ct.CTkLabel(modification_frame, text="Numéro de téléphone :", font=('Karla', 14))
                 self.telephone_label.grid(row=2, column=0, padx=10, pady=10, sticky="w")
                 self.telephone_entry = ct.CTkEntry(modification_frame, font=('Karla', 14))
-                self.telephone_entry.insert(0, patient_info[2])  # Afficher le numéro de téléphone actuel
+                self.telephone_entry.insert(0, patient_info[3])  # Afficher le numéro de téléphone actuel
                 self.telephone_entry.grid(row=2, column=1, padx=10, pady=5, sticky="w")
 
                 # Ajouter une lambda pour passer les valeurs du nom et du prénom à la fonction enregistrer
