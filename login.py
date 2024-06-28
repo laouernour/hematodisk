@@ -129,6 +129,8 @@ class Inscrire_ADM(ct.CTkToplevel):
         self.validation_code_entry = ct.CTkEntry(self.inscription_frame, width=250, height=35, corner_radius=10,
                                                  font=('Karla', 14))
         self.validation_code_entry.grid(row=4, column=1, padx=20, pady=20, sticky="w")
+        # Liaison de la touche "Enter" à la fonction creer_consultation
+        self.bind('<Return>', self.creer)
 
         # Button to Create Account
         self.enregistrer_ADM = ct.CTkButton(self.inscription_frame, text="Créer", command=self.creer, width=250,
@@ -170,7 +172,7 @@ class Inscrire_ADM(ct.CTkToplevel):
         else:
             self.show_confirm_pass_button.config(state=NORMAL)
 
-    def creer(self):
+    def creer(self,event=None):
         validation_code_attendu = '20245'  # Code de validation attendu, à remplacer par le code réel ou une vérification dynamique
         validation_code = self.validation_code_entry.get()
 
@@ -317,13 +319,15 @@ class login(ct.CTk):
                                font=('Karla', 20, 'bold'), fg_color='#263A5F', cursor='hand2', text_color='#FFFFFF',
                                command=self.connecter)
         button.place(x=125, y=300)
+        # Liaison de la touche "Enter" à la fonction creer_consultation
+        self.bind('<Return>', self.connecter)
         nouveau_AM = ct.CTkLabel(frame, text="Je n'ai pas de compte ", font=('Karla', 12), fg_color="transparent",
                                   text_color='#263A5F')
         nouveau_AM.place(x=100, y=370)
         inscrire = Button(frame, text="S'inscrire", font=('Karla', 12, 'bold'), border=0, bg='white', cursor='hand2',
                           activebackground='white', fg='#DD2F2E', command=self.open_toplevelADM)
         inscrire.place(x=362, y=562)
-    def connecter(self):
+    def connecter(self,event=None):
         if self.user.get() == "" or self.MP.get() == "" :
             messagebox.showerror("Erreur", f"Veuillez saisir le Matricule et le Mot de passe ", parent=self)
         else:
