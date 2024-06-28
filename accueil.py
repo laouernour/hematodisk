@@ -59,6 +59,7 @@ class Inscrire(ct.CTkToplevel):
         w, h = self.winfo_screenwidth(), self.winfo_screenheight()
         self.geometry("%dx%d+0+0" % (w, h))
         self.configure(bg='#263A5F')
+        self.bind('<Return>', self.creer)
 
 
         self.formulaire_frame = ct.CTkFrame(self, fg_color='#FFFFFF', width=w, height=h, border_width=2,
@@ -124,7 +125,7 @@ class Inscrire(ct.CTkToplevel):
         label_image.image = nouvelle_image  # Garde une référence à l'image
         label_image.pack()  # Ajustez la position selon vos besoins
 
-    def creer(self):
+    def creer(self,event=None):
         # Vérification des champs obligatoires
         if (self.nom_entry.get() == "" or self.prenom_entry.get() == "" or self.date_naissance_entry.get() == ""
                 or self.wilaya_entry.get() == "" or self.phone_nmbr_entry.get() == ""
@@ -179,6 +180,8 @@ class Inscrire_patient(ct.CTkToplevel):
         self.geometry('850x590+300+50')
         self.configure(bg='#263A5F')
         self.resizable(False, False)
+        # Liaison de la touche "Enter" à la fonction submit_form
+        self.bind('<Return>', self.creer)
 
         self.formulaire_frame = ct.CTkFrame(self, fg_color='#FFFFFF', width=800, height=490, border_width=2,
                                             border_color='#263A5F',corner_radius= 0)
@@ -289,7 +292,7 @@ class Inscrire_patient(ct.CTkToplevel):
         label_image.image = nouvelle_image  # Keep a reference to the image to prevent garbage collection
         label_image.pack()
 
-    def creer(self):
+    def creer(self, event=None):
         if (
                 self.nomP_entry.get() == "" or self.prenomP_entry.get() == "" or self.matriculeP_entry.get() == "" or self.date_naissanceP_entry.get() == ""
                 or self.wilayaP_entry.get() == "" or self.phone_nmbrP_entry.get() == ""):
@@ -458,13 +461,15 @@ class Accueil(ct.CTk):
 
         self.geste_entry = ct.CTkEntry(self.center_frame, width=200, height=35, corner_radius=10, font=('Karla', 14))
         self.geste_entry.place(x=385, y=150)
+        self.bind('<Return>', self.ajouter_geste)
+
 
         self.ajouter_g_button = ct.CTkButton(self.center_frame, text="Ajouter", command=self.ajouter_geste,
                                              width=110, height=30, corner_radius=15, font=('Karla', 14, 'bold'),
                                              cursor='hand2', text_color='#FFFFFF')
         self.ajouter_g_button.place(x=420, y=200)
 
-    def ajouter_geste(self):
+    def ajouter_geste(self,event=None):
         geste = self.geste_entry.get()
         if geste == "":
             messagebox.showerror("Erreur", "Le champ de geste médicale est vide", parent=self.center_frame)
@@ -1000,14 +1005,19 @@ class Accueil(ct.CTk):
         self.traitement_entry = ct.CTkEntry(Consultation_frame, width=200, height=35, corner_radius=10,
                                              font=('Karla', 14))
         self.traitement_entry.grid(row=4, column=3, padx=10, pady=10, sticky="w")
-        # Button to Create Account
+        # Lier la touche "Enter" à la fonction creer_consultation
+        self.bind('<Return>', self.creer_consultation)
+
+        # Button to add consultation
         self.enregistrer_consultation= ct.CTkButton(Consultation_frame, text="+Ajouter Consultation", command=self.creer_consultation, width=250,
                                                 height=40, corner_radius=15, font=('Karla', 16, 'bold'),
                                                 fg_color='#263A5F',
                                                 cursor='hand2', text_color='#FFFFFF')
         self.enregistrer_consultation.grid(row=6, column=1, columnspan=2, pady=0)
+        # Assurez-vous qu'un widget a le focus pour que la liaison fonctionne
+        self.enregistrer_consultation.focus_set()
 
-    def creer_consultation(self):
+    def creer_consultation(self,event=None):
         if self.nom_medecin_entry.get() == "" or self.diagnostique_entry.get("1.0", tk.END) == "":
             messagebox.showerror("Erreur", "Consultation incomplète", parent=self)
         else:
@@ -1149,6 +1159,8 @@ class Accueil(ct.CTk):
 
         self.nom_medecin_entry = ct.CTkEntry(self.rdv_prochain_frame, width=200, height=35, corner_radius=10, font=('Karla', 14))
         self.nom_medecin_entry.grid(row=2, column=3, padx=10, pady=20, sticky="w")
+        # Liaison de la touche "Enter" à la fonction creer
+        self.bind('<Return>', self.creer_rdv_prochain)
 
         # Button to Create appoiments
         self.enregistrer_rdv= ct.CTkButton(self.rdv_prochain_frame, text="+Ajouter Le Rendez-vous", command=self.creer_rdv_prochain, width=250,
@@ -1156,7 +1168,7 @@ class Accueil(ct.CTk):
                                                 fg_color='#263A5F',
                                                 cursor='hand2', text_color='#FFFFFF')
         self.enregistrer_rdv.grid(row=5, column=1, columnspan=2, pady=5)
-    def creer_rdv_prochain(self):
+    def creer_rdv_prochain(self,event=None):
         # Récupérer le nom complet du patient en combinant le nom et le prénom
         nom_complet = f"{self.nom_patient_entry.get()} {self.prenom_patient_entry.get()}"
         if (
@@ -1349,6 +1361,7 @@ class Accueil(ct.CTk):
                                            command=self.open_calendar_report, bd=0, bg='#FFFFFF', activebackground='#FFFFFF',
                                            highlightthickness=0)
         self.show_calendar_button.place(x=690, y=195)
+        self.bind('<Return>',self.report_RDV_to_database)
 
         # Button to report RDV
         self.report_button = ct.CTkButton(self.RDV_frame, text="Reporter RDV",
@@ -1375,7 +1388,7 @@ class Accueil(ct.CTk):
         self.date_rdv_entry.insert(0, selected_date)
         self.calendar_frame.destroy()
 
-    def report_RDV_to_database(self, matricule_RDV):
+    def report_RDV_to_database(self, matricule_RDV,event=None):
         if self.date_rdv_entry.get() == "":
             messagebox.showerror("Erreur", "Veuillez entrer la date de report")
         else:
