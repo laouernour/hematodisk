@@ -27,7 +27,7 @@ def get_medical_gestures_from_db():
     except Exception as e:
         raise RuntimeError(f"Erreur lors de la récupération des gestes médicaux depuis la base de données : {str(e)}")
 def wilaya():
-    wilaya_list = ['01 Adrar','02 Chlef','03 Laghouat','04 Oum El Bouaghi','05 Batna','06 Béjaïa','07 Biskra','08 Béchar','09 Blida','10 Bouira',
+    wilaya_list = ['01 Adrar', '02 Chlef', '03 Laghouat', '04 Oum El Bouaghi', '05 Batna', '06 Béjaïa', '07 Biskra','08 Béchar', '09 Blida','10 Bouira',
                    '11 Tamanrasset','12 Tébessa','13 Tlemcen','14 Tiaret','15 Tizi Ouzou','16 Alger','17 Djelfa','18 Jijel','19 Sétif','20 Saïda',
                    '21 Skikda','22 Sidi Bel Abbès','23 Annaba','24 Guelma','25 Constantine','26 Médéa','27 Mostaganem','28 MSila','29 Mascara',
                    '30  Ouargla','31 Oran','32 El Bayadh','33 Illizi','34 Bordj Bou Arreridj','35 Boumerdès','36 El Tarf','37 Tindouf','38 Tissemsilt',
@@ -127,8 +127,7 @@ class Inscrire(ct.CTkToplevel):
 
     def creer(self,event=None):
         # Vérification des champs obligatoires
-        if (self.nom_entry.get() == "" or self.prenom_entry.get() == "" or self.date_naissance_entry.get() == ""
-                or self.wilaya_entry.get() == "" or self.phone_nmbr_entry.get() == ""
+        if (self.nom_entry.get() == "" or self.prenom_entry.get() == "" or  self.phone_nmbr_entry.get() == ""
                 or self.matricule_doctor_entry.get() == ""):
             messagebox.showerror("Erreur", "Inscription incomplète", parent=self)
         else:
@@ -147,13 +146,11 @@ class Inscrire(ct.CTkToplevel):
                     mydb = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
                     mycursor = mydb.cursor()
                     mycursor.execute(
-                        "insert into medecin (matricule_medecin,nom,prenom,date_de_naissance,wilaya,telephone,grade)values(%s,%s,%s,%s,%s,%s,%s)",
+                        "insert into medecin (matricule_medecin,nom,prenom,telephone,grade)values(%s,%s,%s,%s,%s)",
                         (
                             self.matricule_doctor_entry.get(),
                             self.nom_entry.get(),
                             self.prenom_entry.get(),
-                            transform_date(self.date_naissance_entry.get()),
-                            self.wilaya_entry.get(),
                             self.phone_nmbr_entry.get(),
                             self.grad_entry.get(),
                         ))
@@ -168,7 +165,6 @@ class Inscrire(ct.CTkToplevel):
         self.matricule_doctor_entry.delete(0, END),
         self.nom_entry.delete(0, END),
         self.prenom_entry.delete(0, END),
-        self.date_naissance_entry.delete(0, END),
         self.phone_nmbr_entry.delete(0, END),
 
 
@@ -397,6 +393,9 @@ class Accueil(ct.CTk):
                                           corner_radius=15, font=('Karla', 14, 'bold'), fg_color='#2FC16A',
                                           cursor='hand2', text_color='#FFFFFF')
         self.rech_txt_butt.place(x=555, y=132)
+        self.rech_txt.focus_set()
+        self.bind_all('<Return>', self.rechercher_patient)
+
 
         # Left frame
         self.left_frame = ct.CTkFrame(self, fg_color='#28A0C6', width=250, height=h - 240, corner_radius=0)
@@ -494,7 +493,7 @@ class Accueil(ct.CTk):
             except Exception as es:
                 messagebox.showerror("Erreur", f"Erreur de connexion : {str(es)}", parent=self.center_frame)
 
-    def rechercher_patient(self):
+    def rechercher_patient(self,event=None):
         nom_prenom = self.rech_txt.get().split()  # Récupérer le nom et prénom du patient saisi dans la barre de recherche
 
         if self.current_search_list == "patients":
@@ -504,20 +503,14 @@ class Accueil(ct.CTk):
 
             if len(nom_prenom) == 1:
                 # Rechercher par nom ou prénom ou matricule
-                if nom_prenom[0].isdigit():  # Check if the input is a digit (matricule)
-                    cur.execute(
-                        "SELECT matricule_patient, nom, prenom, date_de_naissance, telephone, groupage , Antecedents  FROM patient WHERE matricule_patient = %s",
-                        (int(nom_prenom[0]),)
-                    )
-                else:
-                    cur.execute(
-                        "SELECT matricule_patient, nom, prenom, date_de_naissance, telephone, groupage , Antecedents  FROM patient WHERE nom LIKE %s OR prenom LIKE %s",
-                        (f"%{nom_prenom[0]}%", f"%{nom_prenom[0]}%"))
+                cur.execute(
+                    "SELECT matricule_patient, nom, prenom, date_de_naissance, telephone, groupage, Antecedents  FROM patient WHERE nom LIKE %s OR prenom LIKE %s OR matricule_patient LIKE %s",
+                    (f"%{nom_prenom[0]}%", f"%{nom_prenom[0]}%", f"%{nom_prenom[0]}%"))
             else:
                 # Rechercher par nom et prénom
                 nom, prenom = nom_prenom
                 cur.execute(
-                    "SELECT matricule_patient, nom, prenom, date_de_naissance, telephone, groupage , Antecedents  FROM patient WHERE nom LIKE %s AND prenom LIKE %s",
+                    "SELECT matricule_patient, nom, prenom, date_de_naissance, telephone, groupage, Antecedents  FROM patient WHERE nom LIKE %s AND prenom LIKE %s",
                     (f"%{nom}%", f"%{prenom}%"))
 
             patients = cur.fetchall()
@@ -544,54 +537,29 @@ class Accueil(ct.CTk):
 
             recherche = " ".join(nom_prenom)
 
-            if nom_prenom[0].isdigit():  # Checkee si input est digital (matricule)
-
+            if len(nom_prenom) == 1:
                 cur.execute(
-
-                    "SELECT id_rendez_vous, patient, date_du_rendez_vous, geste_medical FROM rendez_vous WHERE matricule_patient = %s",
-
-                    (int(nom_prenom[0]),)
-
+                    "SELECT id_rendez_vous, patient, date_du_rendez_vous, geste_medical FROM rendez_vous WHERE patient LIKE %s",
+                    (f"%{recherche}%",)
                 )
-
             else:
-
-                if len(nom_prenom) == 1:
-
-                    cur.execute(
-
-                        "SELECT id_rendez_vous, patient, date_du_rendez_vous, geste_medical FROM rendez_vous WHERE patient LIKE %s",
-
-                        (f"%{recherche}%",)
-
-                    )
-
-                else:
-
-                    nom, prenom = nom_prenom
-
-                    cur.execute(
-
-                        "SELECT id_rendez_vous, patient, date_du_rendez_vous, geste_medical FROM rendez_vous WHERE patient LIKE %s AND patient LIKE %s",
-
-                        (f"%{nom}%", f"%{prenom}%")
-
-                    )
+                nom, prenom = nom_prenom
+                cur.execute(
+                    "SELECT id_rendez_vous, patient, date_du_rendez_vous, geste_medical FROM rendez_vous WHERE patient LIKE %s AND patient LIKE %s",
+                    (f"%{nom}%", f"%{prenom}%")
+                )
 
             rdv = cur.fetchall()
 
             # Effacer le Treeview
-
             for item in self.treeview_appointments.get_children():
                 self.treeview_appointments.delete(item)
 
             # Ajouter les rendez-vous trouvés dans le Treeview
-
             for rendez_vous in rdv:
                 self.add_appointment(self.treeview_appointments, rendez_vous)
 
             # Supprimer le texte de la barre de recherche
-
             self.rech_txt.delete(0, 'end')
 
             con.close()
@@ -600,7 +568,7 @@ class Accueil(ct.CTk):
         # Style for Treeview
         style = ttk.Style()
         style.configure("Custom.Treeview", background="#ffffff", foreground="black", fieldbackground="#ffffff",
-                        font=('Karla', 16), rowheight=60)
+                        font=('Karla', 16), rowheight=61)
         style.map("Custom.Treeview", background=[('selected', '#263A5F')])
 
         # Configure the font for the column headings
@@ -773,7 +741,7 @@ class Accueil(ct.CTk):
         self.modifier_butt.grid(row=8, column=2, columnspan=2, pady=20)
 
         # Ajoute des libellés pour afficher les détails du patient
-        labels = ['Matricule:', 'Nom:', 'Prénom:', 'Date de naissance:', 'Téléphone:', 'Groupage:','Diagnostique','Antécédent:']
+        labels = ['Matricule:', 'Nom:', 'Prénom:', 'Date de naissance:', 'Téléphone:', 'Groupage:','Diagnostique:','Antécédent:']
         for i, (label_text, value) in enumerate(zip(labels, values)):
             label = ct.CTkLabel(details_frame, text=label_text, font=('Karla', 16))
             label.grid(row=i, column=0, sticky='w', padx=10, pady=5)
@@ -837,6 +805,8 @@ class Accueil(ct.CTk):
                 self.enregistrer_button = ct.CTkButton(modification_frame, text="Enregistrer",
                                                        command=lambda: self.enregistrer(values[1], values[2]), font=('Karla', 14))
                 self.enregistrer_button.grid(row=3, column=0, columnspan=2, pady=10)
+                self.enregistrer_button.focus_set()
+                self.bind_all('<Return>', lambda event: self.enregistrer(values[1], values[2]))
 
         except Exception as e:
             # Afficher une erreur en cas de problème
@@ -861,12 +831,13 @@ class Accueil(ct.CTk):
                 cur = con.cursor()
                 cur.execute("""
                     UPDATE patient 
-                    SET  matricule_patient = %s,antecedents = %s, telephone = %s
+                    SET  matricule_patient = %s,antecedents = %s, telephone = %s,diagnostique = %s
                     WHERE nom = %s AND prenom = %s
                 """, (
                     self.matriculeP_entry.get(),
                     self.antecedents_entry.get("1.0", END),
                     self.telephone_entry.get(),
+                    self.diagnostique_entry.get(),
                     nom,
                     prenom
                 ))
@@ -1016,9 +987,10 @@ class Accueil(ct.CTk):
         self.enregistrer_consultation.grid(row=6, column=1, columnspan=2, pady=0)
         # Assurez-vous qu'un widget a le focus pour que la liaison fonctionne
         self.enregistrer_consultation.focus_set()
+        self.bind_all('<Return>', lambda event: self.creer_consultation())
 
     def creer_consultation(self,event=None):
-        if self.nom_medecin_entry.get() == "" or self.diagnostique_entry.get("1.0", tk.END) == "":
+        if self.nom_medecin_entry.get() == "" or self.CAT_entry.get("1.0", tk.END) == "":
             messagebox.showerror("Erreur", "Consultation incomplète", parent=self)
         else:
             try:
@@ -1039,7 +1011,7 @@ class Accueil(ct.CTk):
                     matricule_patient = self.matricule_patient_entry.get()
                     date_creation = transform_date(self.date_de_creation_entry.get())
                     geste_medical = self.geste_medical_combobox.get()
-                    diagnostique = self.diagnostique_entry.get("1.0", tk.END)  # Récupérer tout le texte
+                    diagnostique = self.CAT_entry.get("1.0", tk.END)  # Récupérer tout le texte
                     traitament = self.traitement_entry.get()
 
                     # Requête SQL pour insérer les données de consultation
@@ -1168,6 +1140,8 @@ class Accueil(ct.CTk):
                                                 fg_color='#263A5F',
                                                 cursor='hand2', text_color='#FFFFFF')
         self.enregistrer_rdv.grid(row=5, column=1, columnspan=2, pady=5)
+        self.enregistrer_rdv.focus_set()
+        self.bind_all('<Return>', lambda event: self.creer_rdv_prochain())
     def creer_rdv_prochain(self,event=None):
         # Récupérer le nom complet du patient en combinant le nom et le prénom
         nom_complet = f"{self.nom_patient_entry.get()} {self.prenom_patient_entry.get()}"
@@ -1369,6 +1343,8 @@ class Accueil(ct.CTk):
                                           width=250, height=40, corner_radius=15, font=('Karla', 16, 'bold'),
                                           fg_color='#263A5F', cursor='hand2', text_color='#FFFFFF')
         self.report_button.grid(row=3, column=1, pady=30)
+        self.report_button.focus_set()
+        self.bind_all('<Return>', lambda event: self.report_RDV_to_database(self.id_rendez_vous))
 
     def open_calendar_report(self):
         # Crée un frame flottant pour le calendrier
@@ -1562,7 +1538,7 @@ class Accueil(ct.CTk):
 
         # Disable the checkbox if the appointment is already validated
         if validation_status == "oui validé":
-            validate_checkbox.config(state=tk.DISABLED)
+            validate_checkbox.configure(state="disabled")
 
     def get_validation_status(self, appointment_id):
         try:
@@ -1787,29 +1763,46 @@ class Accueil(ct.CTk):
             except Exception as e:
                 messagebox.showerror("Erreur", f"Une erreur est survenue : {str(e)}")
 
-    def calculate_new_patients(self):
-        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
-        cur = con.cursor()
-        cur.execute("SELECT COUNT(*) FROM patient")
-        total_patients = cur.fetchone()[0]
-        con.close()
-        return total_patients
+    import datetime
 
-    def calculate_new_patients_homme(self):
-        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
-        cur = con.cursor()
-        cur.execute("SELECT COUNT(*) FROM patient WHERE sexe = 'Homme'")
-        total_hommes = cur.fetchone()[0]
-        con.close()
-        return total_hommes
+    def count_new_patients(self):
+        current_date = datetime.datetime.now()
+        current_month = current_date.month
+        current_year = current_date.year
 
-    def calculate_new_patients_femme(self):
         con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
         cur = con.cursor()
-        cur.execute("SELECT COUNT(*) FROM patient WHERE sexe = 'Femme'")
-        total_femmes = cur.fetchone()[0]
+        cur.execute("""SELECT COUNT(*) FROM patient WHERE MONTH(date_created) = %s AND YEAR(date_created) = %s
+            """, (current_month, current_year))
+        count = cur.fetchone()[0]
         con.close()
-        return total_femmes
+        return count
+
+    def count_new_patients_homme(self):
+        current_date = datetime.datetime.now()
+        current_month = current_date.month
+        current_year = current_date.year
+
+        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+        cur = con.cursor()
+        cur.execute("""SELECT COUNT(*) FROM patient WHERE sexe = 'Homme' AND MONTH(date_created) = %s AND YEAR(date_created) = %s
+            """, (current_month, current_year))
+        count = cur.fetchone()[0]
+        con.close()
+        return count
+
+    def count_new_patients_femme(self):
+        current_date = datetime.datetime.now()
+        current_month = current_date.month
+        current_year = current_date.year
+
+        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+        cur = con.cursor()
+        cur.execute("""SELECT COUNT(*) FROM patient WHERE sexe = 'Femme' AND MONTH(date_created) = %s AND YEAR(date_created) = %s
+            """, (current_month, current_year))
+        count = cur.fetchone()[0]
+        con.close()
+        return count
 
     def calculate_geste_medical(self):
         con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
@@ -1914,6 +1907,24 @@ class Accueil(ct.CTk):
         con.close()
         return count
 
+    def count_new_patients_femme(self, month, year):
+        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+        cur = con.cursor()
+        cur.execute("""SELECT COUNT(*) FROM patient WHERE sexe = 'Femme' AND MONTH(creation) = %s AND YEAR(creation) = %s
+            """, (month, year))
+        count = cur.fetchone()[0]
+        con.close()
+        return count
+
+    def count_new_patients_homme(self, month, year):
+        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+        cur = con.cursor()
+        cur.execute("""SELECT COUNT(*) FROM patient WHERE sexe = 'Homme' AND MONTH(creation) = %s AND YEAR(creation) = %s
+            """, (month, year))
+        count = cur.fetchone()[0]
+        con.close()
+        return count
+
 
     def create_statistic(self, parent, label, value, column, row):
         # Create a frame with a rounded black border
@@ -1950,9 +1961,7 @@ class Accueil(ct.CTk):
         current_year = current_date.year
 
         # Create statistics
-        self.create_statistic(stats_frame, "Nombre total des patients : ", self.calculate_new_patients(), 0, 0)
-        self.create_statistic(stats_frame, "Homme : ", self.calculate_new_patients_homme(), 1, 0)
-        self.create_statistic(stats_frame, "Femme : ", self.calculate_new_patients_femme(), 2, 0)
+
         self.create_statistic(stats_frame, "Nombre total des gestes medicaux : ", self.calculate_geste_medical(), 0, 1)
         self.create_statistic(stats_frame, "Transfusion : ", self.calculate_transfusion(), 1, 1)
         self.create_statistic(stats_frame, "Chimiotherapie : ", self.calculate_chimio(), 3, 1)
@@ -1963,7 +1972,7 @@ class Accueil(ct.CTk):
         self.create_statistic(stats_frame, "Facteur : ", self.calculate_facteur(), 0, 3)
         self.create_statistic(stats_frame, "Moelle : ", self.calculate_moelle(), 1, 3)
         self.create_statistic(stats_frame, "Nombre des rendez_vous  validès :", self.calculate_nombre_rdv_valider(), 3, 0)
-        self.create_statistic(stats_frame, "Nombre de nouveau patient :", self.count_new_patients(current_month, current_year), 3, 3)
+        self.create_statistic(stats_frame, "Nombre de nouveau patient :", self.count_new_patients(current_month, current_year), 0, 0)
 
 
     def open_toplevelP(self):
