@@ -875,7 +875,7 @@ class Accueil(ct.CTk):
             consultations_frame.pack(fill='both', expand=True)
 
             # Ajouter des libellés pour les colonnes
-            headers = ['Date de Consultation', 'Geste Médical', 'Diagnostique','Traitement', 'Médecin traitant']
+            headers = ['Date de Consultation', 'Geste Médical', 'CAT','Traitement', 'Médecin traitant']
             for i, header in enumerate(headers):
                 header_label = ct.CTkLabel(consultations_frame, text=header, font=('Karla', 16, 'bold'))
                 header_label.grid(row=0, column=i, padx=10, pady=5)
@@ -1765,44 +1765,7 @@ class Accueil(ct.CTk):
 
     import datetime
 
-    def count_new_patients(self):
-        current_date = datetime.datetime.now()
-        current_month = current_date.month
-        current_year = current_date.year
 
-        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
-        cur = con.cursor()
-        cur.execute("""SELECT COUNT(*) FROM patient WHERE MONTH(date_created) = %s AND YEAR(date_created) = %s
-            """, (current_month, current_year))
-        count = cur.fetchone()[0]
-        con.close()
-        return count
-
-    def count_new_patients_homme(self):
-        current_date = datetime.datetime.now()
-        current_month = current_date.month
-        current_year = current_date.year
-
-        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
-        cur = con.cursor()
-        cur.execute("""SELECT COUNT(*) FROM patient WHERE sexe = 'Homme' AND MONTH(date_created) = %s AND YEAR(date_created) = %s
-            """, (current_month, current_year))
-        count = cur.fetchone()[0]
-        con.close()
-        return count
-
-    def count_new_patients_femme(self):
-        current_date = datetime.datetime.now()
-        current_month = current_date.month
-        current_year = current_date.year
-
-        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
-        cur = con.cursor()
-        cur.execute("""SELECT COUNT(*) FROM patient WHERE sexe = 'Femme' AND MONTH(date_created) = %s AND YEAR(date_created) = %s
-            """, (current_month, current_year))
-        count = cur.fetchone()[0]
-        con.close()
-        return count
 
     def calculate_geste_medical(self):
         con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
@@ -1910,7 +1873,7 @@ class Accueil(ct.CTk):
     def count_new_patients_femme(self, month, year):
         con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
         cur = con.cursor()
-        cur.execute("""SELECT COUNT(*) FROM patient WHERE sexe = 'Femme' AND MONTH(creation) = %s AND YEAR(creation) = %s
+        cur.execute("""SELECT COUNT(*) FROM patient WHERE sexe = 'Femme' AND MONTH(création) = %s AND YEAR(création) = %s
             """, (month, year))
         count = cur.fetchone()[0]
         con.close()
@@ -1919,11 +1882,33 @@ class Accueil(ct.CTk):
     def count_new_patients_homme(self, month, year):
         con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
         cur = con.cursor()
-        cur.execute("""SELECT COUNT(*) FROM patient WHERE sexe = 'Homme' AND MONTH(creation) = %s AND YEAR(creation) = %s
+        cur.execute("""SELECT COUNT(*) FROM patient WHERE sexe = 'Homme' AND MONTH(création) = %s AND YEAR(création) = %s
             """, (month, year))
         count = cur.fetchone()[0]
         con.close()
         return count
+
+    def count_diagnostic_types(self):
+        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+        cur = con.cursor()
+
+        cur.execute("SELECT diagnostique, sexe FROM patient")
+        diagnostics = cur.fetchall()
+
+        diagnostic_types = {}
+        for diagnostic, sexe in diagnostics:
+            if diagnostic not in diagnostic_types:
+                diagnostic_types[diagnostic] = {'total': 1, 'homme': 0, 'femme': 0}
+            else:
+                diagnostic_types[diagnostic]['total'] += 1
+
+            if sexe == 'homme':
+                diagnostic_types[diagnostic]['homme'] += 1
+            elif sexe == 'femme':
+                diagnostic_types[diagnostic]['femme'] += 1
+
+        con.close()
+        return diagnostic_types
 
 
     def create_statistic(self, parent, label, value, column, row):
@@ -1932,14 +1917,20 @@ class Accueil(ct.CTk):
         border_frame.grid(row=row, column=column, padx=13, pady=10, sticky='nsew')
 
         # Create a frame inside the border frame to hold the statistic labels
-        stat_frame = ct.CTkFrame(border_frame, fg_color="white",width=800)
+        stat_frame = ct.CTkFrame(border_frame, fg_color="white", width=800)
         stat_frame.pack(padx=10, pady=10, expand=True, fill='both')
 
         # Create the statistic labels
         label_widget = ct.CTkLabel(stat_frame, text=label, font=('Karla', 18, 'bold'), text_color='#263A5F')
         label_widget.pack(pady=(0, 5), anchor='w')
 
-        value_widget = ct.CTkLabel(stat_frame, text=value, font=('Karla', 18, 'bold'), text_color='#263A5F')
+        if isinstance(value, dict):
+            value_text = ""
+            for key, count in value.items():
+                value_text += f"{key}: {count}\n"
+            value_widget = ct.CTkLabel(stat_frame, text=value_text, font=('Karla', 18, 'bold'), text_color='#263A5F')
+        else:
+            value_widget = ct.CTkLabel(stat_frame, text=str(value), font=('Karla', 18, 'bold'), text_color='#263A5F')
         value_widget.pack(pady=(0, 5), anchor='w')
 
     def create_statistics_frame(self):
@@ -1948,8 +1939,8 @@ class Accueil(ct.CTk):
             widget.destroy()
 
         # Statistics frame
-        stats_frame = ct.CTkFrame(self.center_frame, fg_color="#ffffff",width=800)
-        stats_frame.pack( fill='both', expand=True)
+        stats_frame = ct.CTkFrame(self.center_frame, fg_color="#ffffff", width=800)
+        stats_frame.pack(fill='both', expand=True)
 
         # Grid configuration
         for i in range(3):
@@ -1963,7 +1954,7 @@ class Accueil(ct.CTk):
         # Create statistics
 
         self.create_statistic(stats_frame, "Nombre total des gestes medicaux : ", self.calculate_geste_medical(), 0, 1)
-        self.create_statistic(stats_frame, "Transfusion : ", self.calculate_transfusion(), 1, 1)
+        self.create_statistic(stats_frame, "nombre de diagnostique : ", self.count_diagnostic_types(), 1, 1)
         self.create_statistic(stats_frame, "Chimiotherapie : ", self.calculate_chimio(), 3, 1)
         self.create_statistic(stats_frame, "FROTTIS : ", self.calculate_frotis(), 0, 2)
         self.create_statistic(stats_frame, "Controle : ", self.calculate_controle(), 1, 2)
@@ -1971,10 +1962,12 @@ class Accueil(ct.CTk):
         self.create_statistic(stats_frame, "CUP : ", self.calculate_cup(), 2, 2)
         self.create_statistic(stats_frame, "Facteur : ", self.calculate_facteur(), 0, 3)
         self.create_statistic(stats_frame, "Moelle : ", self.calculate_moelle(), 1, 3)
-        self.create_statistic(stats_frame, "Nombre des rendez_vous  validès :", self.calculate_nombre_rdv_valider(), 3, 0)
-        self.create_statistic(stats_frame, "Nombre de nouveau patient :", self.count_new_patients(current_month, current_year), 0, 0)
-
-
+        self.create_statistic(stats_frame, "Nombre de nouveau patient :",
+                              self.count_new_patients(current_month, current_year), 0, 0)
+        self.create_statistic(stats_frame, "Femme :",
+                              self.count_new_patients_femme(current_month, current_year), 1, 0)
+        self.create_statistic(stats_frame, "Homme :",
+                              self.count_new_patients_homme(current_month, current_year), 2, 0)
     def open_toplevelP(self):
         if self.toplevelP_window is None or not self.toplevelP_window.winfo_exists():
             self.toplevelP_window = Inscrire_patient(self)  # create window if its None or destroyed
