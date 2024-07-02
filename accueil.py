@@ -1888,11 +1888,12 @@ class Accueil(ct.CTk):
         con.close()
         return count
 
-    def count_diagnostic_types(self):
+    def count_diagnostic_types(self, month, year):
         con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
         cur = con.cursor()
-
-        cur.execute("SELECT diagnostique, sexe FROM patient")
+        cur.execute("""SELECT diagnostique, sexe FROM patient 
+                       WHERE MONTH(création) = %s AND YEAR(création) = %s
+                    """, (month, year))
         diagnostics = cur.fetchall()
 
         diagnostic_types = {}
@@ -1902,14 +1903,39 @@ class Accueil(ct.CTk):
             else:
                 diagnostic_types[diagnostic]['total'] += 1
 
-            if sexe == 'homme':
+            if sexe == 'Homme':
                 diagnostic_types[diagnostic]['homme'] += 1
-            elif sexe == 'femme':
+            elif sexe == 'Femme':
                 diagnostic_types[diagnostic]['femme'] += 1
 
         con.close()
         return diagnostic_types
 
+    def count_medical_gestures(self):
+        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+        cur = con.cursor()
+        cur.execute("""SELECT hc.geste_medical, p.sexe 
+                       FROM historique_consultation hc 
+                       INNER JOIN patient p ON hc.matricule_patient = p.matricule_patient
+                       WHERE MONTH(hc.date_consultation) = MONTH(CURRENT_DATE) 
+                       AND YEAR(hc.date_consultation) = YEAR(CURRENT_DATE)
+                    """)
+        gestures = cur.fetchall()
+
+        gesture_counts = {}
+        for gesture, sexe in gestures:
+            if gesture not in gesture_counts:
+                gesture_counts[gesture] = {'total': 1, 'homme': 0, 'femme': 0}
+            else:
+                gesture_counts[gesture]['total'] += 1
+
+            if sexe == 'Homme':
+                gesture_counts[gesture]['homme'] += 1
+            elif sexe == 'Femme':
+                gesture_counts[gesture]['femme'] += 1
+
+        con.close()
+        return gesture_counts
 
     def create_statistic(self, parent, label, value, column, row):
         # Create a frame with a rounded black border
@@ -1926,8 +1952,11 @@ class Accueil(ct.CTk):
 
         if isinstance(value, dict):
             value_text = ""
-            for key, count in value.items():
-                value_text += f"{key}: {count}\n"
+            for key, counts in value.items():
+                value_text += f"{key}:\n"
+                value_text += f"Total: {counts['total']}\n"
+                value_text += f"  Homme: {counts['homme']}\n"
+                value_text += f"  Femme: {counts['femme']}\n\n"
             value_widget = ct.CTkLabel(stat_frame, text=value_text, font=('Karla', 18, 'bold'), text_color='#263A5F')
         else:
             value_widget = ct.CTkLabel(stat_frame, text=str(value), font=('Karla', 18, 'bold'), text_color='#263A5F')
@@ -1938,9 +1967,18 @@ class Accueil(ct.CTk):
         for widget in self.center_frame.winfo_children():
             widget.destroy()
 
-        # Statistics frame
-        stats_frame = ct.CTkFrame(self.center_frame, fg_color="#ffffff", width=800)
-        stats_frame.pack(fill='both', expand=True)
+        # Create a canvas with a scrollbar
+        canvas = tk.Canvas(self.center_frame, width=1500, height=634)
+        canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+        scrollbar = tk.Scrollbar(self.center_frame, orient=tk.VERTICAL, command=canvas.yview)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        # Create a frame inside the canvas
+        stats_frame = tk.Frame(canvas)
+        canvas.create_window((0, 0), window=stats_frame, anchor='nw')
 
         # Grid configuration
         for i in range(3):
@@ -1953,9 +1991,9 @@ class Accueil(ct.CTk):
 
         # Create statistics
 
-        self.create_statistic(stats_frame, "Nombre total des gestes medicaux : ", self.calculate_geste_medical(), 0, 1)
-        self.create_statistic(stats_frame, "nombre de diagnostique : ", self.count_diagnostic_types(), 1, 1)
-        self.create_statistic(stats_frame, "Chimiotherapie : ", self.calculate_chimio(), 3, 1)
+        self.create_statistic(stats_frame, "Nombre total des gestes medicaux : ", self.calculate_geste_medical(), 1, 1)
+        self.create_statistic(stats_frame, "nombre de diagnostique : ", self.count_diagnostic_types(current_month, current_year), 0, 1)
+        self.create_statistic(stats_frame, "nombre de geste : ", self.count_medical_gestures(current_month, current_year), 3, 1)
         self.create_statistic(stats_frame, "FROTTIS : ", self.calculate_frotis(), 0, 2)
         self.create_statistic(stats_frame, "Controle : ", self.calculate_controle(), 1, 2)
         self.create_statistic(stats_frame, "BOM : ", self.calculate_bom(), 2, 1)
@@ -1968,6 +2006,10 @@ class Accueil(ct.CTk):
                               self.count_new_patients_femme(current_month, current_year), 1, 0)
         self.create_statistic(stats_frame, "Homme :",
                               self.count_new_patients_homme(current_month, current_year), 2, 0)
+
+        # Update the canvas to show the scrollbar
+        stats_frame.update_idletasks()
+        canvas.configure(scrollregion=canvas.bbox("all"))
     def open_toplevelP(self):
         if self.toplevelP_window is None or not self.toplevelP_window.winfo_exists():
             self.toplevelP_window = Inscrire_patient(self)  # create window if its None or destroyed
