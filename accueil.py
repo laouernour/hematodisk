@@ -662,29 +662,40 @@ class Accueil(ct.CTk):
 
         self.current_search_list = "patients"
 
-        # Create and display the treeview for appointments
+        # Create and display the treeview for patients
         self.create_patients_treeview()
-        # Effacer le Treeview
+        # Clear the Treeview
         for item in self.treeview_patients.get_children():
             self.treeview_patients.delete(item)
 
-        # Connexion à la base de données
-        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
-        cur = con.cursor()
+        try:
+            # Connect to the database
+            con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+            cur = con.cursor()
 
-        # Récupération des données des patients depuis la table
-        cur.execute("SELECT matricule_patient, nom, prenom, age, telephone, groupage, diagnostique,Antecedents FROM patient")
-        rows = cur.fetchall()
-        for row in rows:
-            # Appeler add_patient avec les valeurs appropriées
-            self.add_patient(self.treeview_patients,row)  # Sélectionnez les six premières valeurs de la ligne
+            # Fetch patient data from the table
+            cur.execute(
+                "SELECT matricule_patient, nom, prenom, age, telephone, groupage, diagnostique, Antecedents FROM patient")
+            rows = cur.fetchall()
+            for row in rows:
+                # Add patient to the treeview
+                self.add_patient(self.treeview_patients, row)
 
-            # Lier l'événement de clic à la fonction on_click
-        self.treeview_patients.bind("<Button-1>", self.on_click)
+            # Bind the click event to the on_click function
+            self.treeview_patients.bind("<Button-1>", self.on_click)
+        except Exception as e:
+            print(f"Error connecting to database: {e}")
+        finally:
+            con.close()
 
     def on_click(self, event):
-        item = self.treeview_patients.focus()  # Obtient l'élément actuellement sélectionné dans Treeview
-        values = self.treeview_patients.item(item, 'values')  # Obtient les valeurs des colonnes de l'élément
+        # Get the item clicked
+        item_id = self.treeview_patients.identify_row(event.y)
+        if not item_id:
+            return
+
+        # Fetch the values for the clicked item
+        values = self.treeview_patients.item(item_id, 'values')
         if values:
             # Ouvre une nouvelle fenêtre avec les valeurs de l'élément
             self.new_window = ct.CTkToplevel(self)
