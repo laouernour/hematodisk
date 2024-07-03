@@ -1724,9 +1724,25 @@ class Accueil(ct.CTk):
             con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
             cur = con.cursor()
 
-            # Retrieve the number of validated appointments
-            cur.execute("SELECT COUNT(*) FROM rendez_vous WHERE validation = 'oui validé'")
+            from datetime import datetime
+            current_date = datetime.today()
+            current_month = current_date.month
+            current_year = current_date.year
+
+            print("Current month:", current_month)
+            print("Current year:", current_year)
+
+            # Retrieve the number of validated appointments in the current month
+            cur.execute("""
+                SELECT COUNT(*)
+                FROM rendez_vous
+                WHERE validation = 'oui validé'
+                AND MONTH(date_du_rendez_vous) = %s
+                AND YEAR(date_du_rendez_vous) = %s
+            """, (current_month, current_year))
             result = cur.fetchone()
+
+            print("Result:", result)
 
             # Close the connection
             con.close()
@@ -1819,7 +1835,7 @@ class Accueil(ct.CTk):
     def create_statistic(self, parent, label, value, column, row):
         # Create a frame with a rounded black border
         border_frame = ct.CTkFrame(parent, fg_color="#ffffff", border_color="#263A5F", border_width=2, corner_radius=10)
-        border_frame.grid(row=row, column=column, padx=13, pady=10, sticky='nsew')
+        border_frame.grid(row=row, column=column, padx=2, pady=10, sticky='nsew')
 
         # Create a frame inside the border frame to hold the statistic labels
         stat_frame = ct.CTkFrame(border_frame, fg_color="white", width=800)
@@ -1830,16 +1846,36 @@ class Accueil(ct.CTk):
         label_widget.pack(pady=(0, 5), anchor='w')
 
         if isinstance(value, dict):
-            value_text = ""
-            for key, counts in value.items():
-                value_text += f"{key}:\n"
-                value_text += f"Total: {counts['total']}\n"
-                value_text += f"  Homme: {counts['homme']}\n"
-                value_text += f"  Femme: {counts['femme']}\n\n"
-            value_widget = ct.CTkLabel(stat_frame, text=value_text, font=('Karla', 18, 'bold'), text_color='#263A5F')
+            if label == "Nombre de diagnostiques : " or label == "Nombre de gestes medicales  : ":
+                # Create a table to display the diagnostics or medical gestures
+                table_frame = tk.Frame(stat_frame)
+                table_frame.pack(pady=(0, 5), anchor='w')
+
+                headers = ['Type', 'Total', 'Homme', 'Femme']
+                for i, header in enumerate(headers):
+                    header_label = tk.Label(table_frame, text=header, font=('Karla', 14, 'bold'), bg='white')
+                    header_label.grid(row=0, column=i, padx=5, pady=5)
+
+                for i, (key, counts) in enumerate(value.items(), start=1):
+                    type_label = tk.Label(table_frame, text=key, font=('Karla', 14), bg='white')
+                    type_label.grid(row=i, column=0, padx=5, pady=5)
+
+                    total_label = tk.Label(table_frame, text=str(counts['total']), font=('Karla', 14), bg='white')
+                    total_label.grid(row=i, column=1, padx=5, pady=5)
+
+                    homme_label = tk.Label(table_frame, text=str(counts['homme']), font=('Karla', 14), bg='white')
+                    homme_label.grid(row=i, column=2, padx=5, pady=5)
+
+                    femme_label = tk.Label(table_frame, text=str(counts['femme']), font=('Karla', 14), bg='white')
+                    femme_label.grid(row=i, column=3, padx=5, pady=5)
+            else:
+                value_text = str(value)
+                value_widget = ct.CTkLabel(stat_frame, text=value_text, font=('Karla', 18, 'bold'),
+                                           text_color='#263A5F')
+                value_widget.pack(pady=(0, 5), anchor='w')
         else:
             value_widget = ct.CTkLabel(stat_frame, text=str(value), font=('Karla', 18, 'bold'), text_color='#263A5F')
-        value_widget.pack(pady=(0, 5), anchor='w')
+            value_widget.pack(pady=(0, 5), anchor='w')
 
     def create_statistics_frame(self):
         # Clear the center frame
