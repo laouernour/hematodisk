@@ -1665,62 +1665,6 @@ class Accueil(ct.CTk):
             # Appeler add_administrateur avec les valeurs appropriées
             self.add_administrateur(self.treeview_administrateurs, row)
 
-    def create_administrateur_treeview(self):
-        # Style for Treeview
-        style = ttk.Style()
-        style.configure("Custom.Treeview", background="#ffffff", foreground="black", fieldbackground="#ffffff",
-                        font=('Karla', 16), rowheight=60)
-        style.map("Custom.Treeview", background=[('selected', '#263A5F')])
-
-        # Configure the font for the column headings
-        style.configure("Custom.Treeview.Heading", font=('Karla', 24, 'bold'), foreground="#1C1278")
-
-        # Tableau Treeview
-        columns = ("Matricule", "Nom", "Prénom", "Date de naissance", "Téléphone")
-        self.treeview_administrateurs = ttk.Treeview(self.center_frame, columns=columns, show="headings",
-                                                     style="Custom.Treeview")
-        # Add a vertical scrollbar
-        scrollbar = ttk.Scrollbar(self.center_frame, orient="vertical", command=self.treeview_administrateurs.yview)
-        scrollbar.pack(side="right", fill="y")
-        self.treeview_administrateurs.configure(yscrollcommand=scrollbar.set)
-        self.treeview_administrateurs.pack( expand=True ,fill='both')
-
-        # Définition des en-têtes
-        for col in columns:
-            self.treeview_administrateurs.heading(col, text=col, anchor='center')
-            width = 250 if columns == "Matricule" else 301
-            self.treeview_administrateurs.column(col, anchor='center', width=width)
-
-        # Bind the Treeview select event to the on_row_select method
-        self.treeview_administrateurs.bind('<<TreeviewSelect>>', self.on_row_select)
-
-        def add_administrateur(self, treeview, row):
-            treeview.insert('', 'end', values=row)
-
-    def add_administrateur(self, treeview, row):
-        treeview.insert('', 'end', values=row)
-    def show_settings(self):
-        # Clear the center frame
-        for widget in self.center_frame.winfo_children():
-            widget.destroy()
-
-        # Create and display the Treeview for administrateurs
-        self.create_administrateur_treeview()
-
-        # Connexion à la base de données
-        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
-        cur = con.cursor()
-
-        # Récupération des données des administrateurs depuis la table
-        cur.execute("SELECT matricule_administrateur, nom, prenom, date_de_naissance, telephone FROM administrateur")
-        rows = cur.fetchall()
-        cur.close()
-        con.close()
-
-        for row in rows:
-            # Appeler add_administrateur avec les valeurs appropriées
-            self.add_administrateur(self.treeview_administrateurs, row)
-
     def on_row_select(self, event):
         # Get selected row
         selected_item = self.treeview_administrateurs.selection()[0]
@@ -1773,82 +1717,6 @@ class Accueil(ct.CTk):
 
             except Exception as e:
                 messagebox.showerror("Erreur", f"Une erreur est survenue : {str(e)}")
-
-    import datetime
-
-
-
-    def calculate_geste_medical(self):
-        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
-        cur = con.cursor()
-        cur.execute("SELECT COUNT(*) FROM historique_consultations WHERE geste_medical IS NOT NULL")
-        total_gestes_medicaux = cur.fetchone()[0]
-        con.close()
-        return total_gestes_medicaux
-
-    def calculate_transfusion(self):
-        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
-        cur = con.cursor()
-        cur.execute("SELECT COUNT(*) FROM historique_consultations WHERE geste_medical = 'Transfusion'")
-        nombre_transfusions = cur.fetchone()[0]
-        con.close()
-        return nombre_transfusions
-
-    def calculate_chimio(self):
-        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
-        cur = con.cursor()
-        cur.execute("SELECT COUNT(*) FROM historique_consultations WHERE geste_medical = 'Chimiothérapie'")
-        nombre_chimiotherapies = cur.fetchone()[0]
-        con.close()
-        return nombre_chimiotherapies
-
-    def calculate_frotis(self):
-        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
-        cur = con.cursor()
-        cur.execute("SELECT COUNT(*) FROM historique_consultations WHERE geste_medical = 'frottis'")
-        nombre_frottis = cur.fetchone()[0]
-        con.close()
-        return nombre_frottis
-
-    def calculate_controle(self):
-        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
-        cur = con.cursor()
-        cur.execute("SELECT COUNT(*) FROM historique_consultations WHERE geste_medical = 'Contrôle'")
-        nombre_controles = cur.fetchone()[0]
-        con.close()
-        return nombre_controles
-
-    def calculate_bom(self):
-        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
-        cur = con.cursor()
-        cur.execute("SELECT COUNT(*) FROM historique_consultations WHERE geste_medical = 'BOM'")
-        nombre_bom = cur.fetchone()[0]
-        con.close()
-        return nombre_bom
-
-    def calculate_cup(self):
-        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
-        cur = con.cursor()
-        cur.execute("SELECT COUNT(*) FROM historique_consultations WHERE geste_medical = 'CUP'")
-        nombre_cup = cur.fetchone()[0]
-        con.close()
-        return nombre_cup
-
-    def calculate_facteur(self):
-        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
-        cur = con.cursor()
-        cur.execute("SELECT COUNT(*) FROM historique_consultations WHERE geste_medical = 'Facteur'")
-        nombre_facteurs = cur.fetchone()[0]
-        con.close()
-        return nombre_facteurs
-
-    def calculate_moelle(self):
-        con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
-        cur = con.cursor()
-        cur.execute("SELECT COUNT(*) FROM historique_consultations WHERE geste_medical = 'Moelle'")
-        nombre_moelles = cur.fetchone()[0]
-        con.close()
-        return nombre_moelles
 
     def calculate_nombre_rdv_valider(self):
         try:
@@ -1926,10 +1794,10 @@ class Accueil(ct.CTk):
         con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
         cur = con.cursor()
         cur.execute("""SELECT hc.geste_medical, p.sexe 
-                       FROM historique_consultation hc 
+                       FROM historique_consultations hc 
                        INNER JOIN patient p ON hc.matricule_patient = p.matricule_patient
-                       WHERE MONTH(hc.date_consultation) = MONTH(CURRENT_DATE) 
-                       AND YEAR(hc.date_consultation) = YEAR(CURRENT_DATE)
+                       WHERE MONTH(hc.	date_de_consultation) = MONTH(CURRENT_DATE) 
+                       AND YEAR(hc.	date_de_consultation) = YEAR(CURRENT_DATE)
                     """)
         gestures = cur.fetchall()
 
@@ -1955,7 +1823,7 @@ class Accueil(ct.CTk):
 
         # Create a frame inside the border frame to hold the statistic labels
         stat_frame = ct.CTkFrame(border_frame, fg_color="white", width=800)
-        stat_frame.pack(padx=10, pady=10, expand=True, fill='both')
+        stat_frame.pack(padx=8, pady=8, expand=True, fill='both')
 
         # Create the statistic labels
         label_widget = ct.CTkLabel(stat_frame, text=label, font=('Karla', 18, 'bold'), text_color='#263A5F')
@@ -2001,22 +1869,12 @@ class Accueil(ct.CTk):
         current_year = current_date.year
 
         # Create statistics
-
-        self.create_statistic(stats_frame, "Nombre total des gestes medicaux : ", self.calculate_geste_medical(), 1, 1)
-        self.create_statistic(stats_frame, "nombre de diagnostique : ", self.count_diagnostic_types(current_month, current_year), 0, 1)
-        self.create_statistic(stats_frame, "nombre de geste : ", self.count_medical_gestures(current_month, current_year), 3, 1)
-        self.create_statistic(stats_frame, "FROTTIS : ", self.calculate_frotis(), 0, 2)
-        self.create_statistic(stats_frame, "Controle : ", self.calculate_controle(), 1, 2)
-        self.create_statistic(stats_frame, "BOM : ", self.calculate_bom(), 2, 1)
-        self.create_statistic(stats_frame, "CUP : ", self.calculate_cup(), 2, 2)
-        self.create_statistic(stats_frame, "Facteur : ", self.calculate_facteur(), 0, 3)
-        self.create_statistic(stats_frame, "Moelle : ", self.calculate_moelle(), 1, 3)
-        self.create_statistic(stats_frame, "Nombre de nouveau patient :",
-                              self.count_new_patients(current_month, current_year), 0, 0)
-        self.create_statistic(stats_frame, "Femme :",
-                              self.count_new_patients_femme(current_month, current_year), 1, 0)
-        self.create_statistic(stats_frame, "Homme :",
-                              self.count_new_patients_homme(current_month, current_year), 2, 0)
+        self.create_statistic(stats_frame, "Nombre de nouveau patient :", self.count_new_patients(current_month, current_year), 0, 0)
+        self.create_statistic(stats_frame, "Femme :",self.count_new_patients_femme(current_month, current_year), 1, 0)
+        self.create_statistic(stats_frame, "Homme :",self.count_new_patients_homme(current_month, current_year), 2, 0)
+        self.create_statistic(stats_frame, "Nombre de rdv validees : ", self.calculate_nombre_rdv_valider(), 3, 0)
+        self.create_statistic(stats_frame, "Nombre de diagnostiques : ", self.count_diagnostic_types(current_month, current_year), 0, 1)
+        self.create_statistic(stats_frame, "Nombre de gestes medicales  : ", self.count_medical_gestures(), 1, 1)
 
         # Update the canvas to show the scrollbar
         stats_frame.update_idletasks()
