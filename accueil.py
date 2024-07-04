@@ -1458,7 +1458,7 @@ class Accueil(ct.CTk):
         # Configure the font for the column headings
         style.configure("Custom.Treeview.Heading", font=('Karla', 24, 'bold'), foreground="#1C1278")
 
-        columns = ("N°Consultation", "Date", "Patient", "Geste médical")
+        columns = ("N°RDV", "Date", "Patient", "Geste médical")
         self.treeview_consultations = ttk.Treeview(self.center_frame, columns=columns, show="headings",
                                                    style="Custom.Treeview")
         # Add a vertical scrollbar
@@ -1470,13 +1470,13 @@ class Accueil(ct.CTk):
         # Définition des en-têtes
         for col in columns:
             self.treeview_consultations.heading(col, text=col, anchor='center')
-            width = 290 if col == "N°Consultation" else 405
+            width = 250 if col == "N°RDV" else 420
             self.treeview_consultations.column(col, anchor='center', width=width)
 
-            # Add the appointments to the treeview with sequential numbering for "N°Consultation"
-        for idx, appointment in enumerate(appointments, start=1):
+        # Add the appointments to the treeview
+        for appointment in appointments:
             self.treeview_consultations.insert('', 'end', values=(
-                idx, appointment['date'], appointment['patient'], appointment['medical_gesture']
+                appointment["N°RDV"], appointment['date'], appointment['patient'], appointment['medical_gesture']
             ))
 
         # Bind the click event to a method
@@ -1549,7 +1549,7 @@ class Accueil(ct.CTk):
 
         # Disable the checkbox if the appointment is already validated
         if validation_status == "oui validé":
-            validate_checkbox.configure(state="disabled")
+            validate_checkbox.config(state=tk.DISABLED)
 
     def get_validation_status(self, appointment_id):
         try:
@@ -1589,7 +1589,7 @@ class Accueil(ct.CTk):
             )
 
             # Commit the transaction
-            con.commit()  # <--- Add this line
+            con.commit()
 
             # Close the connection
             con.close()
