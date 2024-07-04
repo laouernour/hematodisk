@@ -1193,7 +1193,7 @@ class Accueil(ct.CTk):
                     )
                     con.commit()
                     # Afficher un message de succès
-                    messagebox.showinfo("Succès", "Consultation enregistrée avec succès", parent=self)
+                    messagebox.showinfo("Succès", "Rendez-vous enregistrée avec succès", parent=self)
                 else:
                     messagebox.showerror("Erreur", "Médecin introuvable", parent=self)
 
@@ -1458,7 +1458,7 @@ class Accueil(ct.CTk):
         # Configure the font for the column headings
         style.configure("Custom.Treeview.Heading", font=('Karla', 24, 'bold'), foreground="#1C1278")
 
-        columns = ("N°RDV", "Date", "Patient", "Geste médical")
+        columns = ("N°Consultation", "Date", "Patient", "Geste médical")
         self.treeview_consultations = ttk.Treeview(self.center_frame, columns=columns, show="headings",
                                                    style="Custom.Treeview")
         # Add a vertical scrollbar
@@ -1470,13 +1470,13 @@ class Accueil(ct.CTk):
         # Définition des en-têtes
         for col in columns:
             self.treeview_consultations.heading(col, text=col, anchor='center')
-            width = 250 if col == "N°RDV" else 420
+            width = 290 if col == "N°Consultation" else 405
             self.treeview_consultations.column(col, anchor='center', width=width)
 
-        # Add the appointments to the treeview
-        for appointment in appointments:
+            # Add the appointments to the treeview with sequential numbering for "N°Consultation"
+        for idx, appointment in enumerate(appointments, start=1):
             self.treeview_consultations.insert('', 'end', values=(
-                appointment["N°RDV"], appointment['date'], appointment['patient'], appointment['medical_gesture']
+                idx, appointment['date'], appointment['patient'], appointment['medical_gesture']
             ))
 
         # Bind the click event to a method
