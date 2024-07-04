@@ -1458,28 +1458,28 @@ class Accueil(ct.CTk):
         # Configure the font for the column headings
         style.configure("Custom.Treeview.Heading", font=('Karla', 24, 'bold'), foreground="#1C1278")
 
-        columns = ("N°Consultation", "Date", "Patient", "Geste médical")
+        columns = ("N°Consultation", "N°RDV", "Date", "Patient", "Geste médical")
         self.treeview_consultations = ttk.Treeview(self.center_frame, columns=columns, show="headings",
                                                    style="Custom.Treeview")
-        # Add a vertical scrollbar
+        # Ajouter une barre de défilement verticale
         scrollbar = ttk.Scrollbar(self.center_frame, orient="vertical", command=self.treeview_consultations.yview)
         scrollbar.pack(side="right", fill="y")
         self.treeview_consultations.configure(yscrollcommand=scrollbar.set)
         self.treeview_consultations.pack(expand=True, fill='both')
 
-        # Définition des en-têtes
+        # Définir les en-têtes
         for col in columns:
             self.treeview_consultations.heading(col, text=col, anchor='center')
-            width = 290 if col == "N°Consultation" else 405
+            width = 245 if col == "N°Consultation" else (120 if col == "N°RDV" else 380)
             self.treeview_consultations.column(col, anchor='center', width=width)
 
-            # Add the appointments to the treeview with sequential numbering for "N°Consultation"
+        # Ajouter les rendez-vous au treeview avec numérotation séquentielle pour "N°Consultation"
         for idx, appointment in enumerate(appointments, start=1):
             self.treeview_consultations.insert('', 'end', values=(
-                idx, appointment['date'], appointment['patient'], appointment['medical_gesture']
+                idx, appointment['N°RDV'], appointment['date'], appointment['patient'], appointment['medical_gesture']
             ))
 
-        # Bind the click event to a method
+        # Lier l'événement de clic à une méthode
         self.treeview_consultations.bind("<Double-1>", self.on_click_consultation)
 
     def on_click_consultation(self, event):
@@ -1537,7 +1537,7 @@ class Accueil(ct.CTk):
         # Add the Checkbutton to validate the appointment
         validate_var = tk.BooleanVar()
         validate_checkbox = ct.CTkCheckBox(self.details_frame, text="Valider le RDV", variable=validate_var,
-                                           command=lambda: self.update_validation(values[0], validate_var,
+                                           command=lambda: self.update_validation(values[1], validate_var,
                                                                                   validate_checkbox))
         validate_checkbox.grid(row=len(labels), columnspan=3, padx=50, pady=20)
 
