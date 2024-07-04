@@ -1589,7 +1589,7 @@ class Accueil(ct.CTk):
             )
 
             # Commit the transaction
-            con.commit()
+            con.commit()  # <--- Add this line
 
             # Close the connection
             con.close()
@@ -1724,25 +1724,15 @@ class Accueil(ct.CTk):
             con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
             cur = con.cursor()
 
-            from datetime import datetime
-            current_date = datetime.today()
-            current_month = current_date.month
-            current_year = current_date.year
-
-            print("Current month:", current_month)
-            print("Current year:", current_year)
-
-            # Retrieve the number of validated appointments in the current month
+            # Retrieve the number of validated appointments for the current month and year
             cur.execute("""
-                SELECT COUNT(*)
-                FROM rendez_vous
-                WHERE validation = 'oui validé'
-                AND MONTH(date_du_rendez_vous) = %s
-                AND YEAR(date_du_rendez_vous) = %s
-            """, (current_month, current_year))
+                SELECT COUNT(*) 
+                FROM rendez_vous 
+                WHERE validation = 'oui validé' 
+                AND MONTH(date_du_rendez_vous) = MONTH(CURRENT_DATE) 
+                AND YEAR(date_du_rendez_vous) = YEAR(CURRENT_DATE)
+            """)
             result = cur.fetchone()
-
-            print("Result:", result)
 
             # Close the connection
             con.close()
