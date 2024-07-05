@@ -1895,10 +1895,10 @@ class Accueil(ct.CTk):
         current_year = current_date.year
 
         # Create statistics
-        self.create_statistic(stats_frame, "Nombre de nouveau patient :", self.count_new_patients(current_month, current_year), 0, 0)
-        self.create_statistic(stats_frame, "Femme :",self.count_new_patients_femme(current_month, current_year), 1, 0)
-        self.create_statistic(stats_frame, "Homme :",self.count_new_patients_homme(current_month, current_year), 2, 0)
-        self.create_statistic(stats_frame, "Nombre de rdv validees : ", self.calculate_nombre_rdv_valider(), 3, 0)
+        self.create_statistic(stats_frame, "Nombre de nouveaux patients :", self.count_new_patients(current_month, current_year), 1, 0)
+        self.create_statistic(stats_frame, "Femme :",self.count_new_patients_femme(current_month, current_year), 2, 0)
+        self.create_statistic(stats_frame, "Homme :",self.count_new_patients_homme(current_month, current_year), 3, 0)
+        self.create_statistic(stats_frame, "Nombre de rdv validees : ", self.calculate_nombre_rdv_valider(), 0, 0)
         self.create_statistic(stats_frame, "Nombre de diagnostiques : ", self.count_diagnostic_types(current_month, current_year), 0, 1)
         self.create_statistic(stats_frame, "Nombre de gestes medicales  : ", self.count_medical_gestures(), 1, 1)
 
