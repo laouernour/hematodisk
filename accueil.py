@@ -1252,8 +1252,10 @@ class Accueil(ct.CTk):
 
         self.treeview_appointments.bind("<Button-1>", self.on_click_RDV)
     def on_click_RDV(self, event):
-        item = self.treeview_appointments.focus()  # Obtient l'élément actuellement sélectionné dans Treeview
-        values = self.treeview_appointments.item(item, 'values')  # Obtient les valeurs des colonnes de l'élément
+        item_id = self.treeview_appointments.identify_row(event.y)# Obtient l'élément actuellement sélectionné dans Treeview
+        if not item_id:
+            return
+        values = self.treeview_appointments.item(item_id, 'values')  # Obtient les valeurs des colonnes de l'élément
         if values:
             # Obtenez la valeur de matricule_RDV (remplacez l'index 0 par l'index correct)
             self.id_rendez_vous = values[0]
