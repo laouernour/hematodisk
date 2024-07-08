@@ -1528,16 +1528,12 @@ class Accueil(ct.CTk):
         self.details_frame = ct.CTkFrame(info_frame, fg_color='#ffffff')
         self.details_frame.pack(fill='both', expand=True)
 
-        # Configure the grid columns
-        self.details_frame.grid_columnconfigure(0, weight=1)
-        self.details_frame.grid_columnconfigure(1, weight=3)
-
         # Add details to the frame
         labels = ["N°RDV: ", "Date:", "Patient:", "Geste médical:"]
         for i, label in enumerate(labels):
             lbl = ct.CTkLabel(self.details_frame, text=label, font=('Karla', 16, 'bold'), text_color='#1C1278')
             lbl.grid(row=i, column=0, padx=10, pady=10, sticky='w')
-            val = ct.CTkLabel(self.details_frame, text=values[i + 1], font=('Karla', 16), text_color='#000000')
+            val = ct.CTkLabel(self.details_frame, text=values[i], font=('Karla', 16), text_color='#000000')
             val.grid(row=i, column=1, padx=10, pady=10, sticky='w')
 
         # Add the Checkbutton to validate the appointment
@@ -1545,7 +1541,7 @@ class Accueil(ct.CTk):
         validate_checkbox = ct.CTkCheckBox(self.details_frame, text="Valider le RDV", variable=validate_var,
                                            command=lambda: self.update_validation(values[1], validate_var,
                                                                                   validate_checkbox))
-        validate_checkbox.grid(row=len(labels), column=0, padx=50, pady=20)
+        validate_checkbox.grid(row=len(labels), columnspan=3, padx=50, pady=20)
 
         # Retrieve the validation status from the database for this appointment
         validation_status = self.get_validation_status(values[0])  # Assuming values[0] contains the appointment ID
@@ -1555,7 +1551,8 @@ class Accueil(ct.CTk):
 
         # Disable the checkbox if the appointment is already validated
         if validation_status == "oui validé":
-            validate_checkbox.config(state=tk.DISABLED)
+            validate_checkbox.configure(state=tk.DISABLED)
+
     def get_validation_status(self, appointment_id):
         try:
             # Connect to the database
