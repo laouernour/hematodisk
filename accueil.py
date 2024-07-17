@@ -1778,6 +1778,32 @@ class Accueil(ct.CTk):
         con.close()
         return count
 
+    def calculate_nombre_traitement_total(self):
+        try:
+            # Connect to the database
+            con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
+            cur = con.cursor()
+
+            # Retrieve the number of treatments for the current month and year
+            cur.execute("""
+                SELECT COUNT(traitement) 
+                FROM historique_consultations 
+                WHERE MONTH(date_de_consultation) = MONTH(CURRENT_DATE) 
+                AND YEAR(date_de_consultation) = YEAR(CURRENT_DATE)
+            """)
+            result = cur.fetchone()
+
+            # Close the connection
+            con.close()
+
+            if result:
+                return str(result[0])
+            else:
+                return "0"
+
+        except Exception as e:
+            print("Error fetching number of treatments:", e)
+            return "0"
     def count_diagnostic_types(self, month, year):
         con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
         cur = con.cursor()
@@ -1906,6 +1932,7 @@ class Accueil(ct.CTk):
         self.create_statistic(stats_frame, "Nombre de rdv validees : ", self.calculate_nombre_rdv_valider(), 0, 0)
         self.create_statistic(stats_frame, "Nombre de diagnostiques : ", self.count_diagnostic_types(current_month, current_year), 0, 1)
         self.create_statistic(stats_frame, "Nombre de gestes medicales  : ", self.count_medical_gestures(), 1, 1)
+        self.create_statistic(stats_frame, "Nombre de traitements : ", self.calculate_nombre_traitement_total(), 2, 1)
 
         # Update the canvas to show the scrollbar
         stats_frame.update_idletasks()
