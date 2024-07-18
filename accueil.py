@@ -1540,7 +1540,7 @@ class Accueil(ct.CTk):
         # Add the Checkbutton to validate the appointment
         validate_var = tk.BooleanVar()
         validate_checkbox = ct.CTkCheckBox(self.details_frame, text="Valider le RDV", variable=validate_var,
-                                           command=lambda: self.update_validation(values[1], validate_var,
+                                           command=lambda: self.update_validation(values[0], validate_var,
                                                                                   validate_checkbox))
         validate_checkbox.grid(row=len(labels), columnspan=3, padx=50, pady=20)
 
