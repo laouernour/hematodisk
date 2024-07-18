@@ -176,8 +176,7 @@ class Inscrire_patient(ct.CTkToplevel):
         self.geometry('850x590+300+50')
         self.configure(bg='#263A5F')
         self.resizable(False, False)
-        # Liaison de la touche "Enter" à la fonction submit_form
-        self.bind('<Return>', self.creer)
+
 
         self.formulaire_frame = ct.CTkFrame(self, fg_color='#FFFFFF', width=800, height=490, border_width=2,
                                             border_color='#263A5F',corner_radius= 0)
@@ -276,6 +275,8 @@ class Inscrire_patient(ct.CTkToplevel):
                                                 fg_color='#263A5F',
                                                 cursor='hand2', text_color='#FFFFFF')
         self.enregistrer_patient.grid(row=5, column=1, columnspan=2,  pady=0)
+        # Liaison de la touche "Enter" à la fonction submit_form
+        self.bind('<Return>', self.creer)
 
         # Load the image
 
@@ -1923,13 +1924,13 @@ class Accueil(ct.CTk):
         current_year = current_date.year
 
         # Create statistics
-        self.create_statistic(stats_frame, "Nombre de nouveaux patients :", self.count_new_patients(current_month, current_year), 1, 0)
-        self.create_statistic(stats_frame, "Femme :",self.count_new_patients_femme(current_month, current_year), 2, 0)
-        self.create_statistic(stats_frame, "Homme :",self.count_new_patients_homme(current_month, current_year), 3, 0)
-        self.create_statistic(stats_frame, "Nombre de rdv validees : ", self.calculate_nombre_rdv_valider(), 0, 0)
+        self.create_statistic(stats_frame, "Nombre de nouveaux patients :", self.count_new_patients(current_month, current_year), 0, 0)
+        self.create_statistic(stats_frame, "Femme :",self.count_new_patients_femme(current_month, current_year), 1, 0)
+        self.create_statistic(stats_frame, "Homme :",self.count_new_patients_homme(current_month, current_year), 2, 0)
+        self.create_statistic(stats_frame, "Nombre de rdv validees : ", self.calculate_nombre_rdv_valider(), 0, 3)
         self.create_statistic(stats_frame, "Nombre de diagnostiques : ", self.count_diagnostic_types(current_month, current_year), 0, 1)
         self.create_statistic(stats_frame, "Nombre de gestes medicales  : ", self.count_medical_gestures(), 1, 1)
-        self.create_statistic(stats_frame, "Nombre de traitements : ", self.calculate_nombre_traitement_total(), 2, 1)
+        self.create_statistic(stats_frame, "Nombre de traitements : ", self.calculate_nombre_traitement_total(), 1, 3)
 
         # Update the canvas to show the scrollbar
         stats_frame.update_idletasks()
