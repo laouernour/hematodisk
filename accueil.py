@@ -395,7 +395,7 @@ class Accueil(ct.CTk):
                                           cursor='hand2', text_color='#FFFFFF')
         self.rech_txt_butt.place(x=555, y=132)
         self.rech_txt.focus_set()
-        self.bind_all('<Return>', self.rechercher_patient)
+        self.rech_txt.bind('<Return>', self.rechercher_patient)
 
 
         # Left frame
