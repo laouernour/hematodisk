@@ -1534,13 +1534,13 @@ class Accueil(ct.CTk):
         for i, label in enumerate(labels):
             lbl = ct.CTkLabel(self.details_frame, text=label, font=('Karla', 16, 'bold'), text_color='#1C1278')
             lbl.grid(row=i, column=0, padx=10, pady=10, sticky='w')
-            val = ct.CTkLabel(self.details_frame, text=values[i], font=('Karla', 16), text_color='#000000')
+            val = ct.CTkLabel(self.details_frame, text=values[i+1], font=('Karla', 16), text_color='#000000')
             val.grid(row=i, column=1, padx=10, pady=10, sticky='w')
 
         # Add the Checkbutton to validate the appointment
         validate_var = tk.BooleanVar()
         validate_checkbox = ct.CTkCheckBox(self.details_frame, text="Valider le RDV", variable=validate_var,
-                                           command=lambda: self.update_validation(values[0], validate_var,
+                                           command=lambda: self.update_validation(values[1], validate_var,
                                                                                   validate_checkbox))
         validate_checkbox.grid(row=len(labels), columnspan=3, padx=50, pady=20)
 
