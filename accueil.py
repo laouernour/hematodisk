@@ -1581,6 +1581,12 @@ class Accueil(ct.CTk):
             # Retrieve the current validation status
             validation_status = 'oui validé' if validate_var.get() else 'non'
 
+            # Check if the RDV is already validated
+            current_validation_status = self.get_validation_status(appointment_id)
+            if current_validation_status == "oui validé" and validate_var.get():
+                messagebox.showinfo("RDV déjà validé", "Ce RDV est déjà validé")
+                return
+
             # Connect to the database
             con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
             cur = con.cursor()
