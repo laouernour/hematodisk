@@ -359,6 +359,7 @@ class Accueil(ct.CTk):
         self.title("Accueil")
         w, h = self.winfo_screenwidth(), self.winfo_screenheight()
         self.geometry("%dx%d+0+0" % (w, h))
+        self.resizable(False,True)
         self.configure(bg='#78BDCC')
         # Top frame
         self.top_frame = ct.CTkFrame(self, fg_color='#28A0C6', width=w, height=200, corner_radius=0)
@@ -590,7 +591,7 @@ class Accueil(ct.CTk):
         # Définition des en-têtes
         for col in columns:
             self.treeview_patients.heading(col, text=col, anchor='center')
-            width = 100 if col == "ID" else 200
+            width = 100 if col == "ID" else 201
             self.treeview_patients.column(col, anchor='center', width=width)
 
     def create_appointments_treeview(self):
@@ -616,7 +617,7 @@ class Accueil(ct.CTk):
         # Définition des en-têtes
         for col in columns:
             self.treeview_appointments.heading(col, text=col, anchor='center')
-            width = 250 if col == "N°RDV" else 418
+            width = 253 if col == "N°RDV" else 419
             self.treeview_appointments.column(col, anchor='center',width=width)
 
         self.treeview_appointments.bind("<Button-1>", self.on_click_RDV)
@@ -643,7 +644,7 @@ class Accueil(ct.CTk):
         # Définition des en-têtes
         for col in columns:
             self.treeview_doctors.heading(col, text=col, anchor='center')
-            width = 250 if col == "N°RDV" else 300
+            width = 250 if col == "N°RDV" else 301
             self.treeview_doctors.column(col, anchor='center',width=width )
 
     def add_patient(self, treeview, row):
@@ -1496,6 +1497,8 @@ class Accueil(ct.CTk):
             self.new_window.grab_set()
             self.new_window.title("Détails de la Consultation")
             self.new_window.geometry("650x400+400+200")
+            # Configure la fenêtre pour désactiver le redimensionnement en largeur et autoriser le redimensionnement en hauteur
+            self.new_window.resizable(width=False, height=False)
 
             self.menu_frame = ct.CTkFrame(self.new_window, width=760, height=50, border_width=0, corner_radius=0,
                                           fg_color='#B8F9FF')
@@ -1689,6 +1692,8 @@ class Accueil(ct.CTk):
         self.new_window.grab_set()
         self.new_window.title("Détails de l'administrateur")
         self.new_window.geometry("400x300+300+300")
+        # Configure la fenêtre pour désactiver le redimensionnement en largeur et autoriser le redimensionnement en hauteur
+        self.new_window.resizable(width=False, height=False)
         self.frameADV = ct.CTkFrame(self.new_window, fg_color='#ffffff', corner_radius=0, border_width=2,
                                     border_color='#263A5F')
         self.frameADV.pack(expand=True, fill='both')
