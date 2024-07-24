@@ -1545,13 +1545,19 @@ class Accueil(ct.CTk):
         validate_checkbox.grid(row=len(labels), columnspan=3, padx=50, pady=20)
 
         # Retrieve the validation status from the database for this appointment
-        validation_status = self.get_validation_status(values[0])  # Assuming values[0] contains the appointment ID
+        appointment_id = values[1]
+        validation_status = self.get_validation_status(appointment_id)
+        validate_var = tk.BooleanVar(value=validation_status == "oui validé")
 
-        # Set the initial state of the checkbox based on the validation status
-        validate_var.set(validation_status == "oui validé")
+        # Add the Checkbutton to validate the appointment
+        validate_checkbox = ct.CTkCheckBox(self.details_frame, text="Valider le RDV", variable=validate_var,
+                                           command=lambda: self.update_validation(appointment_id, validate_var,
+                                                                                  validate_checkbox))
+        validate_checkbox.grid(row=len(labels), columnspan=3, padx=50, pady=20)
 
-        # Disable the checkbox if the appointment is already validated
+        # If the RDV is already validated, disable the checkbox
         if validation_status == "oui validé":
+            validate_checkbox.select()
             validate_checkbox.configure(state=tk.DISABLED)
 
     def get_validation_status(self, appointment_id):
@@ -1581,12 +1587,6 @@ class Accueil(ct.CTk):
             # Retrieve the current validation status
             validation_status = 'oui validé' if validate_var.get() else 'non'
 
-            # Check if the RDV is already validated
-            current_validation_status = self.get_validation_status(appointment_id)
-            if current_validation_status == "oui validé" and validate_var.get():
-                messagebox.showinfo("RDV déjà validé", "Ce RDV est déjà validé")
-                return
-
             # Connect to the database
             con = pymysql.connect(host='localhost', user='root', password='', db='hematodisk_data_base')
             cur = con.cursor()
@@ -1608,6 +1608,11 @@ class Accueil(ct.CTk):
 
             # Disable the checkbox after validation
             self.disable_checkbox(validate_checkbox)
+
+        except Exception as e:
+            # Show error message in case of failure
+            messagebox.showerror("Erreur", f"Erreur lors de la mise à jour de la validation du RDV : {str(e)}")
+            print("Error updating validation status:", e)
 
         except Exception as e:
             # Show error message in case of failure
