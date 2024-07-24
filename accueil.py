@@ -1505,16 +1505,10 @@ class Accueil(ct.CTk):
             self.menu_frame.pack()
 
             showConsult_butt = ct.CTkButton(self.menu_frame, text="Voir détails de la Consultation",
-                                            command=lambda: self.afficher_détails_consult(self.info_frame, values),
+                                            command=None,
                                             width=50, height=30, corner_radius=15, font=('Karla', 14, 'bold'),
                                             fg_color='#FF0000', cursor='hand2', text_color='#FFFFFF')
             showConsult_butt.place(x=35, y=10)
-
-            reporterConsult_butt = ct.CTkButton(self.menu_frame, text="Reporter Consultation",
-                                                command=lambda: self.reporter_RDV(self.info_frame, values),
-                                                width=50, height=30, corner_radius=15, font=('Karla', 14, 'bold'),
-                                                fg_color='#FF0000', cursor='hand2', text_color='#FFFFFF')
-            reporterConsult_butt.place(x=400, y=10)
 
             self.info_frame = ct.CTkFrame(self.new_window, width=697, height=400, border_color='#FF0000',
                                           border_width=2,
